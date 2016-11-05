@@ -54,7 +54,7 @@ function sendGenericMessage(sender) {
         console.log(body)
         sendTextMessage(sender, body.substring(0, 300))
       }
-    })(sender)
+    })
   )
   console.log('Hello')
   let messageData = {
