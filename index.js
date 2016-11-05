@@ -39,7 +39,7 @@ app.post('/webhook/', function (req, res) {
     if (event.message && event.message.text) {
       let text = event.message.text
       // sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
-      sendGenericMessage(sender)
+      sendX(sender)
     }
   }
   res.sendStatus(200)
@@ -47,7 +47,7 @@ app.post('/webhook/', function (req, res) {
 
 // http://version1.api.memegenerator.net/Generators_Select_ByTrending
 
-function sendGenericMessage(sender) {
+function sendX(sender) {
   request('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf',
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
