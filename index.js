@@ -4,12 +4,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
-const http = require('http');
-
-var options = {
-  host: 'www.version1.api.memegenerator.net',
-  path: '/Generators_Select_ByTrending'
-};
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -53,22 +47,6 @@ app.post('/webhook/', function (req, res) {
 
 // http://version1.api.memegenerator.net/Generators_Select_ByTrending
 
-function callback(response) {
-  var str = '';
-
-  //another chunk of data has been recieved, so append it to `str`
-  response.on('data', function (chunk) {
-    str += chunk;
-  });
-
-  //the whole response has been recieved, so we just print it out here
-  response.on('end', function () {
-    console.log('YOOOOO');
-    console.log(str);
-  });
-}
-
-
 function sendGenericMessage(sender) {
   http.request(options, callback).end();
   console.log('Hello')
@@ -85,6 +63,12 @@ function sendGenericMessage(sender) {
       }
     }
   }
+  request
+    .get('http://version1.api.memegenerator.net/Generators_Select_ByTrending')
+    .on('response', function(response) {
+      console.log(response)
+    }
+  )
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:token},
