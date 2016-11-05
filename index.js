@@ -48,7 +48,6 @@ app.post('/webhook/', function (req, res) {
 // http://version1.api.memegenerator.net/Generators_Select_ByTrending
 
 function sendGenericMessage(sender) {
-  http.request(options, callback).end();
   console.log('Hello')
   let messageData = {
     "attachment": {
