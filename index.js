@@ -39,7 +39,7 @@ app.post('/webhook/', function (req, res) {
     request('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf',
       function (error, response, body) {
         if (!error && response.statusCode == 200) {
-          sendTextMessage(sender, body.result)
+          sendTextMessage(sender, body)
         }
       }
     )
