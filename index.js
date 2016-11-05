@@ -63,7 +63,7 @@ function sendGenericMessage(sender) {
     }
   }
   request
-    .get('http://version1.api.memegenerator.net/Generators_Select_ByTrending')
+    .get('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf')
     .on('response', function(response) {
       console.log(response)
     }
