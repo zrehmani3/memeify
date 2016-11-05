@@ -46,6 +46,7 @@ app.post('/webhook/', function (req, res) {
 })
 
 function sendGenericMessage(sender) {
+  console.log('Hello')
     let messageData = {
         "attachment": {
             "type": "template",
