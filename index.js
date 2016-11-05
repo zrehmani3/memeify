@@ -53,7 +53,7 @@ function sendX(sender) {
       if (!error && response.statusCode == 200) {
         var x = JSON.parse(body);
         console.log(x.result[0].imageUrl)
-        sendTextMessage(sender, x.result[0].imageUrl)
+        sendGenericMessage(sender, x.result[0].imageUrl)
       }
     })
   )
