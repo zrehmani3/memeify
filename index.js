@@ -8,7 +8,7 @@ const http = require('http');
 
 var options = {
   host: 'http://version1.api.memegenerator.net',
-  path: '/Generators_Select_ByTrending0'
+  path: '/Generators_Select_ByTrending'
 };
 
 app.set('port', (process.env.PORT || 5000))
