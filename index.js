@@ -70,27 +70,21 @@ function sendGenericMessage(sender) {
       }
     }
   }
-  // request
-  //   .get('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf')
-  //   .on('response', function(error, response, body) {
-  //     console.log(body)
+  // request({
+  //   url: 'https://graph.facebook.com/v2.6/me/messages',
+  //   qs: {access_token:token},
+  //   method: 'POST',
+  //   json: {
+  //     recipient: {id:sender},
+  //     message: messageData,
   //   }
-  // )
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, function(error, response, body) {
-    if (error) {
-        console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-        console.log('Error: ', response.body.error)
-    }
-  })
+  // }, function(error, response, body) {
+  //   if (error) {
+  //     console.log('Error sending messages: ', error)
+  //   } else if (response.body.error) {
+  //     console.log('Error: ', response.body.error)
+  //   }
+  // })
 }
 
 function sendTextMessage(sender, text) {
