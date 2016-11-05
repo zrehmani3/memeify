@@ -51,8 +51,9 @@ function sendGenericMessage(sender) {
   request('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf',
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        console.log(body)
-        sendTextMessage(sender, body.substring(0, 300))
+        var x = JSON.parse(body);
+        console.log(x.result[0].imageUrl)
+        sendTextMessage(sender, body.result.substring(0, 300))
       }
     })
   )
