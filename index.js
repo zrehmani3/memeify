@@ -62,10 +62,17 @@ function sendGenericMessage(sender) {
       }
     }
   }
-  request
-    .get('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf')
-    .on('response', function(response) {
-      console.log(response)
+  // request
+  //   .get('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf')
+  //   .on('response', function(error, response, body) {
+  //     console.log(body)
+  //   }
+  // )
+  request('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf',
+    function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log(body) // Show the HTML for the Google homepage.
+      }
     }
   )
   request({
