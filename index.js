@@ -7,8 +7,8 @@ const app = express()
 const http = require('http');
 
 var options = {
-  host: 'http://version1.api.memegenerator.net/Generators_Select_ByTrending',
-  path: ''
+  host: 'www.version1.api.memegenerator.net',
+  path: '/Generators_Select_ByTrending'
 };
 
 app.set('port', (process.env.PORT || 5000))
