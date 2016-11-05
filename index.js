@@ -36,6 +36,13 @@ app.post('/webhook/', function (req, res) {
   for (let i = 0; i < messaging_events.length; i++) {
     let event = req.body.entry[0].messaging[i]
     let sender = event.sender.id
+    request('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf',
+      function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          sendTextMessage(sender, body.result[0].imageUrl) // Show the HTML for the Google homepage.
+        }
+      }
+    )
     if (event.message && event.message.text) {
       let text = event.message.text
       // sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
@@ -68,13 +75,6 @@ function sendGenericMessage(sender) {
   //     console.log(body)
   //   }
   // )
-  request('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf',
-    function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body) // Show the HTML for the Google homepage.
-      }
-    }
-  )
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:token},
