@@ -63,6 +63,7 @@ function callback(response) {
 
   //the whole response has been recieved, so we just print it out here
   response.on('end', function () {
+    console.log('YOOOOO');
     console.log(str);
   });
 }
