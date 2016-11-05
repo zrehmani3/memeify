@@ -45,14 +45,14 @@ app.post('/webhook/', function (req, res) {
 })
 
 function sendTextMessage(sender, text) {
-    let messageData = { text:text }
+    let messageData = { text: 'http://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png&w=350&h=254' }
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token:token},
         method: 'POST',
         json: {
             recipient: {id:sender},
-            message: 'http://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png&w=350&h=254',
+            message: messageData,
         }
     }, function(error, response, body) {
         if (error) {
