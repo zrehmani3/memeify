@@ -37,11 +37,12 @@ app.post('/webhook/', function (req, res) {
     let event = req.body.entry[0].messaging[i]
     let sender = event.sender.id
     request('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf',
-      function (error, response, body) {
+      (function (error, response, body) {
         if (!error && response.statusCode == 200) {
+          console.log(body)
           sendTextMessage(sender, body.substring(0, 300))
         }
-      }
+      })(sender)
     )
     if (event.message && event.message.text) {
       let text = event.message.text
