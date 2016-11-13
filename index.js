@@ -38,24 +38,24 @@ app.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text
-      if (text.indexOf('#memify_search') > 0) {
+      if (text.indexOf('#memeify_search') > 0) {
         if (text.indexOf('top_text') > 0 || text.indexOf('bot_text') > 0) {
           // Search for meme then apply custom text to it
-          console.log('#memify_search_custom')
+          console.log('#memeify_search_custom')
         } else {
           // Search for memes related to the query
-          console.log('#memify_search')
+          console.log('#memeify_search')
         }
         // Use memegenerator search API
-      } else if (text.indexOf('#memify_popular') > 0) {
-        console.log('#memify_popular')
+      } else if (text.indexOf('#memeify_popular') > 0) {
+        console.log('#memeify_popular')
         sendPopular(sender)
-      } else if (text.indexOf('#memify_link')) {
-        console.log('#memify_link')
+      } else if (text.indexOf('#memeify_link')) {
+        console.log('#memeify_link')
         // Memify using existing link
-      } else if (text.indexOf('#memify_upload')) {
-        console.log('#memify_upload')
-        // Upload image and memify
+      } else if (text.indexOf('#memeify_upload')) {
+        console.log('#memeify_upload')
+        // Upload image and memeify
       } else {
         // Default error message
         sendGenericErrorMessage(sender);
@@ -66,8 +66,8 @@ app.post('/webhook/', function (req, res) {
 })
 
 function sendGenericErrorMessage(sender) {
-  const genericErrorMessageText = 'Sorry, we couldn\'t understand your request.
-    Type \'help\' for more information.';
+  const genericErrorMessageText = 'Sorry, we couldnt understand your request.' +
+    'Type help for more information.';
   let messageData = { text: genericErrorMessageText }
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
