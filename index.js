@@ -58,7 +58,7 @@ app.post('/webhook/', function (req, res) {
       //   // Upload image and memeify
       // } else {
       //   // Default error message
-      sendGenericErrorMessage(sender);
+        sendGenericErrorMessage(sender);
       // }
     }
   }
