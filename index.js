@@ -86,17 +86,17 @@ function sendGenericErrorMessage(sender) {
   })
 }
 
-// function sendX(sender) {
-//   request('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf',
-//     (function (error, response, body) {
-//       if (!error && response.statusCode == 200) {
-//         var x = JSON.parse(body);
-//         console.log(x.result[0].imageUrl)
-//         sendGenericMessage(sender, x.result[0].imageUrl)
-//       }
-//     })
-//   )
-// }
+function sendPopular(sender) {
+  request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=3',
+    (function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var x = JSON.parse(body);
+        console.log(x)
+        sendGenericMessage(sender, "high")
+      }
+    })
+  )
+}
 //
 // function sendGenericMessage(sender, imageUrl) {
 //   console.log(imageUrl);
