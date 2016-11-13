@@ -49,7 +49,7 @@ app.post('/webhook/', function (req, res) {
         // Use memegenerator search API
       } else if (text.indexOf('#memify_popular') > 0) {
         console.log('#memify_popular')
-        // Use memegenerator popular API
+        sendPopular(sender)
       } else if (text.indexOf('#memify_link')) {
         console.log('#memify_link')
         // Memify using existing link
