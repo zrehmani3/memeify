@@ -38,49 +38,44 @@ app.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text
-      // sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
-      sendX(sender)
+      if (text.indexOf('#memify_search') > 0) {
+        if (text.indexOf('top_text') > 0 || text.indexOf('bot_text') > 0) {
+          // Search for meme then apply custom text to it
+          console.log('#memify_search_custom')
+        } else {
+          // Search for memes related to the query
+          console.log('#memify_search')
+        }
+        // Use memegenerator search API
+      } else if (text.indexOf('#memify_popular') > 0) {
+        console.log('#memify_popular')
+        // Use memegenerator popular API
+      } else if (text.indexOf('#memify_link')) {
+        console.log('#memify_link')
+        // Memify using existing link
+      } else if (text.indexOf('#memify_upload')) {
+        console.log('#memify_upload')
+        // Upload image and memify
+      } else {
+        // Default error message
+        sendGenericErrorMessage(sender);
+      }
     }
   }
   res.sendStatus(200)
 })
 
-// http://version1.api.memegenerator.net/Generators_Select_ByTrending
-
-function sendX(sender) {
-  request('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf',
-    (function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var x = JSON.parse(body);
-        console.log(x.result[0].imageUrl)
-        sendGenericMessage(sender, x.result[0].imageUrl)
-      }
-    })
-  )
-}
-
-function sendGenericMessage(sender, imageUrl) {
-  console.log(imageUrl);
-  let messageData = {
-    "attachment": {
-      "type": "template",
-      "payload": {
-        "template_type": "generic",
-        "elements": [{
-          "title": "First card",
-          "subtitle": "Element #1 of an hscroll",
-          "image_url": imageUrl,
-        }]
-      }
-    }
-  }
+function sendGenericErrorMessage(sender) {
+  const genericErrorMessageText = 'Sorry, we couldn\'t understand your request.
+    Type \'help\' for more information.';
+  let messageData = { text: genericErrorMessageText }
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:token},
     method: 'POST',
     json: {
-      recipient: {id:sender},
-      message: messageData,
+        recipient: {id:sender},
+        message: messageData,
     }
   }, function(error, response, body) {
     if (error) {
@@ -91,9 +86,51 @@ function sendGenericMessage(sender, imageUrl) {
   })
 }
 
+// function sendX(sender) {
+//   request('http://version1.api.memegenerator.net/Generators_Select_Related_ByDisplayName?displayName=Insanity%20Wolf',
+//     (function (error, response, body) {
+//       if (!error && response.statusCode == 200) {
+//         var x = JSON.parse(body);
+//         console.log(x.result[0].imageUrl)
+//         sendGenericMessage(sender, x.result[0].imageUrl)
+//       }
+//     })
+//   )
+// }
+//
+// function sendGenericMessage(sender, imageUrl) {
+//   console.log(imageUrl);
+//   let messageData = {
+//     "attachment": {
+//       "type": "template",
+//       "payload": {
+//         "template_type": "generic",
+//         "elements": [{
+//           "title": "First card",
+//           "subtitle": "Element #1 of an hscroll",
+//           "image_url": imageUrl,
+//         }]
+//       }
+//     }
+//   }
+//   request({
+//     url: 'https://graph.facebook.com/v2.6/me/messages',
+//     qs: {access_token:token},
+//     method: 'POST',
+//     json: {
+//       recipient: {id:sender},
+//       message: messageData,
+//     }
+//   }, function(error, response, body) {
+//     if (error) {
+//       console.log('Error sending messages: ', error)
+//     } else if (response.body.error) {
+//       console.log('Error: ', response.body.error)
+//     }
+//   })
+// }
 
 function sendTextMessage(sender, text) {
-  console.log('Hello')
   let messageData = { text: text }
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
