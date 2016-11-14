@@ -93,7 +93,7 @@ function sendPopular(sender) {
       if (!error && response.statusCode == 200) {
         var x = JSON.parse(body);
         console.log(x)
-        sendGenericMessage(sender, "high")
+        sendTextMessage(sender, 'SWAG')
       }
     })
   )
