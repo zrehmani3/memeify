@@ -44,8 +44,8 @@ app.post('/webhook/', function (req, res) {
       if (text.indexOf('#memeify_search') > -1) {
         if (text.indexOf('top_text') > -1 || text.indexOf('bot_text') > -1) {
           // Search for meme then apply custom text to it
-          console.log('#memeify_search_custom')
           const inputQuery = text.split(/\r?\n/);
+          console.log(inputQuery);
           const topTextDeliminator = inputQuery[1].indexOf(':');
           let topText = inputQuery[1].substring(topTextDeliminator + 1);
           topText.replace('_', ' ');
