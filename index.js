@@ -103,6 +103,7 @@ function sendPopular(sender) {
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
+        console.log(result);
         sendTextMessage(sender, result[0].imageUrl)
       }
     })
