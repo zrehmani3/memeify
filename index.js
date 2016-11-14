@@ -116,7 +116,6 @@ function sendCustomMemeFromPopular(sender) {
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         var result = JSON.parse(body).result;
-        console.log(x)
         sendTextMessage(sender, result.instanceImageUrl)
       }
     })
