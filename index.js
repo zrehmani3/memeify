@@ -5,6 +5,9 @@ const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
 
+const USERNAME = 'zmrehmani';
+const PASSWORD = 'vba1000';
+
 app.set('port', (process.env.PORT || 5000))
 
 // Process application/x-www-form-urlencoded
@@ -39,13 +42,15 @@ app.post('/webhook/', function (req, res) {
     if (event.message && event.message.text) {
       let text = event.message.text
       if (text.indexOf('#memeify_search') > -1) {
-        if (text.indexOf('top_text') > -1 || text.indexOf('bot_text') > -1) {
-          // Search for meme then apply custom text to it
-          console.log('#memeify_search_custom')
-        } else {
-          // Search for memes related to the query
-          console.log('#memeify_search')
-        }
+        // if (text.indexOf('top_text') > -1 || text.indexOf('bot_text') > -1) {
+        //   // Search for meme then apply custom text to it
+        //   console.log('#memeify_search_custom')
+        //   sendCustomMemeFromPopular(sender)
+        // } else {
+        //   // Search for memes related to the query
+        //   console.log('#memeify_search')
+        // }
+        sendCustomMemeFromPopular(sender)
         // Use memegenerator search API
       } else if (text.indexOf('#memeify_popular') > -1) {
         // Use memegenerator api to search for popular memes
@@ -94,6 +99,25 @@ function sendPopular(sender) {
         var x = JSON.parse(body);
         console.log(x)
         sendTextMessage(sender, 'SWAG')
+      }
+    })
+  )
+}
+
+function sendCustomMemeFromPopular(sender) {
+  request(
+    'http://version1.api.memegenerator.net/Instance_Create?'
+    + 'username=' + USERNAME
+    + '&password=' + PASSWORD
+    + '&generatorID=' + 45
+    + '&imageID=' + 20
+    + '&text0=' + 'Lebron'
+    + '&text1=' + 'James',
+    (function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var x = JSON.parse(body);
+        console.log(x)
+        sendTextMessage(sender, 'SWAGGY P')
       }
     })
   )
