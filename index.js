@@ -42,15 +42,21 @@ app.post('/webhook/', function (req, res) {
     if (event.message && event.message.text) {
       let text = event.message.text
       if (text.indexOf('#memeify_search') > -1) {
-        // if (text.indexOf('top_text') > -1 || text.indexOf('bot_text') > -1) {
-        //   // Search for meme then apply custom text to it
-        //   console.log('#memeify_search_custom')
-        //   sendCustomMemeFromPopular(sender)
-        // } else {
-        //   // Search for memes related to the query
-        //   console.log('#memeify_search')
-        // }
-        sendCustomMemeFromPopular(sender)
+        if (text.indexOf('top_text') > -1 || text.indexOf('bot_text') > -1) {
+          // Search for meme then apply custom text to it
+          console.log('#memeify_search_custom')
+          const inputQuery = text.split(/\r?\n/);
+          const topTextDeliminator = inputQuery[1].indexOf(':');
+          let topText = inputQuery[1].substring(topTextDeliminator + 1);
+          topText.replace('_', ' ');
+          const botTextDeliminator = inputQuery[2].indexOf(':');
+          let botText = inputQuery[2].substring(botTextDeliminator + 1);
+          botText.replace('_', ' ');
+          sendCustomMemeFromPopular(sender, 45, 20, topText, botText);
+        } else {
+          // Search for memes related to the query
+          console.log('#memeify_search')
+        }
         // Use memegenerator search API
       } else if (text.indexOf('#memeify_popular') > -1) {
         // Use memegenerator api to search for popular memes
@@ -104,15 +110,15 @@ function sendPopular(sender) {
   )
 }
 
-function sendCustomMemeFromPopular(sender) {
+function sendCustomMemeFromPopular(sender, generatorID, imageID, topText, botText) {
   request(
     'http://version1.api.memegenerator.net/Instance_Create?'
     + 'username=' + USERNAME
     + '&password=' + PASSWORD
-    + '&generatorID=' + 45
-    + '&imageID=' + 20
-    + '&text0=' + 'Lebron'
-    + '&text1=' + 'James',
+    + '&generatorID=' + generatorID
+    + '&imageID=' + imageID
+    + '&text0=' + topText
+    + '&text1=' + botText,
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         var result = JSON.parse(body).result;
