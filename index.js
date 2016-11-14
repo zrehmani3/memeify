@@ -102,8 +102,8 @@ function sendPopular(sender) {
   request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        console.log(body);
-        sendTextMessage(sender, 'hi')
+        let result = JSON.parse(body).result;
+        sendTextMessage(sender, result[0].imageUrl)
       }
     })
   )
@@ -120,7 +120,7 @@ function sendCustomMemeFromPopular(sender, generatorID, imageID, topText, botTex
     + '&text1=' + botText,
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        var result = JSON.parse(body).result;
+        let result = JSON.parse(body).result;
         sendTextMessage(sender, result.instanceImageUrl)
       }
     })
