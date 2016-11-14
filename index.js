@@ -38,8 +38,8 @@ app.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text
-      if (text.indexOf('#memeify_search') > 0) {
-        if (text.indexOf('top_text') > 0 || text.indexOf('bot_text') > 0) {
+      if (text.indexOf('#memeify_search') > -1) {
+        if (text.indexOf('top_text') > -1 || text.indexOf('bot_text') > -1) {
           // Search for meme then apply custom text to it
           console.log('#memeify_search_custom')
         } else {
@@ -47,13 +47,14 @@ app.post('/webhook/', function (req, res) {
           console.log('#memeify_search')
         }
         // Use memegenerator search API
-      } else if (text.indexOf('#memeify_popular') > 0) {
+      } else if (text.indexOf('#memeify_popular') > -1) {
+        // Use memegenerator api to search for popular memes
         console.log('#memeify_popular')
         sendPopular(sender)
-      } else if (text.indexOf('#memeify_link')) {
+      } else if (text.indexOf('#memeify_link') > -1) {
         console.log('#memeify_link')
         // Memify using existing link
-      } else if (text.indexOf('#memeify_upload')) {
+      } else if (text.indexOf('#memeify_upload') > -1) {
         console.log('#memeify_upload')
         // Upload image and memeify
       } else {
