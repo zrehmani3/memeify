@@ -102,9 +102,8 @@ function sendPopular(sender) {
   request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        var result = JSON.parse(body).result;
         console.log(body);
-        sendTextMessage(sender, result.imageUrl)
+        sendTextMessage(sender, 'hi')
       }
     })
   )
