@@ -104,7 +104,7 @@ function sendPopular(sender) {
       if (!error && response.statusCode == 200) {
         var result = JSON.parse(body).result;
         console.log(body);
-        sendTextMessage(sender, "hi")//result.instanceImageUrl)
+        sendTextMessage(sender, result.imageUrl)
       }
     })
   )
