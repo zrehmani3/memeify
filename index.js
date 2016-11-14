@@ -48,10 +48,10 @@ app.post('/webhook/', function (req, res) {
           console.log(inputQuery);
           const topTextDeliminator = inputQuery[1].indexOf(':');
           let topText = inputQuery[1].substring(topTextDeliminator + 1);
-          topText.split('_').join(' ');
+          topText = topText.split('_').join(' ');
           const botTextDeliminator = inputQuery[2].indexOf(':');
           let botText = inputQuery[2].substring(botTextDeliminator + 1);
-          botText.split('_').join(' ');
+          botText = botText.split('_').join(' ');
           sendCustomMemeFromPopular(sender, 45, 20, topText, botText);
         } else {
           // Search for memes related to the query
