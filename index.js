@@ -99,12 +99,11 @@ function sendGenericErrorMessage(sender) {
 }
 
 function sendPopular(sender) {
-  request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=3',
+  request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1',
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        var x = JSON.parse(body);
-        console.log(x)
-        sendTextMessage(sender, 'SWAG')
+        var result = JSON.parse(body).result;
+        sendTextMessage(sender, result.instanceImageUrl)
       }
     })
   )
