@@ -96,9 +96,9 @@ function sendPopular(sender) {
   request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=3',
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        var x = JSON.parse(body);
+        var result = JSON.parse(body).result;
         console.log(x)
-        sendTextMessage(sender, 'SWAG')
+        sendTextMessage(sender, result.instanceImageUrl)
       }
     })
   )
