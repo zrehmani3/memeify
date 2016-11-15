@@ -107,6 +107,7 @@ function sendGenericErrorMessage(sender) {
 }
 function sendGenericImage(sender, imageURL, requestURL) {
     console.log(imageURL);
+    console.log(requestURL);
     let messageData = {
         "attachment": {
             "type": "template",
@@ -115,7 +116,7 @@ function sendGenericImage(sender, imageURL, requestURL) {
                 "elements": [{
                     "title": "First card",
                     "subtitle": "Element #1 of an hscroll",
-                    "image_url": imageURL,
+                  //  "image_url": imageURL,
                     "buttons": [{
                         "type": "web_url",
                         "url": "https://www.messenger.com",
