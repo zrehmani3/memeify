@@ -64,9 +64,11 @@ app.post('/webhook/', function (req, res) {
         request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
           (function (error, response, body) {
             if (!error && response.statusCode == 200) {
+              let result = JSON.parse(body).result;
+              console.log(result);
               sendGenericImage(sender, result[0].imageUrl, 'http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1')
             }
-          }
+          })
       } else if (text.indexOf('link') > -1) {
         console.log('link')
         // Memify using existing link
