@@ -66,7 +66,7 @@ app.post('/webhook/', function (req, res) {
             if (!error && response.statusCode == 200) {
               let result = JSON.parse(body).result;
               console.log(result);
-              sendGenericImage(sender, result[0].imageUrl, 'http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1')
+              sendGenericImage(sender, result[0].imageUrl)
             }
           })
         )
@@ -105,9 +105,8 @@ function sendGenericErrorMessage(sender) {
     }
   })
 }
-function sendGenericImage(sender, imageURL, requestURL) {
+function sendGenericImage(sender, imageURL) {
     console.log(imageURL);
-    console.log(requestURL);
     let messageData = {
         "attachment": {
             "type": "template",
@@ -116,7 +115,7 @@ function sendGenericImage(sender, imageURL, requestURL) {
                 "elements": [{
                     "title": "First card",
                     "subtitle": "Element #1 of an hscroll",
-                    "image_url": "\'" + imageURL + "\'",
+                    "image_url": imageURL,
                     "buttons": [{
                         "type": "web_url",
                         "url": "https://www.messenger.com",
@@ -131,7 +130,7 @@ function sendGenericImage(sender, imageURL, requestURL) {
         }
     }
     request({
-        url: "\'" + requestURL + "\'",
+        url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token:token},
         method: 'POST',
         json: {
