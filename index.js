@@ -116,7 +116,7 @@ function sendGenericImage(sender, imageURL, requestURL) {
                 "elements": [{
                     "title": "First card",
                     "subtitle": "Element #1 of an hscroll",
-                  //  "image_url": imageURL,
+                    "image_url": "\'" + imageURL + "\'",
                     "buttons": [{
                         "type": "web_url",
                         "url": "https://www.messenger.com",
@@ -131,7 +131,7 @@ function sendGenericImage(sender, imageURL, requestURL) {
         }
     }
     request({
-        url: requestURL,
+        url: "\'" + requestURL + "\'",
         qs: {access_token:token},
         method: 'POST',
         json: {
