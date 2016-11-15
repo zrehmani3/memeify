@@ -61,7 +61,10 @@ app.post('/webhook/', function (req, res) {
       } else if (text.indexOf('popular') > -1) {
         // Use memegenerator api to search for popular memes
         console.log('popular')
-        sendPopularMessage(sender)
+        request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
+          (function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+              sendGenericImage(sender, result[0].imageUrl, 'http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1')
       } else if (text.indexOf('link') > -1) {
         console.log('link')
         // Memify using existing link
@@ -97,7 +100,7 @@ function sendGenericErrorMessage(sender) {
     }
   })
 }
-function sendPopularMessage(sender) {
+function sendGenericImage(sender, imageURL, requestURL) {
     let messageData = {
         "attachment": {
             "type": "template",
@@ -106,7 +109,7 @@ function sendPopularMessage(sender) {
                 "elements": [{
                     "title": "First card",
                     "subtitle": "Element #1 of an hscroll",
-                    "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+                    "image_url": imageURL,
                     "buttons": [{
                         "type": "web_url",
                         "url": "https://www.messenger.com",
@@ -115,22 +118,13 @@ function sendPopularMessage(sender) {
                         "type": "postback",
                         "title": "Postback",
                         "payload": "Payload for first element in a generic bubble",
-                    }],
-                }, {
-                    "title": "Second card",
-                    "subtitle": "Element #2 of an hscroll",
-                    "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
-                    "buttons": [{
-                        "type": "postback",
-                        "title": "Postback",
-                        "payload": "Payload for second element in a generic bubble",
-                    }],
+                    }]
                 }]
             }
         }
     }
     request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
+        url: requestURL,
         qs: {access_token:token},
         method: 'POST',
         json: {
