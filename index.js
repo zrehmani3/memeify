@@ -106,6 +106,7 @@ function sendGenericErrorMessage(sender) {
   })
 }
 function sendGenericImage(sender, imageURL, requestURL) {
+    console.log(imageURL);
     let messageData = {
         "attachment": {
             "type": "template",
