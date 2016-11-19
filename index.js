@@ -241,24 +241,27 @@ function sendPopularTemplate(sender)
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
         console.log(result)
+        var images = [];
         for (let i=0; i<10; i++) {
-          sendImageMessage(sender, result[i].displayName, result[i].imageUrl)
+          const currElement = {
+            "title": result[i].displayName,
+            "image_url": result[i].imageUrl
+          }
+          images.push(currElement);
         }
       }
+      sendImagesAsMessage(sender, images);
     }
   ))
 }
 
-function sendImageMessage(sender, imageName, imageUrl) {
+function sendImagesAsMessage(sender, images) {
   let messageData = {
     "attachment": {
       "type": "template",
       "payload": {
         "template_type": "generic",
-        "elements": [{
-          "title": imageName,
-          "image_url": imageUrl,
-        }]
+        "elements": images
       }
     }
   }
