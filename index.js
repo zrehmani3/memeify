@@ -258,7 +258,7 @@ function sendPopularTemplate(sender)
                     }, {
                         "type":   "postback",
                         "title":  result[i].imageUrl,
-                        "payload":  result[i].imageUrl,
+                        "payload":  "Eat my ass",
                     }],
           }
           images.push(currElement);
