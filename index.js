@@ -105,7 +105,7 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
 }
 
 function sendGenericErrorMessage(sender) {
-  const genericErrorMessageText = 'Sorry, we couldnt understand your request.' +
+  const genericErrorMessageText = 'Sorry, we couldnt understand your request. ' +
     'Type help for more information.';
   let messageData = { text: genericErrorMessageText }
   request({
