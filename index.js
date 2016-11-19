@@ -113,7 +113,7 @@ function getCustomMemeFromLink(sender, topText, botText, link) {
       + 'alt=' + link,
     function(error, response, body) {
       if (!error && response.statusCode == 200) {
-        console.log(body);
+        sendGenericImageUpload(sender, body);
       }
     }
   )
@@ -156,6 +156,32 @@ function sendGenericErrorMessage(sender) {
     }
   })
 }
+
+function sendGenericImageUpload(sender, image) {
+    let messageData = {
+        "attachment": {
+            "type": "image",
+            "payload": {}
+        }
+    }
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token:token},
+        method: 'POST',
+        json: {
+            recipient: {id:sender},
+            message: messageData,
+            filedata: image,
+        }
+    }, function(error, response, body) {
+        if (error) {
+            console.log('Error sending messages: ', error)
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+        }
+    })
+}
+
 function sendGenericImage(sender, imageURL) {
     console.log(imageURL);
     let messageData = {
