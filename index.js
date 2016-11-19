@@ -79,6 +79,7 @@ app.post('/webhook/', function (req, res) {
       } else if (text.indexOf('link') > -1) {
         // Memify using existing link
         const inputQuery = text.split('\n');
+        console.log(inputQuery);
         const linkTextDeliminator = inputQuery[1].indexOf(':');
         let linkText = inputQuery[1].substring(linkTextDeliminator + 1);
         const topTextDeliminator = inputQuery[2].indexOf(':');
