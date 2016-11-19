@@ -220,6 +220,7 @@ function sendPopularTemplate(sender)
 {
   request(
     'http://version1.api.memegenerator.net/Generators_Select_ByPopular',
+    + 'days=' + 30
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
