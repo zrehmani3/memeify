@@ -201,7 +201,7 @@ function sendGenericImage(sender, imageURL) {
 
 function sendCustomMemeFromPopular(sender, result, topText, botText) {
   var images = [2];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 3; i++) {
     let imageUrl = result[i].imageUrl.split('/');
     const imageUrlLength = imageUrl.length;
     const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
@@ -217,11 +217,12 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
         + '&text0=' + topText
         + '&text1=' + botText,
         (function (error, response, body, images) {
+          console.log(error);
+          console.log(response);
+          console.log(body);
+          console.log(images);
           if (!error && response.statusCode == 200) {
-            console.log(error);
-            console.log(response);
-            console.log(body);
-            console.log(images);
+
             // let memeResult = JSON.parse(body).result;
             // // const currElement = {
             // //   "title": memeResult.displayName,
