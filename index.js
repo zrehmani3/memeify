@@ -42,7 +42,7 @@ app.post('/webhook/', function (req, res) {
     if (event.message && event.message.text) {
       let text = event.message.text;
       if (text.indexOf('#memeify_search') > -1) {
-        if (text.indexOf('top_text') > -1 || text.indexOf('bot_text') > -1) {
+        if (text.indexOf('top_text') > -1 && text.indexOf('bot_text') > -1) {
           // Search for meme then apply custom text to it
           const inputQuery = text.split('\n');
           console.log(inputQuery);
@@ -169,32 +169,32 @@ function sendGenericImage(sender, imageURL) {
     let result = JSON.parse(sender).result;
     console.log(result);
     let messageData = {
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "generic",
-                "elements": [{
-                    "title": "First card",
-                    "subtitle": "Element #1 of an hscroll",
-                    "image_url":  result[0].imageUrl
-                }]
-            }
+      "attachment": {
+        "type": "template",
+        "payload": {
+          "template_type": "generic",
+          "elements": [{
+              "title": "First card",
+              "subtitle": "Element #1 of an hscroll",
+              "image_url":  result[0].imageUrl
+          }]
         }
+      }
     }
     request({
-        url: 'http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
-        qs: {access_token:token},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
-        }
+      url: 'http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
+      qs: {access_token:token},
+      method: 'POST',
+      json: {
+        recipient: {id:sender},
+        message: messageData,
+      }
     }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
+      if (error) {
+        console.log('Error sending messages: ', error)
+      } else if (response.body.error) {
+        console.log('Error: ', response.body.error)
+      }
     })
   }
 
@@ -218,7 +218,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
       + '&text1=' + botText,
       (function (error, response, body) {
         if (!error && response.statusCode == 200) {
-          let memeResult = JSON.parse(body).memeResult;
+          let memeResult = JSON.parse(body).result;
           console.log(memeResult);
           const currElement = {
             "title": memeResult[i].displayName,
