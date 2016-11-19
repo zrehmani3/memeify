@@ -3,6 +3,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
+const fs = require('fs');
 const app = express()
 
 const USERNAME = 'zmrehmani';
@@ -105,18 +106,19 @@ app.post('/webhook/', function (req, res) {
 })
 
 function getCustomMemeFromLink(sender, topText, botText, link) {
+  var writeStream = fs.createWriteStream('output.jpg');
   request(
     'https://memegen.link/custom/'
       + topText + '/'
       + botText + '/'
-      + 'pic.jpg?'
+      + 'output.jpg?'
       + 'alt=' + link,
     function(error, response, body) {
       if (!error && response.statusCode == 200) {
         console.log(body);
       }
     }
-  )
+  ).pipe(fs.createWriteStream(writeStream))
 }
 
 function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
