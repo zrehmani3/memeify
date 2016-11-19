@@ -97,6 +97,7 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
+        console.log(result);
         sendCustomMemeFromPopular(sender, result, topText, botText);
       }
     })
@@ -164,20 +165,6 @@ function sendGenericImage(sender, imageURL) {
     })
 }
 
-// function sendPopular(sender) {
-//   request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
-//     (function (error, response, body) {
-//       if (!error && response.statusCode == 200) {
-//         let result = JSON.parse(body).result;
-//         console.log(result);
-//         sendTextMessage(sender, result[0].imageUrl)
-//
-//
-//       }
-//     })
-//   )
-// }
-
   function sendPopularMessage(sender) {
     let result = JSON.parse(sender).result;
     console.log(result);
@@ -215,7 +202,7 @@ function sendGenericImage(sender, imageURL) {
 
 function sendCustomMemeFromPopular(sender, result, topText, botText) {
   var images = []
-  for (let i = 0; i < result.length; i++) {
+  for (let i = 0; i < 10; i++) {
     let imageUrl = result[i].imageUrl.split('/');
     const imageUrlLength = imageUrl.length;
     const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
@@ -231,12 +218,14 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
       + '&text1=' + botText,
       (function (error, response, body) {
         if (!error && response.statusCode == 200) {
+          let memeResult = JSON.parse(body).memeResult;
+          console.log(memeResult);
           const currElement = {
-            "title": result[i].displayName,
-            "image_url": result[i].imageUrl,
+            "title": memeResult[i].displayName,
+            "image_url": memeResult[i].imageUrl,
             "buttons": [{
               "type": "web_url",
-              "url": result[i].imageUrl,
+              "url": memeResult[i].imageUrl,
               "title": "Get Dank Meme"
             }],
           }
