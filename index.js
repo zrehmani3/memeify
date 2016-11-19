@@ -208,13 +208,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
     const generatorID = result[i].generatorID;
     const imageID = imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator);
     images.push(request(
-      'http://version1.api.memegenerator.net/Instance_Create?'
-      + 'username=' + USERNAME
-      + '&password=' + PASSWORD
-      + '&generatorID=' + generatorID
-      + '&imageID=' + imageID
-      + '&text0=' + topText
-      + '&text1=' + botText,
+      url,
       (function (error, response, body) {
         if (!error && response.statusCode == 200) {
           let memeResult = JSON.parse(body).result;
@@ -231,7 +225,16 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
           return 2;
         }
       })
-    ));
+    )).bind(
+      'http://version1.api.memegenerator.net/Instance_Create?'
+      + 'username=' + USERNAME
+      + '&password=' + PASSWORD
+      + '&generatorID=' + generatorID
+      + '&imageID=' + imageID
+      + '&text0=' + topText
+      + '&text1=' + botText,
+      images
+    );
   }
   console.log(images);
   sendImagesAsMessage(sender, images);
