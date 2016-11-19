@@ -55,18 +55,26 @@ app.post('/webhook/', function (req, res) {
           sendCustomMemeFromPopular(sender, 45, 20, topText, botText);
         } else {
           // Search for memes related to the query
-          console.log('#memeify_search')
+          console.log('search')
         }
         // Use memegenerator search API
-      } else if (text.indexOf('#memeify_popular') > -1) {
+      } else if (text.indexOf('popular') > -1) {
         // Use memegenerator api to search for popular memes
-        console.log('#memeify_popular')
-        sendPopular(sender)
-      } else if (text.indexOf('#memeify_link') > -1) {
-        console.log('#memeify_link')
+        console.log('popular')
+        request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
+          (function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+              let result = JSON.parse(body).result;
+              console.log(result);
+              sendGenericImage(sender, result[0].imageUrl)
+            }
+          })
+        )
+      } else if (text.indexOf('link') > -1) {
+        console.log('link')
         // Memify using existing link
-      } else if (text.indexOf('#memeify_upload') > -1) {
-        console.log('#memeify_upload')
+      } else if (text.indexOf('upload') > -1) {
+        console.log('upload')
         // Upload image and memeify
       } else {
         // Default error message
@@ -97,18 +105,95 @@ function sendGenericErrorMessage(sender) {
     }
   })
 }
-
-function sendPopular(sender) {
-  request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
-    (function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        let result = JSON.parse(body).result;
-        console.log(result);
-        sendTextMessage(sender, result[0].imageUrl)
-      }
+function sendGenericImage(sender, imageURL) {
+    console.log(imageURL);
+    let messageData = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic",
+                "elements": [{
+                    "title": "First card",
+                    "subtitle": "Element #1 of an hscroll",
+                    "image_url": imageURL,
+                    "buttons": [{
+                        "type": "web_url",
+                        "url": "https://www.messenger.com",
+                        "title": "web url"
+                    }, {
+                        "type": "postback",
+                        "title": "Postback",
+                        "payload": "Payload for first element in a generic bubble",
+                    }]
+                }]
+            }
+        }
+    }
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token:token},
+        method: 'POST',
+        json: {
+            recipient: {id:sender},
+            message: messageData,
+        }
+    }, function(error, response, body) {
+        if (error) {
+            console.log('Error sending messages: ', error)
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+        }
     })
-  )
 }
+
+// function sendPopular(sender) {
+//   request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
+//     (function (error, response, body) {
+//       if (!error && response.statusCode == 200) {
+//         let result = JSON.parse(body).result;
+//         console.log(result);
+//         sendTextMessage(sender, result[0].imageUrl)
+//
+//
+//       }
+//     })
+//   )
+// }
+
+// function sendPopularMessage(sender) {
+//     let result = JSON.parse(sender).result;
+//     console.log(result);
+//     let messageData = {
+//         "attachment": {
+//             "type": "template",
+//             "payload": {
+//                 "template_type": "generic",
+//                 "elements": [{
+//                     "title": "First card",
+//                     "subtitle": "Element #1 of an hscroll",
+//                     "image_url":  result[0].imageUrl
+//                 }]
+//             }
+//         }
+//     }
+//     request({
+//         url: 'http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
+//         qs: {access_token:token},
+//         method: 'POST',
+//         json: {
+//             recipient: {id:sender},
+//             message: messageData,
+//         }
+//     }, function(error, response, body) {
+//         if (error) {
+//             console.log('Error sending messages: ', error)
+//         } else if (response.body.error) {
+//             console.log('Error: ', response.body.error)
+//         }
+//     })
+// }
+
+
 
 function sendCustomMemeFromPopular(sender, generatorID, imageID, topText, botText) {
   request(
