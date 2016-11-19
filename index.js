@@ -246,10 +246,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
     )} {
       callback(images);
     }
-  })(0, 2, images, imageInfo, showImages);
-  // getImages(0, 2, images);
-  // console.log(images);
-  // sendImagesAsMessage(sender, images);
+  })(0, 10, images, imageInfo, showImages);
 }
 
 function sendPopularTemplate(sender)
