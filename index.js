@@ -201,7 +201,7 @@ function sendGenericImage(sender, imageURL) {
 
 function sendCustomMemeFromPopular(sender, result, topText, botText) {
   var images = [2];
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 1; i++) {
     let imageUrl = result[i].imageUrl.split('/');
     const imageUrlLength = imageUrl.length;
     const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
