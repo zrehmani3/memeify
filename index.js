@@ -218,7 +218,6 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
       (function (error, response, body) {
         if (!error && response.statusCode == 200) {
           let memeResult = JSON.parse(body).result;
-          console.log(memeResult);
           const currElement = {
             "title": memeResult.displayName,
             "image_url": memeResult.imageUrl,
@@ -233,6 +232,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
       })
     )
   }
+  console.log(images);
   sendImagesAsMessage(sender, images);
 }
 
@@ -266,6 +266,7 @@ function sendPopularTemplate(sender)
 }
 
 function sendImagesAsMessage(sender, images) {
+  console.log('yoooo')
   let messageData = {
     "attachment": {
       "type": "template",
