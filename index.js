@@ -201,46 +201,51 @@ function sendGenericImage(sender, imageURL) {
 
 function sendCustomMemeFromPopular(sender, result, topText, botText) {
   var images = [];
+  var imageInfo = [];
   for (let i = 0; i < 10; i++) {
     let imageUrl = result[i].imageUrl.split('/');
     const imageUrlLength = imageUrl.length;
     const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
     const generatorID = result[i].generatorID;
     const imageID = imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator);
-    (function getImages(i, iterations, images) {
-      if (i < iterations) {
-        request(
-          'http://version1.api.memegenerator.net/Instance_Create?'
-          + 'username=' + USERNAME
-          + '&password=' + PASSWORD
-          + '&generatorID=' + generatorID
-          + '&imageID=' + imageID
-          + '&text0=' + topText
-          + '&text1=' + botText,
-          (function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-              let memeResult = JSON.parse(body).result;
-              // const currElement = {
-              //   "title": memeResult.displayName,
-              //   "image_url": memeResult.imageUrl,
-              //   "buttons": [{
-              //     "type": "web_url",
-              //     "url": memeResult.imageUrl,
-              //     "title": "Get Dank Meme"
-              //   }],
-              // }
-              console.log(images);
-              console.log(memeResult);
-              images.push(memeResult);
-              getImages(i + 1, iterations, images);
-            }
+    imageInfo.push({
+      "imageID": imageID,
+      "generatorID": generatorID
+    });
+  }
+  (function getImages(i, iterations, images, imageInfo) {
+    if (i < iterations) {
+      request(
+        'http://version1.api.memegenerator.net/Instance_Create?'
+        + 'username=' + USERNAME
+        + '&password=' + PASSWORD
+        + '&generatorID=' + imageInfo[i].generatorID
+        + '&imageID=' + imageInfo[i].imageID
+        + '&text0=' + topText
+        + '&text1=' + botText,
+        (function (error, response, body) {
+          if (!error && response.statusCode == 200) {
+            let memeResult = JSON.parse(body).result;
+            // const currElement = {
+            //   "title": memeResult.displayName,
+            //   "image_url": memeResult.imageUrl,
+            //   "buttons": [{
+            //     "type": "web_url",
+            //     "url": memeResult.imageUrl,
+            //     "title": "Get Dank Meme"
+            //   }],
+            // }
+            console.log(images);
+            console.log(memeResult);
+            images.push(memeResult);
+            getImages(i + 1, iterations, images, imageInfo);
           }
-        )
-      )}
-    }
-  );
-  getImages(0, 2, images);
-  console.log(images);
+        }
+      )
+    )}
+  })(0, 2, images, imageInfo);
+  // getImages(0, 2, images);
+  // console.log(images);
   // sendImagesAsMessage(sender, images);
 }
 
