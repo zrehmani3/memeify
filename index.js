@@ -200,7 +200,7 @@ function sendGenericImage(sender, imageURL) {
 
 
 function sendCustomMemeFromPopular(sender, result, topText, botText) {
-  var images = [];
+  var images = [2];
   for (let i = 0; i < 10; i++) {
     let imageUrl = result[i].imageUrl.split('/');
     const imageUrlLength = imageUrl.length;
@@ -218,16 +218,17 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
       (function (error, response, body) {
         if (!error && response.statusCode == 200) {
           let memeResult = JSON.parse(body).result;
-          const currElement = {
-            "title": memeResult.displayName,
-            "image_url": memeResult.imageUrl,
-            "buttons": [{
-              "type": "web_url",
-              "url": memeResult.imageUrl,
-              "title": "Get Dank Meme"
-            }],
-          }
-          return currElement;
+          // const currElement = {
+          //   "title": memeResult.displayName,
+          //   "image_url": memeResult.imageUrl,
+          //   "buttons": [{
+          //     "type": "web_url",
+          //     "url": memeResult.imageUrl,
+          //     "title": "Get Dank Meme"
+          //   }],
+          // }
+          // return currElement;
+          return 2;
         }
       })
     ));
@@ -266,7 +267,6 @@ function sendPopularTemplate(sender)
 }
 
 function sendImagesAsMessage(sender, images) {
-  console.log('yoooo')
   let messageData = {
     "attachment": {
       "type": "template",
