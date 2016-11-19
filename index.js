@@ -254,6 +254,10 @@ function sendPopularTemplate(sender)
                         "type": "web_url",
                         "url": result[i].imageUrl,
                         "title": "Get Dank Meme"
+                    }, {
+                        "type":   "postback",
+                        "title":  "Postback",
+                        "payload":  result[i].imageUrl,
                     }],
           }
           images.push(currElement);
