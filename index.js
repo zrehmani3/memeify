@@ -76,8 +76,18 @@ app.post('/webhook/', function (req, res) {
             }
           })
         )
-      } else if (text.indexOf('link') > -1) {
-        console.log('link')
+      } else if (text.indexOf('#memeify_link') > -1) {
+        const inputQuery = text.split('\n');
+        console.log(inputQuery);
+        const linkTextDeliminator = inputQuery[1].indexOf(':');
+        let linkText = inputQuery[1].substring(linkTextDeliminator + 1);
+        const topTextDeliminator = inputQuery[2].indexOf(':');
+        let topText = inputQuery[2].substring(topTextDeliminator + 1);
+        topText = topText.split('_').join(' ');
+        const botTextDeliminator = inputQuery[3].indexOf(':');
+        let botText = inputQuery[3].substring(botTextDeliminator + 1);
+        botText = botText.split('_').join(' ');
+        getCustomMemeFromLink(sender, topText, botText, linkText);
         // Memify using existing link
       } else if (text.indexOf('upload') > -1) {
         console.log('upload')
@@ -93,6 +103,21 @@ app.post('/webhook/', function (req, res) {
   }
   res.sendStatus(200)
 })
+
+function getCustomMemeFromLink(sender, topText, botText, link) {
+  request(
+    'https://memegen.link/custom/'
+      + topText + '/'
+      + botText + '/'
+      + 'pic.jpg?'
+      + 'alt=' + link,
+    function(error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log(body);
+      }
+    }
+  )
+}
 
 function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
   request(
