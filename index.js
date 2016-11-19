@@ -44,14 +44,17 @@ app.post('/webhook/', function (req, res) {
       if (text.indexOf('#memeify_search') > -1) {
         if (text.indexOf('top_text') > -1 || text.indexOf('bot_text') > -1) {
           // Search for meme then apply custom text to it
-          const inputQuery = text.replace(/\n/g, " ").split(" ");
+          const inputQuery = text.split('\n');
           console.log(inputQuery);
-          const topTextDeliminator = inputQuery[1].indexOf(':');
-          let topText = inputQuery[1].substring(topTextDeliminator + 1);
+          const typeTextDeliminator = inputQuery[1].indexOf(':');
+          let typeText = inputQuery[1].substring(typeTextDeliminator + 1);
+          const topTextDeliminator = inputQuery[2].indexOf(':');
+          let topText = inputQuery[2].substring(topTextDeliminator + 1);
           topText = topText.split('_').join(' ');
-          const botTextDeliminator = inputQuery[2].indexOf(':');
-          let botText = inputQuery[2].substring(botTextDeliminator + 1);
+          const botTextDeliminator = inputQuery[3].indexOf(':');
+          let botText = inputQuery[3].substring(botTextDeliminator + 1);
           botText = botText.split('_').join(' ');
+          const generatorID = getGeneratorIDFromQueryType(typeText);
           sendCustomMemeFromPopular(sender, 45, 20, topText, botText);
         } else {
           // Search for memes related to the query
@@ -87,6 +90,20 @@ app.post('/webhook/', function (req, res) {
   }
   res.sendStatus(200)
 })
+
+function getGeneratorIDFromQueryType(typeText) {
+  request(
+    'http://version1.api.memegenerator.net/Generators_Search?'
+    + 'q=' + typeText,
+    (function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        let result = JSON.parse(body).result;
+        console.log(result);
+        sendTextMessage(sender, result[0].generatorID)
+      }
+    })
+  )
+}
 
 function sendGenericErrorMessage(sender) {
   const genericErrorMessageText = 'Sorry, we couldnt understand your request.' +
