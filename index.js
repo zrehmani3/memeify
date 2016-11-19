@@ -208,31 +208,32 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
     const generatorID = result[i].generatorID;
     const imageID = imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator);
     (function(images) {
-    request(
-      'http://version1.api.memegenerator.net/Instance_Create?'
-      + 'username=' + USERNAME
-      + '&password=' + PASSWORD
-      + '&generatorID=' + generatorID
-      + '&imageID=' + imageID
-      + '&text0=' + topText
-      + '&text1=' + botText,
-      (function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-          let memeResult = JSON.parse(body).result;
-          // const currElement = {
-          //   "title": memeResult.displayName,
-          //   "image_url": memeResult.imageUrl,
-          //   "buttons": [{
-          //     "type": "web_url",
-          //     "url": memeResult.imageUrl,
-          //     "title": "Get Dank Meme"
-          //   }],
-          // }
-          images.push(memeResult);
-        }
-      })
-    )
-  })(images);
+      request(
+        'http://version1.api.memegenerator.net/Instance_Create?'
+        + 'username=' + USERNAME
+        + '&password=' + PASSWORD
+        + '&generatorID=' + generatorID
+        + '&imageID=' + imageID
+        + '&text0=' + topText
+        + '&text1=' + botText,
+        (function (error, response, body) {
+          if (!error && response.statusCode == 200) {
+            let memeResult = JSON.parse(body).result;
+            // const currElement = {
+            //   "title": memeResult.displayName,
+            //   "image_url": memeResult.imageUrl,
+            //   "buttons": [{
+            //     "type": "web_url",
+            //     "url": memeResult.imageUrl,
+            //     "title": "Get Dank Meme"
+            //   }],
+            // }
+            images.push(memeResult);
+          }
+        })
+      )
+    })(images);
+  };
   console.log(images);
   // sendImagesAsMessage(sender, images);
 }
@@ -258,8 +259,8 @@ function sendPopularTemplate(sender)
                         "title": "Get Dank Meme"
                     }, {
                         "type":   "postback",
-                        "title":  result[i].imageUrl,
-                        "payload":  "Eat my ass",
+                        "title":  "Postback",
+                        "payload":  result[i].imageUrl,
                     }],
           }
           images.push(currElement);
