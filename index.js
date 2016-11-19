@@ -107,18 +107,25 @@ app.post('/webhook/', function (req, res) {
 
 function getCustomMemeFromLink(sender, topText, botText, link) {
   var writeStream = fs.createWriteStream('output.jpg');
-  request(
+  const reqURL =
     'https://memegen.link/custom/'
       + topText + '/'
       + botText + '/'
       + 'output.jpg?'
-      + 'alt=' + link,
+      + 'alt=' + link;
+  var requestSettings = {
+   method: 'GET',
+   url: reqURL,
+   encoding: null
+  };
+  request(
+    requestSettings,
     function(error, response, body) {
       if (!error && response.statusCode == 200) {
+        console.log(body);
       }
     }
   ).pipe(writeStream)
-  console.log(writeStream);
 }
 
 function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
