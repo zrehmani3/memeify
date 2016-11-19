@@ -77,8 +77,17 @@ app.post('/webhook/', function (req, res) {
           })
         )
       } else if (text.indexOf('link') > -1) {
-        console.log('link')
         // Memify using existing link
+        const inputQuery = text.split('\n');
+        const linkTextDeliminator = inputQuery[1].indexOf(':');
+        let linkText = inputQuery[1].substring(linkTextDeliminator + 1);
+        const topTextDeliminator = inputQuery[2].indexOf(':');
+        let topText = inputQuery[2].substring(topTextDeliminator + 1);
+        topText = topText.split('_').join(' ');
+        const botTextDeliminator = inputQuery[3].indexOf(':');
+        let botText = inputQuery[3].substring(botTextDeliminator + 1);
+        botText = botText.split('_').join(' ');
+        getCustomMemeFromLink(sender, topText, botText, linkText);
       } else if (text.indexOf('upload') > -1) {
         console.log('upload')
         // Upload image and memeify
@@ -328,6 +337,21 @@ function sendPopularTemplate(sender)
       sendImagesAsMessage(sender, images);
     }
   ))
+}
+
+function getCustomMemeFromLink(sender, topText, botText, link) {
+  request(
+    'https://memegen.link/custom/'
+      + topText + '/'
+      + botText + '/'
+      + 'pic.jpg?'
+      + 'alt=' + link,
+    function(error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log(body);
+      }
+    }
+  )
 }
 
 function sendImagesAsMessage(sender, images) {
