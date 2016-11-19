@@ -243,7 +243,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
           }
         }
       )
-    )} {
+    )} else {
       callback(images);
     }
   })(0, 10, images, imageInfo, showImages);
