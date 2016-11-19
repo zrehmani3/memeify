@@ -210,14 +210,9 @@ function sendGenericImage(sender, imageURL) {
     var images = [];
     var imageInfo = [];
     for (let i = 0; i < 10; i++) {
-      let imageUrl = result[i].imageUrl.split('/');
-      const imageUrlLength = imageUrl.length;
-      const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
-      const generatorID = result[i].generatorID;
-      const imageID = imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator);
       imageInfo.push({
-        "imageID": imageID,
-        "generatorID": generatorID
+        "urlName": result[i].urlName,
+        "generatorID": result[i].generatorID
       });
     }
     function showImages(images) {
@@ -227,12 +222,8 @@ function sendGenericImage(sender, imageURL) {
       if (i < iterations) {
         request(
           'http://version1.api.memegenerator.net/Instance_Create?'
-          + 'username=' + USERNAME
-          + '&password=' + PASSWORD
-          + '&generatorID=' + imageInfo[i].generatorID
-          + '&imageID=' + imageInfo[i].imageID
-          + '&text0=' + topText
-          + '&text1=' + botText,
+          + 'generatorID=' + imageInfo[i].generatorID
+          + '&urlName=' + imageInfo[i].urlName,
           (function (error, response, body) {
             if (!error && response.statusCode == 200) {
               let memeResult = JSON.parse(body).result;
