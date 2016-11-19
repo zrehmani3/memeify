@@ -216,7 +216,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
         + '&imageID=' + imageID
         + '&text0=' + topText
         + '&text1=' + botText,
-        (function (error, response, body) {
+        (function (images, error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
             // const currElement = {
@@ -230,7 +230,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
             // }
             images.push(memeResult);
           }
-        })
+        })(images)
       )
     })(images);
   };
