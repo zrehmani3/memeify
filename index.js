@@ -57,7 +57,17 @@ app.post('/webhook/', function (req, res) {
           getGeneratorIDFromQueryType(sender, typeText, topText, botText);
         } else {
           // Search for memes related to the query
-          console.log('search')
+          const inputQuery = text.split('\n');
+          console.log(inputQuery);
+          const typeTextDeliminator = inputQuery[1].indexOf(':');
+          let typeText = inputQuery[1].substring(typeTextDeliminator + 1);
+          const topTextDeliminator = inputQuery[2].indexOf(':');
+          let topText = inputQuery[2].substring(topTextDeliminator + 1);
+          topText = topText.split('_').join(' ');
+          const botTextDeliminator = inputQuery[3].indexOf(':');
+          let botText = inputQuery[3].substring(botTextDeliminator + 1);
+          botText = botText.split('_').join(' ');
+          getGeneratorIDFromQueryType(sender, typeText, null, null);
         }
         // Use memegenerator search API
       } else if (text.indexOf('popular') > -1) {
@@ -97,7 +107,12 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
-        sendCustomMemeFromPopular(sender, result, topText, botText);
+        if (topText !== null && botText !== null) {
+          sendCustomMemeFromPopular(sender, result, topText, botText);
+        } else {
+          console.log(result);
+          sendMemeFromPopularQuery(sender, result);
+        }
       }
     })
   )
@@ -197,6 +212,55 @@ function sendGenericImage(sender, imageURL) {
     })
   }
 
+  function sendMemeFromPopularQuery(sender, result) {
+    var images = [];
+    var imageInfo = [];
+    for (let i = 0; i < 10; i++) {
+      let imageUrl = result[i].imageUrl.split('/');
+      const imageUrlLength = imageUrl.length;
+      const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
+      const generatorID = result[i].generatorID;
+      const imageID = imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator);
+      imageInfo.push({
+        "imageID": imageID,
+        "generatorID": generatorID
+      });
+    }
+    function showImages(images) {
+      sendImagesAsMessage(sender, images);
+    }
+    (function getImages(i, iterations, images, imageInfo, callback) {
+      if (i < iterations) {
+        request(
+          'http://version1.api.memegenerator.net/Instance_Create?'
+          + 'username=' + USERNAME
+          + '&password=' + PASSWORD
+          + '&generatorID=' + imageInfo[i].generatorID
+          + '&imageID=' + imageInfo[i].imageID
+          + '&text0=' + topText
+          + '&text1=' + botText,
+          (function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+              let memeResult = JSON.parse(body).result;
+              const currElement = {
+                "title": memeResult.displayName,
+                "image_url": memeResult.instanceImageUrl,
+                "buttons": [{
+                  "type": "web_url",
+                  "url": memeResult.instanceImageUrl,
+                  "title": "Get Dank Meme"
+                }],
+              }
+              images.push(currElement);
+              getImages(i + 1, iterations, images, imageInfo, callback);
+            }
+          }
+        )
+      )} else {
+        callback(images);
+      }
+    })(0, 10, images, imageInfo, showImages);
+  }
 
 
 function sendCustomMemeFromPopular(sender, result, topText, botText) {
