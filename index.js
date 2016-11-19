@@ -207,7 +207,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
     const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
     const generatorID = result[i].generatorID;
     const imageID = imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator);
-    request(
+    images.push(request(
       'http://version1.api.memegenerator.net/Instance_Create?'
       + 'username=' + USERNAME
       + '&password=' + PASSWORD
@@ -227,10 +227,10 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
               "title": "Get Dank Meme"
             }],
           }
-          images.push(currElement);
+          return currElement;
         }
-      })(images)
-    );
+      })
+    ));
   }
   console.log(images);
   sendImagesAsMessage(sender, images);
