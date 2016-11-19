@@ -116,7 +116,7 @@ function getCustomMemeFromLink(sender, topText, botText, link) {
   var requestSettings = {
    method: 'GET',
    url: reqURL,
-   encoding: null
+   encoding: 'utf8'
   };
   request(
     requestSettings,
