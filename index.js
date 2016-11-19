@@ -200,14 +200,14 @@ function sendGenericImage(sender, imageURL) {
 
 
 function sendCustomMemeFromPopular(sender, result, topText, botText) {
-  var allImages = [2];
+  var images = [2];
   for (let i = 0; i < 10; i++) {
     let imageUrl = result[i].imageUrl.split('/');
     const imageUrlLength = imageUrl.length;
     const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
     const generatorID = result[i].generatorID;
     const imageID = imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator);
-    function(images) {request(
+    request(
       'http://version1.api.memegenerator.net/Instance_Create?'
       + 'username=' + USERNAME
       + '&password=' + PASSWORD
@@ -227,11 +227,9 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
               "title": "Get Dank Meme"
             }],
           }
-          images.push(currElement);
-          console.log(images);
         }
       })
-    )}(allImages);
+    ).bind(images);
   }
   console.log(images);
   sendImagesAsMessage(sender, images);
@@ -255,11 +253,7 @@ function sendPopularTemplate(sender)
             "buttons": [{
                         "type": "web_url",
                         "url": result[i].imageUrl,
-                        "title": "Get Dank Meme",
-                    }, {
-                        "type":   "postback",
-                        "title":  "Postback",
-                        "payload":  result[i].imageUrl,
+                        "title": "Get Dank Meme"
                     }],
           }
           images.push(currElement);
