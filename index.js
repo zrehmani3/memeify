@@ -255,10 +255,6 @@ function sendPopularTemplate(sender)
                         "type": "web_url",
                         "url": result[i].imageUrl,
                         "title": "Get Dank Meme"
-                    }, {
-                        "type":   "postback",
-                        "title":  result[i].imageUrl,
-                        "payload":  "Eat my ass",
                     }],
           }
           images.push(currElement);
