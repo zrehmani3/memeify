@@ -61,12 +61,6 @@ app.post('/webhook/', function (req, res) {
           console.log(inputQuery);
           const typeTextDeliminator = inputQuery[1].indexOf(':');
           let typeText = inputQuery[1].substring(typeTextDeliminator + 1);
-          const topTextDeliminator = inputQuery[2].indexOf(':');
-          let topText = inputQuery[2].substring(topTextDeliminator + 1);
-          topText = topText.split('_').join(' ');
-          const botTextDeliminator = inputQuery[3].indexOf(':');
-          let botText = inputQuery[3].substring(botTextDeliminator + 1);
-          botText = botText.split('_').join(' ');
           getGeneratorIDFromQueryType(sender, typeText, null, null);
         }
         // Use memegenerator search API
