@@ -219,15 +219,12 @@ function sendCustomMemeFromPopular(sender, generatorID, imageID, topText, botTex
 function sendPopularTemplate(sender)
 {
   request(
-    'http://version1.api.memegenerator.net/Generators_Select_ByPopular'
-    + 'username=' + USERNAME
-    + '&password=' + PASSWORD
-    + '&days' = 30;
-
+    'http://version1.api.memegenerator.net/Generators_Select_ByPopular',
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
-        sendTextMessage(sender, result.instanceImageUrl)
+        console.log(result)
+        sendTextMessage(sender, result[0].imageUrl)
       }
     }
   )
