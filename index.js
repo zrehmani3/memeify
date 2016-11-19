@@ -217,30 +217,25 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
         + '&text0=' + topText
         + '&text1=' + botText,
         (function (error, response, body, images) {
-          console.log(error);
-          console.log(response);
-          console.log(body);
-          console.log(images);
           if (!error && response.statusCode == 200) {
-
-            // let memeResult = JSON.parse(body).result;
-            // // const currElement = {
-            // //   "title": memeResult.displayName,
-            // //   "image_url": memeResult.imageUrl,
-            // //   "buttons": [{
-            // //     "type": "web_url",
-            // //     "url": memeResult.imageUrl,
-            // //     "title": "Get Dank Meme"
-            // //   }],
-            // // }
-            // images.push(memeResult);
+            let memeResult = JSON.parse(body).result;
+            const currElement = {
+              "title": memeResult.displayName,
+              "image_url": memeResult.imageUrl,
+              "buttons": [{
+                "type": "web_url",
+                "url": memeResult.imageUrl,
+                "title": "Get Dank Meme"
+              }],
+            }
+            images.push(currElement);
           }
         }).bind(null, images)
       )
     })(images);
   };
   // console.log(images);
-  // sendImagesAsMessage(sender, images);
+  sendImagesAsMessage(sender, images);
 }
 
 function sendPopularTemplate(sender)
