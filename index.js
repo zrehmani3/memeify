@@ -220,11 +220,11 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
           let memeResult = JSON.parse(body).result;
           console.log(memeResult);
           const currElement = {
-            "title": memeResult[i].displayName,
-            "image_url": memeResult[i].imageUrl,
+            "title": memeResult.displayName,
+            "image_url": memeResult.imageUrl,
             "buttons": [{
               "type": "web_url",
-              "url": memeResult[i].imageUrl,
+              "url": memeResult.imageUrl,
               "title": "Get Dank Meme"
             }],
           }
