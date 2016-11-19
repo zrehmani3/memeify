@@ -220,7 +220,7 @@ function sendGenericImage(sender, imageURL) {
     (function getImages(i, iterations, images, imageInfo, callback) {
       if (i < iterations) {
         request(
-          'http://version1.api.memegenerator.net/Instance_Create?'
+          'http://version1.api.memegenerator.net/Generator_Select_ByUrlNameOrGeneratorID?'
           + 'generatorID=' + imageInfo[i].generatorID
           + '&urlName=' + imageInfo[i].urlName,
           (function (error, response, body) {
