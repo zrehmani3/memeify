@@ -54,8 +54,7 @@ app.post('/webhook/', function (req, res) {
           const botTextDeliminator = inputQuery[3].indexOf(':');
           let botText = inputQuery[3].substring(botTextDeliminator + 1);
           botText = botText.split('_').join(' ');
-          const generatorID = getGeneratorIDFromQueryType(typeText);
-          sendCustomMemeFromPopular(sender, 45, 20, topText, botText);
+          getGeneratorIDFromQueryType(sender, typeText, topText, botText);
         } else {
           // Search for memes related to the query
           console.log('search')
@@ -91,15 +90,15 @@ app.post('/webhook/', function (req, res) {
   res.sendStatus(200)
 })
 
-function getGeneratorIDFromQueryType(typeText) {
+function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
   request(
     'http://version1.api.memegenerator.net/Generators_Search?'
     + 'q=' + typeText,
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
-        console.log(result);
-        sendTextMessage(sender, result[0].generatorID)
+        console.log(result[0].generatorID);
+        sendCustomMemeFromPopular(sender, 45, 20, topText, botText);
       }
     })
   )
