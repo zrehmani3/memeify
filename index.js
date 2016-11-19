@@ -224,7 +224,8 @@ function sendPopularTemplate(sender)
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
         console.log(result)
-        sendTextMessage(sender, result[0].imageUrl)
+        for (let i=0; i<10; i++)
+        {  sendTextMessage(sender, result[0].imageUrl) }
       }
     }
   ))
