@@ -227,8 +227,8 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
               "title": "Get Dank Meme"
             }],
           }
+          images.push(currElement);
         }
-        images.push(currElement);
       }).bind(images)
     );
   };
