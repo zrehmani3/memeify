@@ -227,7 +227,7 @@ function sendPopularTemplate(sender)
         sendTextMessage(sender, result[0].imageUrl)
       }
     }
-  )
+  ))
 }
 //
 // function sendGenericMessage(sender, imageUrl) {
