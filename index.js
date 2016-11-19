@@ -216,7 +216,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
         + '&imageID=' + imageID
         + '&text0=' + topText
         + '&text1=' + botText,
-        (function (images, error, response, body) {
+        (function (error, response, body, images) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
             // const currElement = {
