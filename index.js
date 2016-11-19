@@ -113,7 +113,7 @@ function getCustomMemeFromLink(sender, topText, botText, link) {
       + 'alt=' + link,
     function(error, response, body) {
       if (!error && response.statusCode == 200) {
-        sendGenericImageUpload(sender, body);
+        console.log(body);
       }
     }
   )
