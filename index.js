@@ -117,7 +117,7 @@ function getCustomMemeFromLink(sender, topText, botText, link) {
       if (!error && response.statusCode == 200) {
       }
     }
-  ).pipe(fs.createWriteStream(writeStream))
+  ).pipe(writeStream)
   console.log(writeStream);
 }
 
