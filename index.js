@@ -155,22 +155,23 @@ function sendGenericErrorMessage(sender) {
 
 function sendGenericImage(sender, imageURL) {
   console.log(imageURL);
-    let messageData = {
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "generic",
-                "elements": [{
-                    "image_url": imageURL,
-                    "buttons": [{
-                        "type": "web_url",
-                        "url": imageURL,
-                        "title": "Get Dank Meme"
-                    }]
-                }]
-            }
-        }
-    }
+  let messageData = {
+      "attachment": {
+          "type": "template",
+          "payload": {
+              "template_type": "generic",
+              "elements": [{
+                  "title": "Your customized meme",
+                  "image_url": imageURL,
+                  "buttons": [{
+                      "type": "web_url",
+                      "url": imageURL,
+                      "title": "Get Dank Meme"
+                  }],
+              }]
+          }
+      }
+  }
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token:token},
