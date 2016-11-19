@@ -115,10 +115,10 @@ function getCustomMemeFromLink(sender, topText, botText, link) {
       + 'alt=' + link,
     function(error, response, body) {
       if (!error && response.statusCode == 200) {
-        console.log(body);
       }
     }
   ).pipe(fs.createWriteStream(writeStream))
+  console.log(writeStream);
 }
 
 function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
