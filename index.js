@@ -40,7 +40,6 @@ app.post('/webhook/', function (req, res) {
   for (let i = 0; i < messaging_events.length; i++) {
     let event = req.body.entry[0].messaging[i]
     let sender = event.sender.id
-    console.log(event.message.attachments);
     if (event.message && event.message.text) {
       let text = event.message.text;
       if (text.indexOf('#memeify_search') > -1) {
@@ -91,8 +90,11 @@ app.post('/webhook/', function (req, res) {
         botText = botText.split('_').join(' ');
         getCustomMemeFromLink(sender, topText, botText, linkText);
         // Memify using existing link
-      } else if (text.indexOf('upload') > -1) {
-        console.log('upload')
+      } else if (text.indexOf('upload') > -1 && event.message.attachments) {
+        console.log('#memeify_upload')
+        const attachedURL = event.message.attachments[0].payload.url;
+        console.log(text);
+        console.log(attachedURL);
         // Upload image and memeify
       } else if (text.indexOf('z') > -1) {
         sendPopularTemplate(sender)
