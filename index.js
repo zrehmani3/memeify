@@ -104,7 +104,6 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
         if (topText !== null && botText !== null) {
           sendCustomMemeFromPopular(sender, result, topText, botText);
         } else {
-          console.log(result);
           sendMemeFromPopularQuery(sender, result);
         }
       }
@@ -227,6 +226,7 @@ function sendGenericImage(sender, imageURL) {
           (function (error, response, body) {
             if (!error && response.statusCode == 200) {
               let memeResult = JSON.parse(body).result;
+              console.log(currElement);
               const currElement = {
                 "title": memeResult.displayName,
                 "image_url": memeResult.instanceImageUrl,
