@@ -93,8 +93,15 @@ app.post('/webhook/', function (req, res) {
       } else if (text.indexOf('upload') > -1 && event.message.attachments) {
         console.log('#memeify_upload')
         const attachedURL = event.message.attachments[0].payload.url;
-        console.log(text);
-        console.log(attachedURL);
+        const inputQuery = text.split('\n');
+        console.log(inputQuery);
+        const topTextDeliminator = inputQuery[1].indexOf(':');
+        let topText = inputQuery[1].substring(topTextDeliminator + 1);
+        topText = topText.split('_').join(' ');
+        const botTextDeliminator = inputQuery[2].indexOf(':');
+        let botText = inputQuery[2].substring(botTextDeliminator + 1);
+        botText = botText.split('_').join(' ');
+        getCustomMemeFromLink(sender, topText, botText, attachedURL);
         // Upload image and memeify
       } else if (text.indexOf('z') > -1) {
         sendPopularTemplate(sender)
