@@ -228,10 +228,10 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
             }],
           }
         }
+        images.push(currElement);
       }).bind(images)
     );
-  }
-  console.log(images);
+  };
   sendImagesAsMessage(sender, images);
 }
 
