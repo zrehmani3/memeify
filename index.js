@@ -242,44 +242,43 @@ function sendPopularTemplate(sender)
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
         console.log(result)
-        for (let i=0; i<10; i++)
-        {  sendTextMessage(sender, result[i].imageUrl) }
+        for (let i=0; i<10; i++) {
+          sendImageMessage(sender, result[i].displayName, result[i].imageUrl)
+        }
       }
     }
   ))
 }
-//
-// function sendGenericMessage(sender, imageUrl) {
-//   console.log(imageUrl);
-//   let messageData = {
-//     "attachment": {
-//       "type": "template",
-//       "payload": {
-//         "template_type": "generic",
-//         "elements": [{
-//           "title": "First card",
-//           "subtitle": "Element #1 of an hscroll",
-//           "image_url": imageUrl,
-//         }]
-//       }
-//     }
-//   }
-//   request({
-//     url: 'https://graph.facebook.com/v2.6/me/messages',
-//     qs: {access_token:token},
-//     method: 'POST',
-//     json: {
-//       recipient: {id:sender},
-//       message: messageData,
-//     }
-//   }, function(error, response, body) {
-//     if (error) {
-//       console.log('Error sending messages: ', error)
-//     } else if (response.body.error) {
-//       console.log('Error: ', response.body.error)
-//     }
-//   })
-// }
+
+function sendImageMessage(sender, imageName, imageUrl) {
+  let messageData = {
+    "attachment": {
+      "type": "template",
+      "payload": {
+        "template_type": "generic",
+        "elements": [{
+          "title": imageName,
+          "image_url": imageUrl,
+        }]
+      }
+    }
+  }
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:token},
+    method: 'POST',
+    json: {
+      recipient: {id:sender},
+      message: messageData,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+}
 
 function sendTextMessage(sender, text) {
   let messageData = { text: text }
