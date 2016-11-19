@@ -200,7 +200,7 @@ function sendGenericImage(sender, imageURL) {
 
 
 function sendCustomMemeFromPopular(sender, result, topText, botText) {
-  var images = [2];
+  var images = [];
   for (let i = 0; i < 1; i++) {
     let imageUrl = result[i].imageUrl.split('/');
     const imageUrlLength = imageUrl.length;
@@ -217,6 +217,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
         + '&text0=' + topText
         + '&text1=' + botText,
         (function (error, response, body, images) {
+          console.log(!error && response.statusCode);
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
             console.log(memeResult);
@@ -236,7 +237,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
     })(images);
   };
   console.log(images);
-  sendImagesAsMessage(sender, images);
+  // sendImagesAsMessage(sender, images);
 }
 
 function sendPopularTemplate(sender)
