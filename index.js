@@ -55,7 +55,7 @@ app.post('/webhook/', function (req, res) {
           let botText = inputQuery[3].substring(botTextDeliminator + 1);
           botText = botText.split('_').join(' ');
           getGeneratorIDFromQueryType(sender, typeText, topText, botText);
-        } else {
+        } else if (text.indexOf('type') > -1) {
           // Search for memes related to the query
           const inputQuery = text.split('\n');
           console.log(inputQuery);
