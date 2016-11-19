@@ -106,26 +106,13 @@ app.post('/webhook/', function (req, res) {
 })
 
 function getCustomMemeFromLink(sender, topText, botText, link) {
-  var writeStream = fs.createWriteStream('output.jpg');
-  const reqURL =
+  const customLinkImgUrl =
     'https://memegen.link/custom/'
       + topText + '/'
       + botText + '/'
       + 'output.jpg?'
       + 'alt=' + link;
-  var requestSettings = {
-   method: 'GET',
-   url: reqURL,
-   encoding: 'utf8'
-  };
-  request(
-    requestSettings,
-    function(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body);
-      }
-    }
-  ).pipe(writeStream)
+  sendGenericImage(sender, customLinkImgUrl)
 }
 
 function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
@@ -166,50 +153,18 @@ function sendGenericErrorMessage(sender) {
   })
 }
 
-function sendGenericImageUpload(sender, image) {
-    let messageData = {
-        "attachment": {
-            "type": "image",
-            "payload": {}
-        }
-    }
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:token},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
-            filedata: image,
-        }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
-    })
-}
-
 function sendGenericImage(sender, imageURL) {
-    console.log(imageURL);
     let messageData = {
         "attachment": {
             "type": "template",
             "payload": {
                 "template_type": "generic",
                 "elements": [{
-                    "title": "First card",
-                    "subtitle": "Element #1 of an hscroll",
                     "image_url": imageURL,
                     "buttons": [{
                         "type": "web_url",
-                        "url": "https://www.messenger.com",
-                        "title": "web url"
-                    }, {
-                        "type": "postback",
-                        "title": "Postback",
-                        "payload": "Payload for first element in a generic bubble",
+                        "url": imageURL,
+                        "title": "Get Dank Meme"
                     }]
                 }]
             }
