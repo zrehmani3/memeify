@@ -76,6 +76,9 @@ app.post('/webhook/', function (req, res) {
       } else if (text.indexOf('upload') > -1) {
         console.log('upload')
         // Upload image and memeify
+      } else if *(text.indexOf('z') > -1) {
+        sendPopularTemplate(sender)
+        // Display popular memes
       } else {
         // Default error message
         sendGenericErrorMessage(sender);
