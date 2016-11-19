@@ -321,16 +321,15 @@ function sendPopularTemplate(sender)
           const currElement = {
             "title": result[i].displayName,
             "image_url": result[i].imageUrl,
-
             "buttons": [{
-                        "type": "web_url",
-                        "url": result[i].imageUrl,
-                        "title": "Get Dank Meme"
-                    }, {
-                        "type":   "postback",
-                        "title":  "Postback",
-                        "payload":  result[i].imageUrl,
-                    }],
+              "type": "web_url",
+              "url": result[i].imageUrl,
+              "title": "Get Dank Meme"
+            }, {
+              "type":   "postback",
+              "title":  "Postback",
+              "payload":  result[i].imageUrl,
+            }],
           }
           images.push(currElement);
         }
