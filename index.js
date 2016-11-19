@@ -229,7 +229,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
           // }
           images.push(memeResult);
         }
-      }).bind(images)
+      }).bind({images: images})
     );
   };
   console.log(images);
