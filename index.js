@@ -207,6 +207,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
     const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
     const generatorID = result[i].generatorID;
     const imageID = imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator);
+    (function(images) {
     request(
       'http://version1.api.memegenerator.net/Instance_Create?'
       + 'username=' + USERNAME
@@ -229,9 +230,9 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
           // }
           images.push(memeResult);
         }
-      }).bind({images: images})
-    );
-  };
+      })
+    )
+  })(images);
   console.log(images);
   // sendImagesAsMessage(sender, images);
 }
