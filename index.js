@@ -90,7 +90,7 @@ app.post('/webhook/', function (req, res) {
         botText = botText.split('_').join(' ');
         getCustomMemeFromLink(sender, topText, botText, linkText);
       } else if (text.indexOf('upload') > -1) {
-        console.log('upload')
+        console.log('upload');
         // Upload image and memeify
       } else if (text.indexOf('z') > -1) {
         sendPopularTemplate(sender)
