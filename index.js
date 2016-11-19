@@ -254,7 +254,7 @@ function sendPopularTemplate(sender)
 
             "buttons": [{
                         "type": "web_url",
-                        "url": result[i].imageUrl
+                        "url": result[i].imageUrl,
                         "title": "Get Dank Meme",
                     }, {
                         "type":   "postback",
