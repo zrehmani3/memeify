@@ -235,7 +235,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
             // // }
             // images.push(memeResult);
           }
-        })(images)
+        }).bind(null, images)
       )
     })(images);
   };
