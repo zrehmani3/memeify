@@ -42,7 +42,7 @@ app.post('/webhook/', function (req, res) {
     if (event.message && event.message.text) {
       let text = event.message.text;
       if (text.indexOf('#memeify_search') > -1) {
-        if (text.indexOf('top_text') > -1 || text.indexOf('bot_text') > -1) {
+        if (text.indexOf('top_text') > -1 && text.indexOf('bot_text') > -1) {
           // Search for meme then apply custom text to it
           const inputQuery = text.split('\n');
           console.log(inputQuery);
@@ -97,8 +97,7 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
-        console.log(result[0].generatorID);
-        sendCustomMemeFromPopular(sender, 45, 20, topText, botText);
+        sendCustomMemeFromPopular(sender, result, topText, botText);
       }
     })
   )
@@ -165,71 +164,80 @@ function sendGenericImage(sender, imageURL) {
     })
 }
 
-// function sendPopular(sender) {
-//   request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
-//     (function (error, response, body) {
-//       if (!error && response.statusCode == 200) {
-//         let result = JSON.parse(body).result;
-//         console.log(result);
-//         sendTextMessage(sender, result[0].imageUrl)
-//
-//
-//       }
-//     })
-//   )
-// }
-
   function sendPopularMessage(sender) {
     let result = JSON.parse(sender).result;
     console.log(result);
     let messageData = {
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "generic",
-                "elements": [{
-                    "title": "First card",
-                    "subtitle": "Element #1 of an hscroll",
-                    "image_url":  result[0].imageUrl
-                }]
-            }
+      "attachment": {
+        "type": "template",
+        "payload": {
+          "template_type": "generic",
+          "elements": [{
+              "title": "First card",
+              "subtitle": "Element #1 of an hscroll",
+              "image_url":  result[0].imageUrl
+          }]
         }
+      }
     }
     request({
-        url: 'http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
-        qs: {access_token:token},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
-        }
+      url: 'http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
+      qs: {access_token:token},
+      method: 'POST',
+      json: {
+        recipient: {id:sender},
+        message: messageData,
+      }
     }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
+      if (error) {
+        console.log('Error sending messages: ', error)
+      } else if (response.body.error) {
+        console.log('Error: ', response.body.error)
+      }
     })
   }
 
 
 
-function sendCustomMemeFromPopular(sender, generatorID, imageID, topText, botText) {
-  request(
-    'http://version1.api.memegenerator.net/Instance_Create?'
-    + 'username=' + USERNAME
-    + '&password=' + PASSWORD
-    + '&generatorID=' + generatorID
-    + '&imageID=' + imageID
-    + '&text0=' + topText
-    + '&text1=' + botText,
-    (function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        let result = JSON.parse(body).result;
-        sendTextMessage(sender, result.instanceImageUrl)
-      }
-    })
-  )
+function sendCustomMemeFromPopular(sender, result, topText, botText) {
+  var images = [2];
+  for (let i = 0; i < 10; i++) {
+    let imageUrl = result[i].imageUrl.split('/');
+    const imageUrlLength = imageUrl.length;
+    const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
+    const generatorID = result[i].generatorID;
+    const imageID = imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator);
+    images.push(request(
+      url,
+      (function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          let memeResult = JSON.parse(body).result;
+          // const currElement = {
+          //   "title": memeResult.displayName,
+          //   "image_url": memeResult.imageUrl,
+          //   "buttons": [{
+          //     "type": "web_url",
+          //     "url": memeResult.imageUrl,
+          //     "title": "Get Dank Meme"
+          //   }],
+          // }
+          // return currElement;
+          return 2;
+        }
+      })
+    )).bind(
+      'http://version1.api.memegenerator.net/Instance_Create?'
+      + 'username=' + USERNAME
+      + '&password=' + PASSWORD
+      + '&generatorID=' + generatorID
+      + '&imageID=' + imageID
+      + '&text0=' + topText
+      + '&text1=' + botText,
+      images
+    );
+  }
+  console.log(images);
+  sendImagesAsMessage(sender, images);
 }
 
 function sendPopularTemplate(sender)
