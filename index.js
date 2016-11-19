@@ -225,7 +225,7 @@ function sendPopularTemplate(sender)
         let result = JSON.parse(body).result;
         console.log(result)
         for (let i=0; i<10; i++)
-        {  sendTextMessage(sender, result[0].imageUrl) }
+        {  sendTextMessage(sender, result[i].imageUrl) }
       }
     }
   ))
