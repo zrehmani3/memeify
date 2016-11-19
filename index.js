@@ -40,7 +40,7 @@ app.post('/webhook/', function (req, res) {
   for (let i = 0; i < messaging_events.length; i++) {
     let event = req.body.entry[0].messaging[i]
     let sender = event.sender.id
-    conols.log(event.message.attachments);
+    console.log(event.message.attachments);
     if (event.message && event.message.text) {
       let text = event.message.text;
       if (text.indexOf('#memeify_search') > -1) {
