@@ -240,7 +240,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
             }
             images.push(currElement);
             console.log(images);
-            getImages(i + 1, iterations, images, imageInfo);
+            getImages(i + 1, iterations, images, imageInfo, callback);
           }
         }
       )
