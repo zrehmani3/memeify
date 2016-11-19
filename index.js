@@ -41,7 +41,7 @@ app.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text;
-      if (false || text.indexOf('#memeify_search') > -1) {
+      if (text.indexOf('#memeify_search') > -1) {
         if (text.indexOf('top_text') > -1 && text.indexOf('bot_text') > -1) {
           // Search for meme then apply custom text to it
           const inputQuery = text.split('\n');
@@ -64,7 +64,7 @@ app.post('/webhook/', function (req, res) {
           getGeneratorIDFromQueryType(sender, typeText, null, null);
         }
         // Use memegenerator search API
-      } else if (false || text.indexOf('popular') > -1) {
+      } else if (text.indexOf('popular') > -1) {
         // Use memegenerator api to search for popular memes
         console.log('popular')
         request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
@@ -76,23 +76,13 @@ app.post('/webhook/', function (req, res) {
             }
           })
         )
-      } else if (false || text.indexOf('link') > -1) {
+      } else if (text.indexOf('link') > -1) {
+        console.log('link')
         // Memify using existing link
-        const inputQuery = text.split('\n');
-        console.log(inputQuery);
-        const linkTextDeliminator = inputQuery[1].indexOf(':');
-        let linkText = inputQuery[1].substring(linkTextDeliminator + 1);
-        const topTextDeliminator = inputQuery[2].indexOf(':');
-        let topText = inputQuery[2].substring(topTextDeliminator + 1);
-        topText = topText.split('_').join(' ');
-        const botTextDeliminator = inputQuery[3].indexOf(':');
-        let botText = inputQuery[3].substring(botTextDeliminator + 1);
-        botText = botText.split('_').join(' ');
-        getCustomMemeFromLink(sender, topText, botText, linkText);
-      } else if (false || text.indexOf('upload') > -1) {
-        console.log('upload');
+      } else if (text.indexOf('upload') > -1) {
+        console.log('upload')
         // Upload image and memeify
-      } else if (false || text.indexOf('z') > -1) {
+      } else if (text.indexOf('z') > -1) {
         sendPopularTemplate(sender)
         // Display popular memes
       } else {
@@ -321,15 +311,16 @@ function sendPopularTemplate(sender)
           const currElement = {
             "title": result[i].displayName,
             "image_url": result[i].imageUrl,
+
             "buttons": [{
-              "type": "web_url",
-              "url": result[i].imageUrl,
-              "title": "Get Dank Meme"
-            }, {
-              "type":   "postback",
-              "title":  "Postback",
-              "payload":  result[i].imageUrl,
-            }],
+                        "type": "web_url",
+                        "url": result[i].imageUrl,
+                        "title": "Get Dank Meme"
+                    }, {
+                        "type":   "postback",
+                        "title":  "Postback",
+                        "payload":  result[i].imageUrl,
+                    }],
           }
           images.push(currElement);
         }
@@ -337,21 +328,6 @@ function sendPopularTemplate(sender)
       sendImagesAsMessage(sender, images);
     }
   ))
-}
-
-function getCustomMemeFromLink(sender, topText, botText, link) {
-  request(
-    'https://memegen.link/custom/'
-      + topText + '/'
-      + botText + '/'
-      + 'pic.jpg?'
-      + 'alt=' + link,
-    function(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body);
-      }
-    }
-  )
 }
 
 function sendImagesAsMessage(sender, images) {
