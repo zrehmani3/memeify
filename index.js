@@ -97,8 +97,10 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
-        console.log(result[0].generatorID);
-        sendCustomMemeFromPopular(sender, 45, 20, topText, botText);
+        let imageUrl = result[0].imageUrl.split('/');
+        const imageUrlLength = imageUrl.length;
+        const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
+        sendCustomMemeFromPopular(sender, result[0].generatorID, imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator), topText, botText);
       }
     })
   )
