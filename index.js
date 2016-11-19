@@ -238,8 +238,8 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
                 "title": "Get Dank Meme"
               }],
             }
+            console.log(memeResult);
             images.push(currElement);
-            console.log(images);
             getImages(i + 1, iterations, images, imageInfo, callback);
           }
         }
