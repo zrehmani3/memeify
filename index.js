@@ -40,7 +40,7 @@ app.post('/webhook/', function (req, res) {
     let event = req.body.entry[0].messaging[i]
     let sender = event.sender.id
     if (event.message && event.message.text) {
-      let text = event.message.text
+      let text = event.message.text;
       if (text.indexOf('#memeify_search') > -1) {
         if (text.indexOf('top_text') > -1 || text.indexOf('bot_text') > -1) {
           // Search for meme then apply custom text to it
