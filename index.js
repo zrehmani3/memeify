@@ -97,10 +97,7 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
-        let imageUrl = result[0].imageUrl.split('/');
-        const imageUrlLength = imageUrl.length;
-        const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
-        sendCustomMemeFromPopular(sender, result[0].generatorID, imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator), topText, botText);
+        sendCustomMemeFromPopular(sender, result, topText, botText);
       }
     })
   )
@@ -216,22 +213,38 @@ function sendGenericImage(sender, imageURL) {
 
 
 
-function sendCustomMemeFromPopular(sender, generatorID, imageID, topText, botText) {
-  request(
-    'http://version1.api.memegenerator.net/Instance_Create?'
-    + 'username=' + USERNAME
-    + '&password=' + PASSWORD
-    + '&generatorID=' + generatorID
-    + '&imageID=' + imageID
-    + '&text0=' + topText
-    + '&text1=' + botText,
-    (function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        let result = JSON.parse(body).result;
-        sendTextMessage(sender, result.instanceImageUrl)
-      }
-    })
-  )
+function sendCustomMemeFromPopular(sender, result, topText, botText) {
+  var images = []
+  for (let i = 0; i < result.length; i++) {
+    let imageUrl = result[i].imageUrl.split('/');
+    const imageUrlLength = imageUrl.length;
+    const imageIDDeliminator = imageUrl[imageUrlLength - 1].indexOf('.');
+    const generatorID = result[i].generatorID;
+    const imageID = imageUrl[imageUrlLength - 1].substring(0, imageIDDeliminator);
+    request(
+      'http://version1.api.memegenerator.net/Instance_Create?'
+      + 'username=' + USERNAME
+      + '&password=' + PASSWORD
+      + '&generatorID=' + generatorID
+      + '&imageID=' + imageID
+      + '&text0=' + topText
+      + '&text1=' + botText,
+      (function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          const currElement = {
+            "title": result[i].displayName,
+            "image_url": result[i].imageUrl,
+            "buttons": [{
+              "type": "web_url",
+              "url": result[i].imageUrl,
+              "title": "Get Dank Meme"
+            }],
+          }
+          images.push(currElement);
+        }
+      })
+    )
+  }
 }
 
 function sendPopularTemplate(sender)
