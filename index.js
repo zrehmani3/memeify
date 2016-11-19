@@ -245,7 +245,17 @@ function sendPopularTemplate(sender)
         for (let i=0; i<10; i++) {
           const currElement = {
             "title": result[i].displayName,
-            "image_url": result[i].imageUrl
+            "image_url": result[i].imageUrl,
+
+            "buttons": [{
+                        "type": "web_url",
+                        "url": result[i].imageUrl,
+                        "title": "Get Dank Meme"
+                    }, {
+                        "type": "postback",
+                        "title": "Postback",
+                        "payload": "Payload for first element in a generic bubble",
+                    }],
           }
           images.push(currElement);
         }
@@ -262,6 +272,7 @@ function sendImagesAsMessage(sender, images) {
       "payload": {
         "template_type": "generic",
         "elements": images
+
       }
     }
   }
