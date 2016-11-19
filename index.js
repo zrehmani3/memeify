@@ -226,13 +226,12 @@ function sendGenericImage(sender, imageURL) {
           (function (error, response, body) {
             if (!error && response.statusCode == 200) {
               let memeResult = JSON.parse(body).result;
-              console.log(memeResult);
               const currElement = {
                 "title": memeResult.displayName,
-                "image_url": memeResult.instanceImageUrl,
+                "image_url": memeResult.imageUrl,
                 "buttons": [{
                   "type": "web_url",
-                  "url": memeResult.instanceImageUrl,
+                  "url": memeResult.imageUrl,
                   "title": "Get Dank Meme"
                 }],
               }
