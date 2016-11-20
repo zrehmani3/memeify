@@ -115,6 +115,9 @@ app.post('/webhook/', function (req, res) {
           const attachedURL2 = event.message.attachments[1].payload.url;
           let attachedImages = [attachedURL1, attachedURL2];
           let uploadedImagesLink = [];
+          function postAttachmentsUpload(uploadedImagesLink) {
+            console.log(postAttachmentsUpload);
+          }
           (function uploadImages(i, imageInputLen, attachedImages, uploadedImagesLink, callback) {
             if (i < imageInputLen) {
               const currAttachedURL = attachedImages[i];
@@ -127,11 +130,7 @@ app.post('/webhook/', function (req, res) {
             } else {
               callback(uploadedImagesLink);
             }
-          })
-          function postAttachmentsUpload(uploadedImagesLink) {
-            console.log(postAttachmentsUpload);
-          }
-          uploadImages(0, imageInputLen, attachedImages, uploadedImagesLink, postAttachmentsUpload);
+          })(0, imageInputLen, attachedImages, uploadedImagesLink, postAttachmentsUpload)
         }
         // Upload image and memeify
       } else if (text.indexOf('z') > -1) {
