@@ -94,7 +94,6 @@ app.post('/webhook/', function (req, res) {
         // Memify using existing link
       } else if (text.indexOf('upload') > -1 && event.message.attachments) {
         console.log('#memeify_upload')
-        const attachedURL = event.message.attachments[0].payload.url;
         const inputQuery = text.split('\n');
         console.log(inputQuery);
         const topTextDeliminator = inputQuery[1].indexOf(':');
@@ -103,11 +102,22 @@ app.post('/webhook/', function (req, res) {
         const botTextDeliminator = inputQuery[2].indexOf(':');
         let botText = inputQuery[2].substring(botTextDeliminator + 1);
         botText = botText.split('_').join(' ');
-        imgur.uploadUrl(attachedURL)
-          .then(function (json) {
-            getCustomMemeFromLink(sender, topText, botText, json.data.link);
-          }
-        )
+        if (event.messages.attachments.length === 1) {
+          const attachedURL = event.message.attachments[0].payload.url;
+          imgur.uploadUrl(attachedURL)
+            .then(function (json) {
+              getCustomMemeFromLink(sender, topText, botText, json.data.link);
+            }
+          )
+        } else {
+          k1ORd
+          const attachedURL1 = event.message.attachments[0].payload.url;
+          const attachedURL2 = event.message.attachments[1].payload.url;
+          imgur.uploadImages(attachedURL1, attachedURL2, 'Url')
+          .then(function(images) {
+              console.log(images);
+          })
+        }
         // Upload image and memeify
       } else if (text.indexOf('z') > -1) {
         sendPopularTemplate(sender)
