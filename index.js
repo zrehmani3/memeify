@@ -182,7 +182,7 @@ app.post('/webhook/', function (req, res) {
   res.sendStatus(200)
 })
 
-sendPopularMemesFromSpecificType(sender, result) {
+function sendPopularMemesFromSpecificType(sender, result) {
   request(
     'http://version1.api.memegenerator.net/Instances_Select_ByPopular?'
     + 'urlName=' + result[0].urlName,
