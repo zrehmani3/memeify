@@ -189,9 +189,9 @@ function sendPopularMemesFromSpecificType(sender, memes) {
       + '&urlName=' + memes[0].urlName,
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        let result = JSON.parse(body).result;
-        console.log(result[0]);
-        var images = [];
+        const result = JSON.parse(body).result;
+        console.log(result[0].displayName);
+        let images = [];
         for (let i=0; i<10; i++) {
           const currElement = {
             "title": result[i].displayName,
@@ -462,7 +462,6 @@ function sendImagesAsMessage(sender, images) {
       "payload": {
         "template_type": "generic",
         "elements": images
-
       }
     }
   }
