@@ -102,7 +102,7 @@ app.post('/webhook/', function (req, res) {
         const botTextDeliminator = inputQuery[2].indexOf(':');
         let botText = inputQuery[2].substring(botTextDeliminator + 1);
         botText = botText.split('_').join(' ');
-        if (event.messages.attachments.length === 1) {
+        if (event.message.attachments.length === 1) {
           const attachedURL = event.message.attachments[0].payload.url;
           imgur.uploadUrl(attachedURL)
             .then(function (json) {
