@@ -110,7 +110,6 @@ app.post('/webhook/', function (req, res) {
             }
           )
         } else {
-          k1ORd
           const attachedURL1 = event.message.attachments[0].payload.url;
           const attachedURL2 = event.message.attachments[1].payload.url;
           imgur.uploadImages(attachedURL1, attachedURL2, 'Url')
