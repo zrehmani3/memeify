@@ -190,15 +190,14 @@ function sendPopularMemesFromSpecificType(sender, memes) {
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         const result = JSON.parse(body).result;
-        console.log(result[0].displayName);
         let images = [];
-        for (let i=0; i<10; i++) {
+        for (let x = 0; x < 10; x++) {
           const currElement = {
-            "title": result[i].displayName,
-            "image_url": result[i].instanceImageUrl,
+            "title": result[x].displayName,
+            "image_url": result[x].instanceImageUrl,
             "buttons": [{
               "type": "web_url",
-              "url": result[i].instanceImageUrl,
+              "url": result[x].instanceImageUrl,
               "title": "Get Dank Meme"
             }],
           }
