@@ -124,14 +124,17 @@ app.post('/webhook/', function (req, res) {
               });
             };
             download(uploadedImagesLink[0], '1.png', function() {
+              console.log('done uploading 1');
               download(uploadedImagesLink[1], '2.png', function() {
+                console.log('done uploading 2');
                 gm("1.png").append("2.jpg")
                   .write('3.png', function (err) {
+                    console.log(err);
                     if (!err) {
                       console.log('done');
                       imgur.uploadFile('3.png')
                         .then(function (json) {
-                            console.log(json.data.link);
+                          console.log(json.data.link);
                         }
                       )
                     }
