@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const request = require('request')
 const fs = require('fs');
 const app = express()
+const http = require('http');
 
 const imgur = require('imgur');
 
@@ -116,7 +117,21 @@ app.post('/webhook/', function (req, res) {
           let attachedImages = [attachedURL1, attachedURL2];
           let uploadedImagesLink = [];
           function postAttachmentsUpload(uploadedImagesLink) {
-            console.log(postAttachmentsUpload);
+            console.log(uploadedImagesLink);
+            var download = function(uri, filename, callback){
+              request.head(uri, function(err, res, body){
+                console.log('content-type:', res.headers['content-type']);
+                console.log('content-length:', res.headers['content-length']);
+                request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+              });
+            };
+            download(uploadedImagesLink[0], '1.png', function(){
+              console.log('done');
+            });
+            download(uploadedImagesLink[1], '2.png', function(){
+              console.log('done');
+            });
+        });
           }
           (function uploadImages(i, imageInputLen, attachedImages, uploadedImagesLink, callback) {
             if (i < imageInputLen) {
