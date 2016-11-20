@@ -136,7 +136,7 @@ app.post('/webhook/', function (req, res) {
                       console.log('done');
                       imgur.uploadFile('3.png')
                         .then(function (json) {
-                          console.log(json.data.link);
+                          getCustomMemeFromLink(sender, topText, botText, json.data.link);
                         }
                       )
                     }
