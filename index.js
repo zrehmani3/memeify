@@ -193,10 +193,10 @@ function sendPopularMemesFromSpecificType(sender, memes) {
         let images = [];
         for (let x = 0; x < 10; x++) {
           const currResult = result[x];
-          console.log(currResult.displayName);
+          // console.log(currResult.displayName);
           console.log(currResult['displayName']);
           const currElement = {
-            "title": currResult.displayName,
+            "title": currResult['displayName'],
             "image_url": currResult.instanceImageUrl,
             "buttons": [{
               "type": "web_url",
