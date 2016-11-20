@@ -110,12 +110,28 @@ app.post('/webhook/', function (req, res) {
             }
           )
         } else {
+          let imageInputLen = 2;
           const attachedURL1 = event.message.attachments[0].payload.url;
           const attachedURL2 = event.message.attachments[1].payload.url;
-          imgur.uploadImages(attachedURL1, attachedURL2, 'Url')
-          .then(function(images) {
-              console.log(images);
+          let attachedImages = [attachedURL1, attachedURL2];
+          let uploadedImagesLink = [];
+          (function uploadImages(i, imageInputLen, attachedImages, uploadedImagesLink, callback) {
+            if (i < imageInputLen) {
+              const currAttachedURL = attachedImages[i];
+              imgur.uploadUrl(currAttachedURL)
+                .then(function (json) {
+                  uploadedImagesLink.push(json.data.link);
+                  uploadImages(i + 1, imageInputLen, attachedImages, uploadedImagesLink, callback)
+                }
+              )
+            } else {
+              callback(uploadedImagesLink);
+            }
           })
+          function postAttachmentsUpload(uploadedImagesLink) {
+            console.log(postAttachmentsUpload);
+          }
+          uploadImages(0, imageInputLen, attachedImages, uploadedImagesLink, postAttachmentsUpload);
         }
         // Upload image and memeify
       } else if (text.indexOf('z') > -1) {
