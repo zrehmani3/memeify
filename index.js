@@ -117,20 +117,22 @@ app.post('/webhook/', function (req, res) {
           let attachedImages = [attachedURL1, attachedURL2];
           let uploadedImagesLink = [];
           function postAttachmentsUpload(uploadedImagesLink) {
-            console.log(uploadedImagesLink);
-            var download = function(uri, filename, callback){
-              request.head(uri, function(err, res, body){
-                console.log('content-type:', res.headers['content-type']);
-                console.log('content-length:', res.headers['content-length']);
+            var download = function(uri, filename, callback) {
+              request.head(uri, function(err, res, body) {
                 request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
               });
             };
-            download(uploadedImagesLink[0], '1.png', function(){
+            download(uploadedImagesLink[0], '1.png', function() {
               console.log('done');
             });
-            download(uploadedImagesLink[1], '2.png', function(){
+            download(uploadedImagesLink[1], '2.png', function() {
               console.log('done');
             });
+            imgur.uploadFile('1.png')
+              .then(function (json) {
+                  console.log(json.data.link);
+              }
+            )
           }
           (function uploadImages(i, imageInputLen, attachedImages, uploadedImagesLink, callback) {
             if (i < imageInputLen) {
