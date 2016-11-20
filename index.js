@@ -190,7 +190,7 @@ function sendPopularMemesFromSpecificType(sender, memes) {
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
-        console.log(result)
+        console.log(result[0]);
         var images = [];
         for (let i=0; i<10; i++) {
           const currElement = {
