@@ -4,6 +4,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
 const fs = require('fs');
+const gm = require('gm');
 const app = express()
 const http = require('http');
 
@@ -128,6 +129,7 @@ app.post('/webhook/', function (req, res) {
             download(uploadedImagesLink[1], '2.png', function() {
               console.log('done');
             });
+            gm("1.png").append("2.jpg")
             imgur.uploadFile('1.png')
               .then(function (json) {
                   console.log(json.data.link);
