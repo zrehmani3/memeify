@@ -130,7 +130,11 @@ app.post('/webhook/', function (req, res) {
               console.log('done');
             });
             gm("1.png").append("2.jpg")
-            imgur.uploadFile('1.png')
+              .write('3.png', function (err) {
+                if (!err) console.log('done');
+              }
+            );
+            imgur.uploadFile('3.png')
               .then(function (json) {
                   console.log(json.data.link);
               }
