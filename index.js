@@ -131,7 +131,6 @@ app.post('/webhook/', function (req, res) {
             download(uploadedImagesLink[1], '2.png', function(){
               console.log('done');
             });
-        });
           }
           (function uploadImages(i, imageInputLen, attachedImages, uploadedImagesLink, callback) {
             if (i < imageInputLen) {
