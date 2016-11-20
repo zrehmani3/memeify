@@ -182,10 +182,11 @@ app.post('/webhook/', function (req, res) {
   res.sendStatus(200)
 })
 
-function sendPopularMemesFromSpecificType(sender, result) {
+function sendPopularMemesFromSpecificType(sender, memes) {
   request(
     'http://version1.api.memegenerator.net/Instances_Select_ByPopular?'
-    + 'urlName=' + result[0].urlName,
+      + 'languageCode=en'
+      + '&urlName=' + memes[0].urlName,
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
