@@ -129,7 +129,7 @@ app.post('/webhook/', function (req, res) {
               console.log('done uploading 1');
               download(uploadedImagesLink[1], '2.png', function() {
                 console.log('done uploading 2');
-                gm("1.png").append("2.jpg")
+                gm("1.png").append("2.png")
                   .write('3.png', function (err) {
                     console.log(err);
                     if (!err) {
