@@ -105,10 +105,9 @@ app.post('/webhook/', function (req, res) {
         botText = botText.split('_').join(' ');
         imgur.uploadUrl(attachedURL)
           .then(function (json) {
-              console.log(json.data.link);
+            getCustomMemeFromLink(sender, topText, botText, json.data.link);
           }
         )
-        getCustomMemeFromLink(sender, topText, botText, attachedURL);
         // Upload image and memeify
       } else if (text.indexOf('z') > -1) {
         sendPopularTemplate(sender)
