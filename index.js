@@ -188,9 +188,9 @@ function sendPopularMemesFromSpecificType(sender, memes) {
       + 'languageCode=en'
       + '&urlName=' + memes[0].urlName,
     (function (error, response, body) {
+      let images = [];
       if (!error && response.statusCode == 200) {
         const result = JSON.parse(body).result;
-        let images = [];
         for (let x = 0; x < result.length && x < 10; x++) {
           const currResult = result[x];
           const currElement = {
