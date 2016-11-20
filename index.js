@@ -6,8 +6,7 @@ const request = require('request')
 const fs = require('fs');
 const app = express()
 
-const imgur1 = require('imgur-node-api');
-const imgur2 = require('imgur');
+const imgur = require('imgur');
 
 const USERNAME = 'zmrehmani';
 const PASSWORD = 'vba1000';
@@ -104,7 +103,7 @@ app.post('/webhook/', function (req, res) {
         const botTextDeliminator = inputQuery[2].indexOf(':');
         let botText = inputQuery[2].substring(botTextDeliminator + 1);
         botText = botText.split('_').join(' ');
-        imgur2.uploadUrl('https://octodex.github.com/images/topguntocat.png')
+        imgur.uploadUrl(attachedURL)
           .then(function (json) {
               console.log(json.data.link);
           }
