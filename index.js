@@ -83,16 +83,7 @@ app.post('/webhook/', function (req, res) {
           getGeneratorIDFromQueryType(sender, typeText, null, null, true);
         } else {
           // We just want popular instances of memes, regardless of the type
-          // TODO: Tazzy :)
-          request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
-            (function (error, response, body) {
-              if (!error && response.statusCode == 200) {
-                let result = JSON.parse(body).result;
-                console.log(result);
-                sendGenericImage(sender, result[0].imageUrl)
-              }
-            })
-          )
+          sendPopularMemesFromSpecificType(sender, null);
         }
       } else if (text.indexOf('#memeify_link') > -1) {
         const inputQuery = text.split('\n');
@@ -183,10 +174,19 @@ app.post('/webhook/', function (req, res) {
 })
 
 function sendPopularMemesFromSpecificType(sender, memes) {
+  let url;
+  if (memes) {
+    url =
+      'http://version1.api.memegenerator.net/Instances_Select_ByPopular?'
+        + 'languageCode=en'
+        + '&urlName=' + memes[0].urlName;
+  } else {
+    url =
+      'http://version1.api.memegenerator.net/Instances_Select_ByPopular?'
+        + 'languageCode=en';
+  }
   request(
-    'http://version1.api.memegenerator.net/Instances_Select_ByPopular?'
-      + 'languageCode=en'
-      + '&urlName=' + memes[0].urlName,
+    url,
     (function (error, response, body) {
       let images = [];
       if (!error && response.statusCode == 200) {
