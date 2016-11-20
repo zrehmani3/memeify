@@ -124,21 +124,21 @@ app.post('/webhook/', function (req, res) {
               });
             };
             download(uploadedImagesLink[0], '1.png', function() {
-              console.log('done');
+              download(uploadedImagesLink[1], '2.png', function() {
+                gm("1.png").append("2.jpg")
+                  .write('3.png', function (err) {
+                    if (!err) {
+                      console.log('done');
+                      imgur.uploadFile('3.png')
+                        .then(function (json) {
+                            console.log(json.data.link);
+                        }
+                      )
+                    }
+                  }
+                );
+              });
             });
-            download(uploadedImagesLink[1], '2.png', function() {
-              console.log('done');
-            });
-            gm("1.png").append("2.jpg")
-              .write('3.png', function (err) {
-                if (!err) console.log('done');
-              }
-            );
-            imgur.uploadFile('3.png')
-              .then(function (json) {
-                  console.log(json.data.link);
-              }
-            )
           }
           (function uploadImages(i, imageInputLen, attachedImages, uploadedImagesLink, callback) {
             if (i < imageInputLen) {
