@@ -61,28 +61,39 @@ app.post('/webhook/', function (req, res) {
           const botTextDeliminator = inputQuery[3].indexOf(':');
           let botText = inputQuery[3].substring(botTextDeliminator + 1);
           botText = botText.split('_').join(' ');
-          getGeneratorIDFromQueryType(sender, typeText, topText, botText);
+          getGeneratorIDFromQueryType(sender, typeText, topText, botText, false);
         } else if (text.indexOf('type') > -1) {
           // Search for memes related to the query
           const inputQuery = text.split('\n');
           console.log(inputQuery);
           const typeTextDeliminator = inputQuery[1].indexOf(':');
           let typeText = inputQuery[1].substring(typeTextDeliminator + 1);
-          getGeneratorIDFromQueryType(sender, typeText, null, null);
+          getGeneratorIDFromQueryType(sender, typeText, null, null, false);
         }
         // Use memegenerator search API
       } else if (text.indexOf('popular') > -1) {
         // Use memegenerator api to search for popular memes
         console.log('popular')
-        request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
-          (function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-              let result = JSON.parse(body).result;
-              console.log(result);
-              sendGenericImage(sender, result[0].imageUrl)
-            }
-          })
-        )
+        if (text.indexOf('type') > -1) {
+          // We have specified that we're looking for popular memes pertaining to a specific type
+          const inputQuery = text.split('\n');
+          console.log(inputQuery);
+          const typeTextDeliminator = inputQuery[1].indexOf(':');
+          let typeText = inputQuery[1].substring(typeTextDeliminator + 1);
+          getGeneratorIDFromQueryType(sender, typeText, null, null, true);
+        } else {
+          // We just want popular instances of memes, regardless of the type
+          // TODO: Tazzy :)
+          request('http://version1.api.memegenerator.net/Generators_Select_ByPopular?pageSize=1&days=1',
+            (function (error, response, body) {
+              if (!error && response.statusCode == 200) {
+                let result = JSON.parse(body).result;
+                console.log(result);
+                sendGenericImage(sender, result[0].imageUrl)
+              }
+            })
+          )
+        }
       } else if (text.indexOf('#memeify_link') > -1) {
         const inputQuery = text.split('\n');
         console.log(inputQuery);
@@ -131,7 +142,6 @@ app.post('/webhook/', function (req, res) {
                 console.log('done uploading 2');
                 gm("1.png").append("2.png")
                   .write('3.png', function (err) {
-                    console.log(err);
                     if (!err) {
                       console.log('done');
                       imgur.uploadFile('3.png')
@@ -172,6 +182,33 @@ app.post('/webhook/', function (req, res) {
   res.sendStatus(200)
 })
 
+sendPopularMemesFromSpecificType(sender, result) {
+  request(
+    'http://version1.api.memegenerator.net/Instances_Select_ByPopular?',
+    + 'urlName=' + result[0].urlName,
+    (function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        let result = JSON.parse(body).result;
+        console.log(result)
+        var images = [];
+        for (let i=0; i<10; i++) {
+          const currElement = {
+            "title": result[i].displayName,
+            "image_url": result[i].instanceImageUrl,
+            "buttons": [{
+              "type": "web_url",
+              "url": result[i].instanceImageUrl,
+              "title": "Get Dank Meme"
+            }],
+          }
+          images.push(currElement);
+        }
+      }
+      sendImagesAsMessage(sender, images);
+    }
+  ))
+}
+
 function getCustomMemeFromLink(sender, topText, botText, link) {
   const customLinkImgUrl =
     'https://memegen.link/custom/'
@@ -182,7 +219,7 @@ function getCustomMemeFromLink(sender, topText, botText, link) {
   sendGenericImage(sender, customLinkImgUrl)
 }
 
-function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
+function getGeneratorIDFromQueryType(sender, typeText, topText, botText, showInstances) {
   request(
     'http://version1.api.memegenerator.net/Generators_Search?'
     + 'q=' + typeText,
@@ -192,7 +229,11 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText) {
         if (topText !== null && botText !== null) {
           sendCustomMemeFromPopular(sender, result, topText, botText);
         } else {
-          sendMemeFromPopularQuery(sender, result);
+          if (showInstances) {
+            sendPopularMemesFromSpecificType(sender, result);
+          } else {
+            sendMemeFromPopularQuery(sender, result);
+          }
         }
       }
     })
