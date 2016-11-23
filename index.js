@@ -138,7 +138,7 @@ app.post('/webhook/', function (req, res) {
       } else if (text.indexOf('#memeify_discover') > -1) {
         sendTrendingTemplates(sender)
         // Display popular memes
-      } else if (text.indexOf('help') {
+      } else if (text.indexOf('help') > -1) {
         // Create a help message function
       } else {
         // Default error message
