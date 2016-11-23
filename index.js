@@ -1,8 +1,8 @@
 'use strict'
 
-const app = express()
 const bodyParser = require('body-parser')
 const express = require('express')
+const expressApp = express()
 const fs = require('fs');
 const gm = require('gm').subClass({
   imageMagick: true
@@ -16,21 +16,21 @@ const USERNAME = 'zmrehmani';
 const PASSWORD = 'vba1000';
 const MAX_CARDS_IN_HSCROLL = 10;
 
-app.set('port', (process.env.PORT || 5000))
+expressApp.set('port', (process.env.PORT || 5000))
 
 // Process application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}))
+expressApp.use(bodyParser.urlencoded({extended: false}))
 
 // Process application/json
-app.use(bodyParser.json())
+expressApp.use(bodyParser.json())
 
 // Index route
-app.get('/', function (req, res) {
+expressApp.get('/', function (req, res) {
   res.send('Hello world, I am a chat bot');
 })
 
 // for Facebook verification
-app.get('/webhook/', function (req, res) {
+expressApp.get('/webhook/', function (req, res) {
   if (req.query['hub.verify_token'] === 'my_voice_is_my_password_verify_me') {
     res.send(req.query['hub.challenge']);
   }
@@ -38,11 +38,11 @@ app.get('/webhook/', function (req, res) {
 })
 
 // Spin up the server
-app.listen(app.get('port'), function() {
-  console.log('running on port', app.get('port'));
+expressApp.listen(expressApp.get('port'), function() {
+  console.log('running on port', expressApp.get('port'));
 })
 
-app.post('/webhook/', function (req, res) {
+expressApp.post('/webhook/', function (req, res) {
   let messaging_events = req.body.entry[0].messaging
   for (let i = 0; i < messaging_events.length; i++) {
     let event = req.body.entry[0].messaging[i]
