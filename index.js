@@ -11,7 +11,6 @@ const http = require('http');
 const imgur = require('imgur');
 const request = require('request')
 
-
 const USERNAME = 'zmrehmani';
 const PASSWORD = 'vba1000';
 const MAX_CARDS_IN_HSCROLL = 10;
