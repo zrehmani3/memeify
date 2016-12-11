@@ -11,8 +11,8 @@ const http = require('http');
 const imgur = require('imgur');
 const request = require('request')
 
-const USERNAME = 'zmrehmani';
-const PASSWORD = 'vba1000';
+// const USERNAME = 'zmrehmani';
+// const PASSWORD = 'vba1000';
 const MAX_CARDS_IN_HSCROLL = 10;
 
 expressApp.set('port', (process.env.PORT || 5000))
@@ -236,7 +236,7 @@ function sendGenericErrorMessage(sender) {
   let messageData = { text: genericErrorMessageText };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
+    qs: {access_token:process.env.TOKEN},
     method: 'POST',
     json: {
       recipient: {id:sender},
@@ -271,7 +271,7 @@ function sendMemeifiedImage(sender, imageURL) {
   };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
+    qs: {access_token:process.env.TOKEN},
     method: 'POST',
     json: {
       recipient: {id:sender},
@@ -355,8 +355,8 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
     if (i < iterations) {
       request(
         'http://version1.api.memegenerator.net/Instance_Create?'
-          + 'username=' + USERNAME
-          + '&password=' + PASSWORD
+          + 'username=' + process.env.USERNAME
+          + '&password=' + process.env.PASSWORD
           + '&generatorID=' + imageInfo[i].generatorID
           + '&imageID=' + imageInfo[i].imageID
           + '&text0=' + topText
@@ -425,7 +425,7 @@ function sendImagesAsMessage(sender, images) {
   }
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
+    qs: {access_token:process.env.TOKEN},
     method: 'POST',
     json: {
       recipient: {id:sender},
@@ -444,7 +444,7 @@ function sendTextMessage(sender, text) {
   let messageData = { text: text };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
+    qs: {access_token:process.env.TOKEN},
     method: 'POST',
     json: {
         recipient: {id:sender},
@@ -459,4 +459,4 @@ function sendTextMessage(sender, text) {
   })
 }
 
-const token = "EAAFIxfnYrI8BANKJq84CnknrANGuJMlygqrUOKReSYrHsM3yDQcbVGkOB0skPZCQQ9qtA0gNUTRTOdtYc4KyRN6Mt9Sj76fsXxfZC9qLBq8ZBfTJ2t6HQ9eTgylb4BNV5cQPa3MZCyBc7wq5nxpWVbLnzMdQLZAeR878cJu4TkgZDZD"
+// const token = "EAAFIxfnYrI8BANKJq84CnknrANGuJMlygqrUOKReSYrHsM3yDQcbVGkOB0skPZCQQ9qtA0gNUTRTOdtYc4KyRN6Mt9Sj76fsXxfZC9qLBq8ZBfTJ2t6HQ9eTgylb4BNV5cQPa3MZCyBc7wq5nxpWVbLnzMdQLZAeR878cJu4TkgZDZD"
