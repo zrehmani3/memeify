@@ -11,8 +11,6 @@ const http = require('http');
 const imgur = require('imgur');
 const request = require('request')
 
-// const USERNAME = 'zmrehmani';
-// const PASSWORD = 'vba1000';
 const MAX_CARDS_IN_HSCROLL = 10;
 
 expressApp.set('port', (process.env.PORT || 5000))
@@ -185,11 +183,16 @@ function sendPopularMemesFromSpecificType(sender, memes) {
           const currElement = {
             "title": result[i].displayName,
             "image_url": result[i].instanceImageUrl,
-            "buttons": [{
-              "type": "web_url",
-              "url": result[i].instanceImageUrl,
-              "title": "Get Dank Meme"
-            }],
+            "buttons": [
+              {
+                "type": "web_url",
+                "url": result[i].instanceImageUrl,
+                "title": "Open Dank Meme"
+              },
+              {
+                "type": "element_share",
+              },
+            ],
           }
           images.push(currElement);
         }
@@ -260,11 +263,16 @@ function sendMemeifiedImage(sender, imageURL) {
         "elements": [{
           "title": "Your customized meme",
           "image_url": imageURL,
-          "buttons": [{
-            "type": "web_url",
-            "url": imageURL,
-            "title": "Get Dank Meme"
-          }],
+          "buttons": [
+            {
+              "type": "web_url",
+              "url": imageURL,
+              "title": "Open Dank Meme"
+            },
+            {
+              "type": "element_share",
+            },
+          ],
         }]
       }
     }
@@ -313,11 +321,16 @@ function sendMemeFromPopularQuery(sender, result) {
             const currElement = {
               "title": memeResult.displayName,
               "image_url": memeResult.imageUrl,
-              "buttons": [{
-                "type": "web_url",
-                "url": memeResult.imageUrl,
-                "title": "Get Dank Meme"
-              }],
+              "buttons": [
+                {
+                  "type": "web_url",
+                  "url": memeResult.imageUrl,
+                  "title": "Open Dank Meme"
+                },
+                {
+                  "type": "element_share",
+                },
+              ],
             }
             images.push(currElement);
             getImages(i + 1, iterations, images, imageInfo, callback);
@@ -367,11 +380,16 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
             const currElement = {
               "title": memeResult.displayName,
               "image_url": memeResult.instanceImageUrl,
-              "buttons": [{
-                "type": "web_url",
-                "url": memeResult.instanceImageUrl,
-                "title": "Get Dank Meme"
-              }],
+              "buttons": [
+                {
+                  "type": "web_url",
+                  "url": memeResult.instanceImageUrl,
+                  "title": "Open Dank Meme"
+                },
+                {
+                  "type": "element_share",
+                },
+              ],
             }
             images.push(currElement);
             getImages(i + 1, iterations, images, imageInfo, callback);
@@ -399,11 +417,16 @@ function sendTrendingTemplates(sender) {
           const currElement = {
             "title": result[i].displayName,
             "image_url": result[i].imageUrl,
-            "buttons": [{
-              "type": "web_url",
-              "url": result[i].imageUrl,
-              "title": "Get Dank Meme"
-            }],
+            "buttons": [
+              {
+                "type": "web_url",
+                "url": result[i].imageUrl,
+                "title": "Open Dank Meme"
+              },
+              {
+                "type": "element_share",
+              },
+            ],
           }
           images.push(currElement);
         }
@@ -460,5 +483,3 @@ function sendTextMessage(sender, text) {
     }
   })
 }
-
-// const token = "EAAFIxfnYrI8BANKJq84CnknrANGuJMlygqrUOKReSYrHsM3yDQcbVGkOB0skPZCQQ9qtA0gNUTRTOdtYc4KyRN6Mt9Sj76fsXxfZC9qLBq8ZBfTJ2t6HQ9eTgylb4BNV5cQPa3MZCyBc7wq5nxpWVbLnzMdQLZAeR878cJu4TkgZDZD"
