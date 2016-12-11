@@ -42,6 +42,7 @@ expressApp.listen(expressApp.get('port'), function() {
 })
 
 expressApp.post('/webhook/', function (req, res) {
+  console.log(process.env);
   let messaging_events = req.body.entry[0].messaging
   for (let i = 0; i < messaging_events.length; i++) {
     let event = req.body.entry[0].messaging[i]
