@@ -380,6 +380,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
             if (memeResult) {
+              console.log(memeResult);
               const currElement = {
                 "title": memeResult.displayName,
                 "image_url": memeResult.instanceImageUrl,
