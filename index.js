@@ -72,7 +72,7 @@ expressApp.post('/webhook/', function (req, res) {
           // We just want popular instances of memes, regardless of the type
           sendPopularMemesFromSpecificType(sender, null);
         }
-      } else if (text.toLowerCase(indexOf('#memeify_link') > -1) {
+      } else if (text.toLowerCase().indexOf('#memeify_link') > -1) {
         // Memify using existing link
         const inputQuery = text.split('\n');
         let linkText = extractInfoFromInputQuery(inputQuery, 1);
