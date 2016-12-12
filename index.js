@@ -199,7 +199,7 @@ function sendPopularMemesFromSpecificType(sender, memes) {
           images.push(currElement);
         }
       }
-      sendImagesAsMessage(sender, images, true);
+      sendImagesAsMessage(sender, images);
     }
   ))
 }
@@ -237,7 +237,7 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText, showIns
 
 function sendGenericErrorMessage(sender) {
   const genericErrorMessageText = 'Sorry, we couldnt understand your request. ' +
-    'Type help for more information.';
+    'Type /help for information on how to use the bot.';
   let messageData = { text: genericErrorMessageText };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -309,7 +309,7 @@ function sendMemeFromPopularQuery(sender, result) {
     });
   }
   function showImages(images) {
-    sendImagesAsMessage(sender, images, true);
+    sendImagesAsMessage(sender, images);
   }
   (function getImages(i, iterations, images, imageInfo, callback) {
     if (i < iterations) {
@@ -364,7 +364,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
     });
   }
   function showImages(images) {
-    sendImagesAsMessage(sender, images, false);
+    sendImagesAsMessage(sender, images);
   }
   (function getImages(i, iterations, images, imageInfo, callback) {
     if (i < iterations) {
@@ -433,12 +433,12 @@ function sendTrendingTemplates(sender) {
           images.push(currElement);
         }
       }
-      sendImagesAsMessage(sender, images, true);
+      sendImagesAsMessage(sender, images);
     }
   ))
 }
 
-function sendImagesAsMessage(sender, images, isTemplate) {
+function sendImagesAsMessage(sender, images) {
   let messageData = {
     "attachment": {
       "type": "template",
@@ -461,14 +461,6 @@ function sendImagesAsMessage(sender, images, isTemplate) {
       console.log('Error sending messages: ', error)
     } else if (response.body.error) {
       console.log('Error: ', response.body.error)
-    } else {
-      if (isTemplate) {
-        console.log('hi');
-        let topText = readlineSync.question(
-          'If you want to memeify these images, please provide me with the top text.
-            If you do not wish to memeify these images, type none');
-        console.log(topText);
-      }
     }
   })
 }
