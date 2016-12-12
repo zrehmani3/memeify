@@ -361,11 +361,11 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
       "generatorID": generatorID
     });
   }
-  console.log(imageInfo);
-  console.log(maxIterations);
   function showImages(images) {
     sendImagesAsMessage(sender, images);
   }
+  console.log(process.env.USERNAME);
+  console.log(process.env.PASSWORD);
   (function getImages(i, iterations, images, imageInfo, callback) {
     if (i < iterations) {
       request(
@@ -379,23 +379,21 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
-            if (memeResult) {
-              const currElement = {
-                "title": memeResult.displayName,
-                "image_url": memeResult.instanceImageUrl,
-                "buttons": [
-                  {
-                    "type": "web_url",
-                    "url": memeResult.instanceImageUrl,
-                    "title": "Open Dank Meme"
-                  },
-                  {
-                    "type": "element_share",
-                  },
-                ],
-              }
-              images.push(currElement);
+            const currElement = {
+              "title": memeResult.displayName,
+              "image_url": memeResult.instanceImageUrl,
+              "buttons": [
+                {
+                  "type": "web_url",
+                  "url": memeResult.instanceImageUrl,
+                  "title": "Open Dank Meme"
+                },
+                {
+                  "type": "element_share",
+                },
+              ],
             }
+            images.push(currElement);
             getImages(i + 1, iterations, images, imageInfo, callback);
           }
         }
@@ -441,7 +439,6 @@ function sendTrendingTemplates(sender) {
 }
 
 function sendImagesAsMessage(sender, images) {
-  console.log(images);
   let messageData = {
     "attachment": {
       "type": "template",
