@@ -40,6 +40,7 @@ expressApp.listen(expressApp.get('port'), function() {
 })
 
 expressApp.post('/webhook/', function (req, res) {
+//  initialOpening();
   let messaging_events = req.body.entry[0].messaging
   for (let i = 0; i < messaging_events.length; i++) {
     let event = req.body.entry[0].messaging[i]
@@ -135,8 +136,8 @@ expressApp.post('/webhook/', function (req, res) {
       } else if (text.indexOf('#memeify_discover') > -1) {
         sendTrendingTemplates(sender)
         // Display popular memes
-      } else if (text.indexOf('help') > -1) {
-        // Create a help message function
+      } else if (text.indexOf('/help') > -1) {
+        helpFunction(sender);
       } else {
         // Default error message
         sendGenericErrorMessage(sender);
@@ -318,21 +319,23 @@ function sendMemeFromPopularQuery(sender, result) {
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
-            const currElement = {
-              "title": memeResult.displayName,
-              "image_url": memeResult.imageUrl,
-              "buttons": [
-                {
-                  "type": "web_url",
-                  "url": memeResult.imageUrl,
-                  "title": "Open Dank Meme"
-                },
-                {
-                  "type": "element_share",
-                },
-              ],
+            if (currElement) {
+              const currElement = {
+                "title": memeResult.displayName,
+                "image_url": memeResult.imageUrl,
+                "buttons": [
+                  {
+                    "type": "web_url",
+                    "url": memeResult.imageUrl,
+                    "title": "Open Dank Meme"
+                  },
+                  {
+                    "type": "element_share",
+                  },
+                ],
+              }
+              images.push(currElement);
             }
-            images.push(currElement);
             getImages(i + 1, iterations, images, imageInfo, callback);
           }
         }
@@ -364,8 +367,6 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
   function showImages(images) {
     sendImagesAsMessage(sender, images);
   }
-  console.log(process.env.USERNAME);
-  console.log(process.env.PASSWORD);
   (function getImages(i, iterations, images, imageInfo, callback) {
     if (i < iterations) {
       request(
@@ -379,21 +380,23 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
-            const currElement = {
-              "title": memeResult.displayName,
-              "image_url": memeResult.instanceImageUrl,
-              "buttons": [
-                {
-                  "type": "web_url",
-                  "url": memeResult.instanceImageUrl,
-                  "title": "Open Dank Meme"
-                },
-                {
-                  "type": "element_share",
-                },
-              ],
+            if (memeResult) {
+              const currElement = {
+                "title": memeResult.displayName,
+                "image_url": memeResult.instanceImageUrl,
+                "buttons": [
+                  {
+                    "type": "web_url",
+                    "url": memeResult.instanceImageUrl,
+                    "title": "Open Dank Meme"
+                  },
+                  {
+                    "type": "element_share",
+                  },
+                ],
+              }
+              images.push(currElement);
             }
-            images.push(currElement);
             getImages(i + 1, iterations, images, imageInfo, callback);
           }
         }
@@ -483,3 +486,48 @@ function sendTextMessage(sender, text) {
     }
   })
 }
+
+
+function helpFunction(sender) {
+  let text = "Welcome to the help menu! To search for memes, type" +
+  "'#memeify_search [meme name]'.\n For popular memes, type '#memify_popular" +
+  "[meme name]'.\n For popular meme templates, type '#memeify_popular_template'" +
+  "To use your own text on an existing linked meme, type '#memeify_link'" +
+  "To upload your own image and add your own text, type '#memeify_upload'" +
+  "(you can upload to stack them)."
+  let messageData = { text: text };
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:process.env.TOKEN},
+    method: 'POST',
+    json: {
+        recipient: {id:sender},
+        message: messageData,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+}
+
+/*function initialOpening()
+{
+  request({
+    url: "https://graph.facebook.com/v2.6/me/thread_settings?access_token=PAGE_ACCESS_TOKEN"
+    qs: {access_token:process.env.token},
+    method: 'POST'
+    json: {
+      setting_type:'call_to_actions',
+      thread_state:'new_thread',
+      call_to_actions:[
+      {
+      payload: 'USER_DEFINED_PAYLOAD'
+      }
+    ]
+    }
+  })
+}
+*/
