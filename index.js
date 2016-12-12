@@ -466,7 +466,7 @@ function sendImagesAsMessage(sender, images, isTemplate) {
         console.log('hi');
         let topText = readlineSync.question(
           'If you want to memeify these images, please provide me with the top text.
-            If you don\'t wish to memeify these images, type none');
+            If you do not wish to memeify these images, type none');
         console.log(topText);
       }
     }
