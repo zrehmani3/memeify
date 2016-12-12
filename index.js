@@ -255,6 +255,7 @@ function sendGenericErrorMessage(sender) {
 }
 
 function sendMemeifiedImage(sender, imageURL) {
+  console.log('hi');
   let messageData = {
     "attachment": {
       "type": "template",
@@ -442,6 +443,7 @@ function sendTrendingTemplates(sender) {
 }
 
 function sendImagesAsMessage(sender, images) {
+  console.log(images);
   let messageData = {
     "attachment": {
       "type": "template",
