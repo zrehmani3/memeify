@@ -48,7 +48,7 @@ expressApp.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text;
-      if (text.toUpperCase(indexOf('#memeify_search')) > -1) {
+      if (text.toLowerCase().(indexOf('#memeify_search') > -1) {
         const inputQuery = text.split('\n');
         if (inputQuery.length === 4) {
           // Search for meme then apply custom text to it
@@ -61,7 +61,7 @@ expressApp.post('/webhook/', function (req, res) {
           let typeText = extractInfoFromInputQuery(inputQuery, 1);
           getGeneratorIDFromQueryType(sender, typeText, null, null, false);
         }
-      } else if (text.toUpperCase(indexOf('#memeify_popular')) > -1) {
+      } else if (text.toLowerCase().indexOf('#memeify_popular') > -1) {
         const inputQuery = text.split('\n');
         if (inputQuery.length === 2) {
           // We have specified that we're looking for popular memes (instances)
@@ -72,14 +72,14 @@ expressApp.post('/webhook/', function (req, res) {
           // We just want popular instances of memes, regardless of the type
           sendPopularMemesFromSpecificType(sender, null);
         }
-      } else if (text.toUpperCase(indexOf('#memeify_link')) > -1) {
+      } else if (text.toLowerCase(indexOf('#memeify_link') > -1) {
         // Memify using existing link
         const inputQuery = text.split('\n');
         let linkText = extractInfoFromInputQuery(inputQuery, 1);
         let topText = extractInfoFromInputQuery(inputQuery, 2);
         let botText = extractInfoFromInputQuery(inputQuery, 3);
         getCustomMemeFromLink(sender, topText, botText, linkText);
-      } else if (text.toUpperCase(indexOf('#memeify_upload')) > -1 && event.message.attachments) {
+      } else if (text.toLowerCase().indexOf('#memeify_upload') > -1 && event.message.attachments) {
         // Upload image and memeify. Users can add two images to stack them on
         // top of each other to memeify.
         const inputQuery = text.split('\n');
@@ -134,10 +134,10 @@ expressApp.post('/webhook/', function (req, res) {
             }
           })(0, imageInputLen, attachedImages, uploadedImagesLink, postAttachmentsUpload)
         }
-      } else if (text.toUpperCase(indexOf('#memeify_discover')) > -1) {
+      } else if (text.toLowerCase().indexOf('#memeify_discover') > -1) {
         sendTrendingTemplates(sender)
         // Display popular memes
-      } else if (text.toUpperCase(indexOf('/help')) > -1) {
+      } else if (text.toLowerCase().indexOf('/help') > -1) {
         helpFunction(sender);
       } else {
         // Default error message
