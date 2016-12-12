@@ -48,7 +48,7 @@ expressApp.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text;
-      if (text.toLowerCase().(indexOf('#memeify_search') > -1) {
+      if (text.toLowerCase().indexOf('#memeify_search') > -1) {
         const inputQuery = text.split('\n');
         if (inputQuery.length === 4) {
           // Search for meme then apply custom text to it
