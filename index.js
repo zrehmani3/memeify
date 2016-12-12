@@ -306,8 +306,6 @@ function sendMemeFromPopularQuery(sender, result) {
       "generatorID": result[i].generatorID
     });
   }
-  console.log(imageInfo);
-  console.log(maxIterations);
   function showImages(images) {
     sendImagesAsMessage(sender, images);
   }
@@ -363,6 +361,8 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
       "generatorID": generatorID
     });
   }
+  console.log(imageInfo);
+  console.log(maxIterations);
   function showImages(images) {
     sendImagesAsMessage(sender, images);
   }
