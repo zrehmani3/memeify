@@ -489,11 +489,11 @@ function sendTextMessage(sender, text) {
 
 
 function helpFunction(sender) {
-  let text = "Welcome to the help menu! To search for memes, type" +
-  "'#memeify_search [meme name]'.\n For popular memes, type '#memify_popular" +
-  "[meme name]'.\n For popular meme templates, type '#memeify_popular_template'" +
-  "To use your own text on an existing linked meme, type '#memeify_link'" +
-  "To upload your own image and add your own text, type '#memeify_upload'" +
+  let text = "Welcome to the help menu!\n To search for memes, type " +
+  "'#memeify_search [meme name]'.\nFor popular memes, type '#memify_popular" +
+  "[meme name]'.\nFor popular meme templates, type '#memeify_popular_template'" +
+  "\nTo use your own text on an existing linked meme, type '#memeify_link'" +
+  "\nTo upload your own image and add your own text, type '#memeify_upload'" +
   "(you can upload to stack them)."
   let messageData = { text: text };
   request({
