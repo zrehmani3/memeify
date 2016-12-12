@@ -495,7 +495,7 @@ function sendTextMessage(sender, text) {
 function helpFunction(sender) {
   let text = "Welcome to the help menu!\nTo search for memes, type " +
   "'#memeify_search [meme name]'.\nFor popular memes, type '#memify_popular" +
-  "[meme name]'.\nFor popular meme templates, type '#memeify_popular_template'." +
+  " [meme name]'.\nFor popular meme templates, type '#memeify_popular_template'." +
   "\nTo use your own text on an existing linked meme, type '#memeify_link'." +
   "\nTo upload your own image and add your own text, type '#memeify_upload' " +
   "(you can upload to stack them)."
