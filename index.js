@@ -320,23 +320,21 @@ function sendMemeFromPopularQuery(sender, result) {
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
-            if (currElement) {
-              const currElement = {
-                "title": memeResult.displayName,
-                "image_url": memeResult.imageUrl,
-                "buttons": [
-                  {
-                    "type": "web_url",
-                    "url": memeResult.imageUrl,
-                    "title": "Open Dank Meme"
-                  },
-                  {
-                    "type": "element_share",
-                  },
-                ],
-              }
-              images.push(currElement);
+            const currElement = {
+              "title": memeResult.displayName,
+              "image_url": memeResult.imageUrl,
+              "buttons": [
+                {
+                  "type": "web_url",
+                  "url": memeResult.imageUrl,
+                  "title": "Open Dank Meme"
+                },
+                {
+                  "type": "element_share",
+                },
+              ],
             }
+            images.push(currElement);
             getImages(i + 1, iterations, images, imageInfo, callback);
           }
         }
@@ -381,23 +379,21 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
-            if (memeResult) {
-              const currElement = {
-                "title": memeResult.displayName,
-                "image_url": memeResult.instanceImageUrl,
-                "buttons": [
-                  {
-                    "type": "web_url",
-                    "url": memeResult.instanceImageUrl,
-                    "title": "Open Dank Meme"
-                  },
-                  {
-                    "type": "element_share",
-                  },
-                ],
-              }
-              images.push(currElement);
+            const currElement = {
+              "title": memeResult.displayName,
+              "image_url": memeResult.instanceImageUrl,
+              "buttons": [
+                {
+                  "type": "web_url",
+                  "url": memeResult.instanceImageUrl,
+                  "title": "Open Dank Meme"
+                },
+                {
+                  "type": "element_share",
+                },
+              ],
             }
+            images.push(currElement);
             getImages(i + 1, iterations, images, imageInfo, callback);
           }
         }
