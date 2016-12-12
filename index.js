@@ -9,6 +9,7 @@ const gm = require('gm').subClass({
 });
 const http = require('http');
 const imgur = require('imgur');
+const readlineSync = require('readline-sync');
 const request = require('request')
 
 const MAX_CARDS_IN_HSCROLL = 10;
@@ -198,7 +199,7 @@ function sendPopularMemesFromSpecificType(sender, memes) {
           images.push(currElement);
         }
       }
-      sendImagesAsMessage(sender, images);
+      sendImagesAsMessage(sender, images, true);
     }
   ))
 }
@@ -308,7 +309,7 @@ function sendMemeFromPopularQuery(sender, result) {
     });
   }
   function showImages(images) {
-    sendImagesAsMessage(sender, images);
+    sendImagesAsMessage(sender, images, true);
   }
   (function getImages(i, iterations, images, imageInfo, callback) {
     if (i < iterations) {
@@ -319,23 +320,21 @@ function sendMemeFromPopularQuery(sender, result) {
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
-            if (currElement) {
-              const currElement = {
-                "title": memeResult.displayName,
-                "image_url": memeResult.imageUrl,
-                "buttons": [
-                  {
-                    "type": "web_url",
-                    "url": memeResult.imageUrl,
-                    "title": "Open Dank Meme"
-                  },
-                  {
-                    "type": "element_share",
-                  },
-                ],
-              }
-              images.push(currElement);
+            const currElement = {
+              "title": memeResult.displayName,
+              "image_url": memeResult.imageUrl,
+              "buttons": [
+                {
+                  "type": "web_url",
+                  "url": memeResult.imageUrl,
+                  "title": "Open Dank Meme"
+                },
+                {
+                  "type": "element_share",
+                },
+              ],
             }
+            images.push(currElement);
             getImages(i + 1, iterations, images, imageInfo, callback);
           }
         }
@@ -365,7 +364,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
     });
   }
   function showImages(images) {
-    sendImagesAsMessage(sender, images);
+    sendImagesAsMessage(sender, images, false);
   }
   (function getImages(i, iterations, images, imageInfo, callback) {
     if (i < iterations) {
@@ -375,28 +374,26 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
           + '&password=' + process.env.PASSWORD
           + '&generatorID=' + imageInfo[i].generatorID
           + '&imageID=' + imageInfo[i].imageID
-          + '&text0=' + topText
-          + '&text1=' + botText,
+          + topText !== '' ? '&text0=' + topText : ''
+          + botText !== '' ? '&text1=' + botText : '',
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
-            if (memeResult) {
-              const currElement = {
-                "title": memeResult.displayName,
-                "image_url": memeResult.instanceImageUrl,
-                "buttons": [
-                  {
-                    "type": "web_url",
-                    "url": memeResult.instanceImageUrl,
-                    "title": "Open Dank Meme"
-                  },
-                  {
-                    "type": "element_share",
-                  },
-                ],
-              }
-              images.push(currElement);
+            const currElement = {
+              "title": memeResult.displayName,
+              "image_url": memeResult.instanceImageUrl,
+              "buttons": [
+                {
+                  "type": "web_url",
+                  "url": memeResult.instanceImageUrl,
+                  "title": "Open Dank Meme"
+                },
+                {
+                  "type": "element_share",
+                },
+              ],
             }
+            images.push(currElement);
             getImages(i + 1, iterations, images, imageInfo, callback);
           }
         }
@@ -436,12 +433,12 @@ function sendTrendingTemplates(sender) {
           images.push(currElement);
         }
       }
-      sendImagesAsMessage(sender, images);
+      sendImagesAsMessage(sender, images, true);
     }
   ))
 }
 
-function sendImagesAsMessage(sender, images) {
+function sendImagesAsMessage(sender, images, isTemplate) {
   let messageData = {
     "attachment": {
       "type": "template",
@@ -464,6 +461,10 @@ function sendImagesAsMessage(sender, images) {
       console.log('Error sending messages: ', error)
     } else if (response.body.error) {
       console.log('Error: ', response.body.error)
+    } else {
+      if (isTemplate) {
+
+      }
     }
   })
 }
