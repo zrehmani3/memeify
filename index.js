@@ -150,7 +150,7 @@ expressApp.post('/webhook/', function (req, res) {
       }
     }
     if (event.postback) {
-      sendTextMessage(sender, JSON.stringify(event.postback));
+      sendTextMessage(sender, event.payload);
     }
   }
   res.sendStatus(200)
