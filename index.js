@@ -168,6 +168,7 @@ expressApp.post('/webhook/', function (req, res) {
           .then(function (json) {
             const link = json.data.link;
             const element = [{
+              "title": "Your Image",
               "image_url": link,
               "buttons": [
                 {
