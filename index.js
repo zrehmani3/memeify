@@ -57,6 +57,9 @@ expressApp.post('/webhook/', function (req, res) {
             let typeText = extractInfoFromInputQuery(inputQuery, 1);
             let topText = extractInfoFromInputQuery(inputQuery, 2);
             let botText = extractInfoFromInputQuery(inputQuery, 3);
+            console.log(typeText);
+            console.log(topText);
+            console.log(botText);
             getGeneratorIDFromQueryType(sender, typeText, topText, botText, false);
           } else if (inputQuery.length === 2) {
             // Search for memes templates related to the query
@@ -445,6 +448,7 @@ function sendTrendingTemplates(sender) {
 }
 
 function sendImagesAsMessage(sender, images) {
+  console.log(images);
   let messageData = {
     "attachment": {
       "type": "template",
@@ -489,8 +493,6 @@ function sendTextMessage(sender, text) {
     }
   })
 }
-
-// #search + allow bot text to be null
 
 function sendHelpMessage(sender) {
   let text1 =
