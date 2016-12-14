@@ -182,7 +182,7 @@ expressApp.post('/webhook/', function (req, res) {
                 {
                   "type":"postback",
                   "title":"Memeify",
-                  "payload":"Type\n\n#link #" + link + " #<top_text> #<bot_text>\n\nTo Memeify these images! Type #help for a specific example. -Memeify",
+                  "payload":"#link #" + link + " #<top_text> #<bot_text>-Memeify",
                 },
               ],
             }];
@@ -191,7 +191,8 @@ expressApp.post('/webhook/', function (req, res) {
         );
       });
     } else if (event.postback) {
-      sendTextMessage(sender, event.postback.payload);
+      let payloadLink = event.postback.payload.replace('-Memeify', '');
+      sendPayloadMessage(sender, payloadLink);
     }
   }
   res.sendStatus(200)
@@ -380,7 +381,7 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
                 {
                   "type":"postback",
                   "title":"Memeify",
-                  "payload":"Type\n\n#search #" + typeText + " #<top_text> #<bot_text>\n\nTo Memeify these images! Type #help for a specific example. -Memeify",
+                  "payload":"#search #" + typeText + " #<top_text> #<bot_text>-Memeify",
                 },
               ],
             }
@@ -515,21 +516,39 @@ function sendImagesAsMessage(sender, images) {
   })
 }
 
-function sendTextMessage(sender, text) {
-  let messageData = { text: text };
+function sendPayloadMessage(sender, link) {
+  let helperText = 'Type the following to memeify the image! Type #help for a specific example\n\n';
+  let messageData1 = { text: helperText };
+  let messageData2 = { text: link };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:process.env.TOKEN},
     method: 'POST',
     json: {
         recipient: {id:sender},
-        message: messageData,
+        message: messageData1,
     }
   }, function(error, response, body) {
     if (error) {
       console.log('Error sending messages: ', error)
     } else if (response.body.error) {
       console.log('Error: ', response.body.error)
+    } else {
+      request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token:process.env.TOKEN},
+        method: 'POST',
+        json: {
+            recipient: {id:sender},
+            message: messageData2,
+        }
+      }, function(error, response, body) {
+        if (error) {
+          console.log('Error sending messages: ', error)
+        } else if (response.body.error) {
+          console.log('Error: ', response.body.error)
+        }
+      })
     }
   })
 }
