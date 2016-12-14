@@ -47,6 +47,17 @@ expressApp.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text.trim();
+      if (event.message.attachments && text.length === 0) {
+        // We are uploading an image only
+        let download = function(uri, filename, callback) {
+          request.head(uri, function(err, res, body) {
+            request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+          });
+        };
+        download(event.message.attachments[0].payload.url, 'uploaded.png', function() {
+          sendTextMessage(sender, 'Apply top text and bot text through\n\n#uploaded #<top_text> #<bot_text>\n\nFor example, #uploaded #i am #super excited\nKeep in mind that you can ignore top_text or bot_text through by typing #NONE\n-Memeify');
+        })
+      }
       if (text.indexOf('-Memeify') === -1) {
         if (text.toLowerCase().indexOf('#search') > -1) {
           const inputQuery = text.split('#');
@@ -82,6 +93,16 @@ expressApp.post('/webhook/', function (req, res) {
           let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
           let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 3));
           getCustomMemeFromLink(sender, topText, botText, linkText);
+        } else if (text.toLowerCase().indexOf('#uploaded') > -1) {
+          const inputQuery = text.split('#');
+          inputQuery.shift();
+          let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 1));
+          let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
+          imgur.uploadFile('uploaded.png')
+            .then(function (json) {
+              getCustomMemeFromLink(sender, topText, botText, json.data.link);
+            }
+          )
         } else if (text.toLowerCase().indexOf('#upload') > -1 && event.message.attachments) {
           // Upload image and memeify. Users can add two images to stack them on
           // top of each other to memeify.
@@ -103,7 +124,7 @@ expressApp.post('/webhook/', function (req, res) {
             let attachedImages = [attachedURL1, attachedURL2];
             let uploadedImagesLink = [];
             function postAttachmentsUpload(uploadedImagesLink) {
-              var download = function(uri, filename, callback) {
+              let download = function(uri, filename, callback) {
                 request.head(uri, function(err, res, body) {
                   request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
                 });
@@ -213,7 +234,7 @@ function getCustomMemeFromLink(sender, topText, botText, link) {
     'https://memegen.link/custom/'
       + (topText !== null ? topText + '/' : '')
       + (botText !== null ? botText + '/' : '')
-      + 'output.jpg?'
+      + '.jpg?'
       + 'alt=' + link;
   sendMemeifiedImage(sender, customLinkImgUrl)
 }
