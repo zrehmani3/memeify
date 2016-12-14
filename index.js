@@ -159,6 +159,8 @@ expressApp.post('/webhook/', function (req, res) {
     ) {
       // We are uploading an image only
       const uploadedImageName = '' + sender + '.png';
+      console.log(event.message.attachments);
+      console.log(uploadedImageName);
       let download = function(uri, filename, callback) {
         request.head(uri, function(err, res, body) {
           request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
@@ -198,7 +200,7 @@ expressApp.post('/webhook/', function (req, res) {
   res.sendStatus(200)
 })
 
-function imageExists(image_url){
+function imageExists(image_url) {
   const http = new XMLHttpRequest();
   http.open('HEAD', image_url, false);
   http.send();
