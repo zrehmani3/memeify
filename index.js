@@ -9,9 +9,7 @@ const gm = require('gm').subClass({
 });
 const http = require('http');
 const imgur = require('imgur');
-const readlineSync = require('readline-sync');
 const request = require('request');
-const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 const MAX_CARDS_IN_HSCROLL = 10;
 
@@ -160,8 +158,6 @@ expressApp.post('/webhook/', function (req, res) {
     ) {
       // We are uploading an image only
       const uploadedImageName = '' + sender + '.png';
-      console.log(event.message.attachments);
-      console.log(uploadedImageName);
       let download = function(uri, filename, callback) {
         request.head(uri, function(err, res, body) {
           request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
@@ -172,7 +168,6 @@ expressApp.post('/webhook/', function (req, res) {
           .then(function (json) {
             const link = json.data.link;
             const element = [{
-              "title": "Your Uploaded Image",
               "image_url": link,
               "buttons": [
                 {
@@ -200,13 +195,6 @@ expressApp.post('/webhook/', function (req, res) {
   }
   res.sendStatus(200)
 })
-
-function imageExists(image_url) {
-  const http = new XMLHttpRequest();
-  http.open('HEAD', image_url, false);
-  http.send();
-  return http.status != 404;
-}
 
 function extractInfoFromInputQuery(inputQuery, infoIndex) {
   return inputQuery[infoIndex].trim();
