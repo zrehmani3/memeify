@@ -54,8 +54,8 @@ expressApp.post('/webhook/', function (req, res) {
           if (inputQuery.length === 4) {
             // Search for meme then apply custom text to it
             let typeText = extractInfoFromInputQuery(inputQuery, 1);
-            let topText = extractInfoFromInputQuery(inputQuery, 2);
-            let botText = extractInfoFromInputQuery(inputQuery, 3);
+            let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
+            let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 3));
             getGeneratorIDFromQueryType(sender, typeText, topText, botText, false);
           } else if (inputQuery.length === 2) {
             // Search for memes templates related to the query
@@ -79,16 +79,16 @@ expressApp.post('/webhook/', function (req, res) {
           const inputQuery = text.split('#');
           inputQuery.shift();
           let linkText = extractInfoFromInputQuery(inputQuery, 1);
-          let topText = extractInfoFromInputQuery(inputQuery, 2);
-          let botText = extractInfoFromInputQuery(inputQuery, 3);
+          let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
+          let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 3));
           getCustomMemeFromLink(sender, topText, botText, linkText);
         } else if (text.toLowerCase().indexOf('#upload') > -1 && event.message.attachments) {
           // Upload image and memeify. Users can add two images to stack them on
           // top of each other to memeify.
           const inputQuery = text.split('#');
           inputQuery.shift();
-          let topText = extractInfoFromInputQuery(inputQuery, 1);
-          let botText = extractInfoFromInputQuery(inputQuery, 2);
+          let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 1));
+          let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
           if (event.message.attachments.length === 1) {
             const attachedURL = event.message.attachments[0].payload.url;
             imgur.uploadUrl(attachedURL)
@@ -160,6 +160,10 @@ function extractInfoFromInputQuery(inputQuery, infoIndex) {
   return inputQuery[infoIndex].trim();
 }
 
+function sanitizeMemeText(text) {
+  return text === 'NONE' ? null : text;
+}
+
 function sendPopularMemesFromSpecificType(sender, memes) {
   let url;
   if (memes) {
@@ -207,8 +211,8 @@ function sendPopularMemesFromSpecificType(sender, memes) {
 function getCustomMemeFromLink(sender, topText, botText, link) {
   const customLinkImgUrl =
     'https://memegen.link/custom/'
-      + topText + '/'
-      + botText + '/'
+      + topText ? topText + '/' : ''
+      + botText ? botText + '/' : ''
       + 'output.jpg?'
       + 'alt=' + link;
   sendMemeifiedImage(sender, customLinkImgUrl)
@@ -221,7 +225,7 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText, showIns
     (function (error, response, body) {
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
-        if (topText !== null && botText !== null) {
+        if (topText !== null || botText !== null) {
           sendCustomMemeFromPopular(sender, result, topText, botText);
         } else {
           if (showInstances) {
@@ -379,8 +383,8 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
           + '&password=' + process.env.PASSWORD
           + '&generatorID=' + imageInfo[i].generatorID
           + '&imageID=' + imageInfo[i].imageID
-          + '&text0=' + topText
-          + '&text1=' + botText,
+          + topText ? '&text0=' + topText : ''
+          + botText ? '&text1=' + botText : '',
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
@@ -494,7 +498,7 @@ function sendHelpMessage(sender) {
     "Welcome to the help menu!\n\n" +
     "To search for memes, type '#search #<meme_name>' (without quotes around the command)\n\n" +
     "You can apply custom text to the memes you search for." +
-    "For example, you can try '#search #<meme_name> #<top_text> #<bot_text>'.\n\n" +
+    "For example, you can try '#search #<meme_name> #<top_text> #<bot_text>' (put NONE as <top_text> or <bot_text> to ignore).\n\n" +
     "You can type '#popular' to see what are the current trending memes" +
     "(that include text) that are circulating around the internet, and if you just want" +
     "the popular memes that include text for a specific type, simply try '#popular #<meme_type>'.\n\n" +
