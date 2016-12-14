@@ -560,16 +560,16 @@ function sendHelpMessage(sender) {
     "You can apply custom text to the memes you search for." +
     "For example, you can try '#search #<meme_name> #<top_text> #<bot_text>' (put NONE as <top_text> or <bot_text> to ignore).\n\n" +
     "You can type '#popular' to see what are the current trending memes" +
-    "(that include text) that are circulating around the internet, and if you just want" +
+    "(that include text) that are around the internet, and if you just want" +
     "the popular memes that include text for a specific type, simply try '#popular #<meme_type>'.\n\n" +
-    "To discover current trending templates (without text), simply try '#discover'. -Memeify";
+    "To discover current trending templates (no text), simply try '#discover'. -Memeify";
   let text2 =
     "You can even use your own pics and memeify those! You can provide a link through" +
-    "'#link #<url> #<top_text> #<bot_text>' and we'll take care of mememifying it for you.\n\n" +
-    "You can also upload your own image through messenger and type '#upload #<top_text> #<bot_text>'" +
+    "'#link #<url> #<top_text> #<bot_text>' and we'll memeify it for you.\n\n" +
+    "You can also upload your own image and type '#upload #<top_text> #<bot_text>'" +
     "(as in attach the image + type the command) and we'll also memeify it for you. If on mobile just upload the image, and we'll explain where to go from there\n\n" +
-    "Lastly, you can upload up to two images (on web only as of now), and we'll stack" +
-    "them on top of each other and apply the text to the resulting, stacked image. -Memeify";
+    "Lastly, you can upload up to two images (on web), and we'll stack" +
+    "them on top of each other + apply the text to the stacked image. -Memeify";
   let text3 = "Here's an example! (NOTE there are no quotes or <>):\n\n-Memeify";
   let text4 = "#search #lebron james #i am #the goat";
   let messageData1 = { text: text1 };
