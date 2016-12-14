@@ -155,6 +155,7 @@ expressApp.post('/webhook/', function (req, res) {
     } else if (event.message && event.message.attachments
       && event.message.attachments.length > 0
       && event.message.attachments[0].payload !== null
+      && event.message.attachments[0].payload.url !== undefined
       && event.message.attachments[0].payload.url !== null
     ) {
       // We are uploading an image only
