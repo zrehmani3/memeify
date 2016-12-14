@@ -83,16 +83,6 @@ expressApp.post('/webhook/', function (req, res) {
           let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
           let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 3));
           getCustomMemeFromLink(sender, topText, botText, linkText);
-        } else if (text.toLowerCase().indexOf('#uploaded') > -1 && imageExists('' + sender + '.png')) {
-          const inputQuery = text.split('#');
-          inputQuery.shift();
-          let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 1));
-          let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
-          imgur.uploadFile('uploaded.png')
-            .then(function (json) {
-              getCustomMemeFromLink(sender, topText, botText, json.data.link);
-            }
-          )
         } else if (text.toLowerCase().indexOf('#upload') > -1 && event.message.attachments) {
           // Upload image and memeify. Users can add two images to stack them on
           // top of each other to memeify.
@@ -119,12 +109,15 @@ expressApp.post('/webhook/', function (req, res) {
                   request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
                 });
               };
-              download(uploadedImagesLink[0], '1.png', function() {
-                download(uploadedImagesLink[1], '2.png', function() {
-                  gm("1.png").append("2.png")
-                    .write('3.png', function (err) {
+              const firstImageName = '' + sender + '1.png';
+              const secondImageName = '' + sender + '2.png';
+              const thirdImageName = '' + sender + '3.png'
+              download(uploadedImagesLink[0], firstImageName, function() {
+                download(uploadedImagesLink[1], secondImageName, function() {
+                  gm(firstImageName).append(secondImageName)
+                    .write(thirdImageName, function (err) {
                       if (!err) {
-                        imgur.uploadFile('3.png')
+                        imgur.uploadFile(thirdImageName)
                           .then(function (json) {
                             getCustomMemeFromLink(sender, topText, botText, json.data.link);
                           }
@@ -153,7 +146,6 @@ expressApp.post('/webhook/', function (req, res) {
           sendTrendingTemplates(sender)
           // Display popular memes
         } else if (text.toLowerCase().indexOf('#help') > -1) {
-          console.log(sender);
           sendHelpMessage(sender);
         } else {
           // Default error message
@@ -166,14 +158,39 @@ expressApp.post('/webhook/', function (req, res) {
       && event.message.attachments[0].payload.url !== null
     ) {
       // We are uploading an image only
+      const uploadedImageName = '' + sender + '.png';
       let download = function(uri, filename, callback) {
         request.head(uri, function(err, res, body) {
           request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
         });
       };
-      download(event.message.attachments[0].payload.url, '' + sender + '.png', function() {
-        sendTextMessage(sender, 'Apply top text and bot text through\n\n#uploaded #<top_text> #<bot_text>\n\nFor example, #uploaded #i am #super excited\nKeep in mind that you can ignore top_text or bot_text through by typing #NONE\n-Memeify');
-      })
+      download(event.message.attachments[0].payload.url, uploadedImageName, function() {
+        imgur.uploadFile(uploadedImageName)
+          .then(function (json) {
+            const link = json.data.link;
+            const element = [{
+              "title": "Your Uploaded Image",
+              "image_url": link,
+              "buttons": [
+                {
+                  "type": "web_url",
+                  "url": link,
+                  "title": "Open Image"
+                },
+                {
+                  "type": "element_share",
+                },
+                {
+                  "type":"postback",
+                  "title":"Memeify",
+                  "payload":"Type\n\n#link #" + link + " #<top_text> #<bot_text>\n\nTo Memeify these images! Type #help for a specific example. -Memeify",
+                },
+              ],
+            }];
+            sendImagesAsMessage(sender, element);
+          }
+        );
+      });
     } else if (event.postback) {
       sendTextMessage(sender, event.postback.payload);
     }
