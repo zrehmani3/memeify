@@ -211,8 +211,8 @@ function sendPopularMemesFromSpecificType(sender, memes) {
 function getCustomMemeFromLink(sender, topText, botText, link) {
   const customLinkImgUrl =
     'https://memegen.link/custom/'
-      + topText ? topText + '/' : ''
-      + botText ? botText + '/' : ''
+      + (topText !== null ? topText + '/' : '')
+      + (botText !== null ? botText + '/' : '')
       + 'output.jpg?'
       + 'alt=' + link;
   sendMemeifiedImage(sender, customLinkImgUrl)
