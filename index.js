@@ -414,6 +414,9 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
       "generatorID": generatorID
     });
   }
+  console.log(imageInfo);
+  console.log(topText);
+  console.log(botText);
   function showImages(images) {
     sendImagesAsMessage(sender, images);
   }
