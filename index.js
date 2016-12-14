@@ -78,7 +78,9 @@ expressApp.post('/webhook/', function (req, res) {
           // Memify using existing link
           const inputQuery = text.split('#');
           inputQuery.shift();
+          console.log(inputQuery);
           let linkText = extractInfoFromInputQuery(inputQuery, 1);
+          console.log(linkText);
           let topText = extractInfoFromInputQuery(inputQuery, 2);
           let botText = extractInfoFromInputQuery(inputQuery, 3);
           getCustomMemeFromLink(sender, topText, botText, linkText);
@@ -371,8 +373,6 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
   function showImages(images) {
     sendImagesAsMessage(sender, images);
   }
-  console.log(process.env);
-  console.log(imageInfo);
   (function getImages(i, iterations, images, imageInfo, callback) {
     if (i < iterations) {
       request(
@@ -386,7 +386,6 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
-            console.log('hi');
             const currElement = {
               "title": memeResult.displayName,
               "image_url": memeResult.instanceImageUrl,
