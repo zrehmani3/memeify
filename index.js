@@ -82,7 +82,7 @@ expressApp.post('/webhook/', function (req, res) {
           let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
           let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 3));
           getCustomMemeFromLink(sender, topText, botText, linkText);
-        } else if (text.toLowerCase().indexOf('#uploaded') > -1 && imageExists('uploaded.png')) {
+        } else if (text.toLowerCase().indexOf('#uploaded') > -1 && imageExists('' + sender + '.png')) {
           const inputQuery = text.split('#');
           inputQuery.shift();
           let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 1));
@@ -170,7 +170,7 @@ expressApp.post('/webhook/', function (req, res) {
           request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
         });
       };
-      download(event.message.attachments[0].payload.url, 'uploaded.png', function() {
+      download(event.message.attachments[0].payload.url, '' + sender + '.png', function() {
         sendTextMessage(sender, 'Apply top text and bot text through\n\n#uploaded #<top_text> #<bot_text>\n\nFor example, #uploaded #i am #super excited\nKeep in mind that you can ignore top_text or bot_text through by typing #NONE\n-Memeify');
       })
     } else if (event.postback) {
