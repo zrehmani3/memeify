@@ -332,7 +332,7 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
                 {
                   "type":"postback",
                   "title":"Memeify",
-                  "payload":"Type\n\n#search #" + typeText + " #<top_text> #<bot_text>\n\nTo Memeify these images!",
+                  "payload":"Hello",
                 },
               ],
             }
