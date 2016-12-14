@@ -41,15 +41,15 @@ expressApp.listen(expressApp.get('port'), function() {
 })
 
 expressApp.post('/webhook/', function (req, res) {
-//  initialOpening();
   let messaging_events = req.body.entry[0].messaging
   for (let i = 0; i < messaging_events.length; i++) {
     let event = req.body.entry[0].messaging[i]
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text;
-      if (text.toLowerCase().indexOf('#memeify_search') > -1) {
-        const inputQuery = text.split('\n');
+      let splitter = '#';
+      if (text.toLowerCase().indexOf('#search') > -1) {
+        const inputQuery = text.split('#');
         if (inputQuery.length === 4) {
           // Search for meme then apply custom text to it
           let typeText = extractInfoFromInputQuery(inputQuery, 1);
@@ -61,8 +61,8 @@ expressApp.post('/webhook/', function (req, res) {
           let typeText = extractInfoFromInputQuery(inputQuery, 1);
           getGeneratorIDFromQueryType(sender, typeText, null, null, false);
         }
-      } else if (text.toLowerCase().indexOf('#memeify_popular') > -1) {
-        const inputQuery = text.split('\n');
+      } else if (text.toLowerCase().indexOf('#popular') > -1) {
+        const inputQuery = text.split('#');
         if (inputQuery.length === 2) {
           // We have specified that we're looking for popular memes (instances)
           // pertaining to a specific type
@@ -72,17 +72,17 @@ expressApp.post('/webhook/', function (req, res) {
           // We just want popular instances of memes, regardless of the type
           sendPopularMemesFromSpecificType(sender, null);
         }
-      } else if (text.toLowerCase().indexOf('#memeify_link') > -1) {
+      } else if (text.toLowerCase().indexOf('#link') > -1) {
         // Memify using existing link
-        const inputQuery = text.split('\n');
+        const inputQuery = text.split('#');
         let linkText = extractInfoFromInputQuery(inputQuery, 1);
         let topText = extractInfoFromInputQuery(inputQuery, 2);
         let botText = extractInfoFromInputQuery(inputQuery, 3);
         getCustomMemeFromLink(sender, topText, botText, linkText);
-      } else if (text.toLowerCase().indexOf('#memeify_upload') > -1 && event.message.attachments) {
+      } else if (text.toLowerCase().indexOf('#upload') > -1 && event.message.attachments) {
         // Upload image and memeify. Users can add two images to stack them on
         // top of each other to memeify.
-        const inputQuery = text.split('\n');
+        const inputQuery = text.split('#');
         let topText = extractInfoFromInputQuery(inputQuery, 1);
         let botText = extractInfoFromInputQuery(inputQuery, 2);
         if (event.message.attachments.length === 1) {
@@ -134,10 +134,10 @@ expressApp.post('/webhook/', function (req, res) {
             }
           })(0, imageInputLen, attachedImages, uploadedImagesLink, postAttachmentsUpload)
         }
-      } else if (text.toLowerCase().indexOf('#memeify_discover') > -1) {
+      } else if (text.toLowerCase().indexOf('#discover') > -1) {
         sendTrendingTemplates(sender)
         // Display popular memes
-      } else if (text.toLowerCase().indexOf('/help') > -1) {
+      } else if (text.toLowerCase().indexOf('#help') > -1) {
         helpFunction(sender);
       } else {
         // Default error message
@@ -189,7 +189,7 @@ function sendPopularMemesFromSpecificType(sender, memes) {
               {
                 "type": "web_url",
                 "url": result[i].instanceImageUrl,
-                "title": "Open Dank Meme"
+                "title": "Open Meme"
               },
               {
                 "type": "element_share",
@@ -269,7 +269,7 @@ function sendMemeifiedImage(sender, imageURL) {
             {
               "type": "web_url",
               "url": imageURL,
-              "title": "Open Dank Meme"
+              "title": "Open Meme"
             },
             {
               "type": "element_share",
@@ -327,7 +327,7 @@ function sendMemeFromPopularQuery(sender, result) {
                 {
                   "type": "web_url",
                   "url": memeResult.imageUrl,
-                  "title": "Open Dank Meme"
+                  "title": "Open Meme"
                 },
                 {
                   "type": "element_share",
@@ -386,7 +386,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
                 {
                   "type": "web_url",
                   "url": memeResult.instanceImageUrl,
-                  "title": "Open Dank Meme"
+                  "title": "Open Meme"
                 },
                 {
                   "type": "element_share",
@@ -423,7 +423,7 @@ function sendTrendingTemplates(sender) {
               {
                 "type": "web_url",
                 "url": result[i].imageUrl,
-                "title": "Open Dank Meme"
+                "title": "Open Meme"
               },
               {
                 "type": "element_share",
@@ -484,14 +484,20 @@ function sendTextMessage(sender, text) {
   })
 }
 
-
 function helpFunction(sender) {
-  let text = "Welcome to the help menu!\nTo search for memes, type " +
-  "'#memeify_search [meme name]'.\nFor popular memes, type '#memify_popular" +
-  " [meme name]'.\nFor popular meme templates, type '#memeify_popular_template'." +
-  "\nTo use your own text on an existing linked meme, type '#memeify_link'." +
-  "\nTo upload your own image and add your own text, type '#memeify_upload' " +
-  "(you can upload to stack them)."
+  let text =
+    "Welcome to the help menu!\n
+    To search for memes, type '#search #<meme_name>' (without the quotes around the command)\n
+    You can even apply custom text to the memes you search for.
+    For example, you can try '#search #<meme_name> #<top_text> #<bot_text>'.\n
+    You can type '#popular #<meme_name>' to see what are the current trending memes
+    (that include text) that are circulating around the internet, and if you just want
+    current trending templates (without text), type '#discover'.\n\n
+    You can even use your own pics and memeify those! You can provide a link through
+    '#link #<url> #<top_text> #<bot_text>' and we'll take care of mememifying it for you.\n
+    You can also upload your own image through messenger and type '#upload #<top_text> #<bot_text>'
+    and we'll also memeify it for you. Lastly, you can upload up to two images, and we'll stack
+    them on top of each other and apply the text to the resulting, stacked image.";
   let messageData = { text: text };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -509,22 +515,3 @@ function helpFunction(sender) {
     }
   })
 }
-
-/*function initialOpening()
-{
-  request({
-    url: "https://graph.facebook.com/v2.6/me/thread_settings?access_token=PAGE_ACCESS_TOKEN"
-    qs: {access_token:process.env.token},
-    method: 'POST'
-    json: {
-      setting_type:'call_to_actions',
-      thread_state:'new_thread',
-      call_to_actions:[
-      {
-      payload: 'USER_DEFINED_PAYLOAD'
-      }
-    ]
-    }
-  })
-}
-*/
