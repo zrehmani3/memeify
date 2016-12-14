@@ -484,23 +484,23 @@ function sendTextMessage(sender, text) {
   })
 }
 
-// #search + allow
+// #search + allow bot text to be null
 
 function helpFunction(sender) {
   let text =
-    "Welcome to the help menu!\n
-    To search for memes, type '#search #<meme_name>' (without the quotes around the command)\n
-    You can even apply custom text to the memes you search for.
-    For example, you can try '#search #<meme_name> #<top_text> #<bot_text>'.\n
-    You can type '#popular' to see what are the current trending memes
-    (that include text) that are circulating around the internet, and if you just want
-    the popular memes that include text for a specific type, simply try '#popular #<meme_type>'.\n
-    To discover current trending templates (without text), simply try '#discover'.\n\n
-    You can even use your own pics and memeify those! You can provide a link through
-    '#link #<url> #<top_text> #<bot_text>' and we'll take care of mememifying it for you.\n
-    You can also upload your own image through messenger and type '#upload #<top_text> #<bot_text>'
-    and we'll also memeify it for you. Lastly, you can upload up to two images, and we'll stack
-    them on top of each other and apply the text to the resulting, stacked image.";
+    "Welcome to the help menu!\n" +
+    "To search for memes, type '#search #<meme_name>' (without the quotes around the command)\n" +
+    "You can even apply custom text to the memes you search for." +
+    "For example, you can try '#search #<meme_name> #<top_text> #<bot_text>'.\n" +
+    "You can type '#popular' to see what are the current trending memes" +
+    "(that include text) that are circulating around the internet, and if you just want" +
+    "the popular memes that include text for a specific type, simply try '#popular #<meme_type>'.\n" +
+    "To discover current trending templates (without text), simply try '#discover'.\n\n" +
+    "You can even use your own pics and memeify those! You can provide a link through" +
+    "'#link #<url> #<top_text> #<bot_text>' and we'll take care of mememifying it for you.\n" +
+    "You can also upload your own image through messenger and type '#upload #<top_text> #<bot_text>'" +
+    "and we'll also memeify it for you. Lastly, you can upload up to two images, and we'll stack" +
+    "them on top of each other and apply the text to the resulting, stacked image.";
   let messageData = { text: text };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
