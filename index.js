@@ -433,6 +433,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
+            console.log(body);
             console.log(memeResult);
             const currElement = {
               "title": memeResult.displayName,
