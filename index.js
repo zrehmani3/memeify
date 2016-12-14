@@ -158,7 +158,7 @@ expressApp.post('/webhook/', function (req, res) {
           sendGenericErrorMessage(sender);
         }
       }
-    } else if (event.message.attachments) {
+    } else if (event.message && event.message.attachments) {
       // We are uploading an image only
       let download = function(uri, filename, callback) {
         request.head(uri, function(err, res, body) {
