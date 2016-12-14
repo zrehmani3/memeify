@@ -46,6 +46,8 @@ expressApp.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text.trim();
+      text = text.replace('<', '|');
+      text = text.replace('>', '|');
       if (text.indexOf('-Memeify') === -1) {
         if (text.toLowerCase().indexOf('#search') > -1) {
           const inputQuery = text.split('#');
@@ -414,9 +416,6 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
       "generatorID": generatorID
     });
   }
-  console.log(imageInfo);
-  console.log(topText);
-  console.log(botText);
   function showImages(images) {
     sendImagesAsMessage(sender, images);
   }
@@ -433,8 +432,6 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
-            console.log(body);
-            console.log(memeResult);
             const currElement = {
               "title": memeResult.displayName,
               "image_url": memeResult.instanceImageUrl,
