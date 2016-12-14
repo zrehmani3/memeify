@@ -82,7 +82,7 @@ expressApp.post('/webhook/', function (req, res) {
           let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
           let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 3));
           getCustomMemeFromLink(sender, topText, botText, linkText);
-        } else if (text.toLowerCase().indexOf('#uploaded') > -1) {
+        } else if (text.toLowerCase().indexOf('#uploaded') > -1 && imageExists('uploaded.png')) {
           const inputQuery = text.split('#');
           inputQuery.shift();
           let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 1));
@@ -174,6 +174,13 @@ expressApp.post('/webhook/', function (req, res) {
   }
   res.sendStatus(200)
 })
+
+function imageExists(image_url){
+  var http = new XMLHttpRequest();
+  http.open('HEAD', image_url, false);
+  http.send();
+  return http.status != 404;
+}
 
 function extractInfoFromInputQuery(inputQuery, infoIndex) {
   return inputQuery[infoIndex].trim();
