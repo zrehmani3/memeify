@@ -49,7 +49,8 @@ expressApp.post('/webhook/', function (req, res) {
       let text = event.message.text.trim();
       if (text.indexOf('-Memeify') === -1) {
         if (text.toLowerCase().indexOf('#search') > -1) {
-          const inputQuery = text.split('#').splice(0, 1);
+          const inputQuery = text.split('#');
+          inputQuery.shift();
           console.log(inputQuery);
           if (inputQuery.length === 4) {
             // Search for meme then apply custom text to it
@@ -63,7 +64,8 @@ expressApp.post('/webhook/', function (req, res) {
             getGeneratorIDFromQueryType(sender, typeText, null, null, false);
           }
         } else if (text.toLowerCase().indexOf('#popular') > -1) {
-          const inputQuery = text.split('#').splice(0, 1);
+          const inputQuery = text.split('#');
+          inputQuery.shift();
           if (inputQuery.length === 2) {
             // We have specified that we're looking for popular memes (instances)
             // pertaining to a specific type
@@ -75,7 +77,8 @@ expressApp.post('/webhook/', function (req, res) {
           }
         } else if (text.toLowerCase().indexOf('#link') > -1) {
           // Memify using existing link
-          const inputQuery = text.split('#').splice(0, 1);
+          const inputQuery = text.split('#');
+          inputQuery.shift();
           let linkText = extractInfoFromInputQuery(inputQuery, 1);
           let topText = extractInfoFromInputQuery(inputQuery, 2);
           let botText = extractInfoFromInputQuery(inputQuery, 3);
@@ -83,7 +86,8 @@ expressApp.post('/webhook/', function (req, res) {
         } else if (text.toLowerCase().indexOf('#upload') > -1 && event.message.attachments) {
           // Upload image and memeify. Users can add two images to stack them on
           // top of each other to memeify.
-          const inputQuery = text.split('#').splice(0, 1);
+          const inputQuery = text.split('#');
+          inputQuery.shift();
           let topText = extractInfoFromInputQuery(inputQuery, 1);
           let botText = extractInfoFromInputQuery(inputQuery, 2);
           if (event.message.attachments.length === 1) {
