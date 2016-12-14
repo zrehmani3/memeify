@@ -280,7 +280,7 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText, showIns
 }
 
 function sendGenericErrorMessage(sender) {
-  const genericErrorMessageText = 'Sorry, we couldnt understand your request. ' +
+  const genericErrorMessageText = 'Sorry, I couldnt understand your request. ' +
     'Type #help for information on how to use the bot.';
   let messageData = { text: genericErrorMessageText };
   request({
@@ -458,9 +458,9 @@ function sendTrendingTemplates(sender) {
     'http://version1.api.memegenerator.net/Generators_Select_ByPopular?',
     + 'days=' + 30, // Keep it at 30 or all-time? Or let the user decide?
     (function (error, response, body) {
+      let images = [];
       if (!error && response.statusCode == 200) {
         let result = JSON.parse(body).result;
-        let images = [];
         const maxIterations = result.length > MAX_CARDS_IN_HSCROLL
           ? MAX_CARDS_IN_HSCROLL
           : result.length;
