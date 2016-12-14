@@ -78,9 +78,7 @@ expressApp.post('/webhook/', function (req, res) {
           // Memify using existing link
           const inputQuery = text.split('#');
           inputQuery.shift();
-          console.log(inputQuery);
           let linkText = extractInfoFromInputQuery(inputQuery, 1);
-          console.log(linkText);
           let topText = extractInfoFromInputQuery(inputQuery, 2);
           let botText = extractInfoFromInputQuery(inputQuery, 3);
           getCustomMemeFromLink(sender, topText, botText, linkText);
@@ -156,15 +154,7 @@ expressApp.post('/webhook/', function (req, res) {
 })
 
 function extractInfoFromInputQuery(inputQuery, infoIndex) {
-  let deliminator = inputQuery[infoIndex].indexOf(':');
-  if (deliminator === -1) {
-    deliminator = inputQuery[infoIndex].indexOf('=');
-  }
-  if (deliminator >= 0) {
-    return inputQuery[infoIndex].substring(deliminator + 1).trim();
-  } else {
-    return inputQuery[infoIndex].trim();
-  }
+  return inputQuery[infoIndex].trim();
 }
 
 function sendPopularMemesFromSpecificType(sender, memes) {
@@ -234,7 +224,7 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText, showIns
           if (showInstances) {
             sendPopularMemesFromSpecificType(sender, result);
           } else {
-            sendMemeFromPopularQuery(sender, result);
+            sendMemeFromPopularQuery(sender, result, typeText);
           }
         }
       }
@@ -303,7 +293,7 @@ function sendMemeifiedImage(sender, imageURL) {
   })
 }
 
-function sendMemeFromPopularQuery(sender, result) {
+function sendMemeFromPopularQuery(sender, result, typeText) {
   var images = [];
   var imageInfo = [];
   const maxIterations = result.length > MAX_CARDS_IN_HSCROLL
@@ -338,6 +328,11 @@ function sendMemeFromPopularQuery(sender, result) {
                 },
                 {
                   "type": "element_share",
+                },
+                {
+                  "type":"postback",
+                  "title":"Memeify",
+                  "payload":"Type\n\n#search #" + typeText + " #<top_text> #<bot_text>\n\nTo Memeify these images!",
                 },
               ],
             }
