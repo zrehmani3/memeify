@@ -372,6 +372,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
     sendImagesAsMessage(sender, images);
   }
   console.log(process.env);
+  console.log(imageInfo);
   (function getImages(i, iterations, images, imageInfo, callback) {
     if (i < iterations) {
       request(
@@ -380,11 +381,12 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
           + '&password=' + process.env.PASSWORD
           + '&generatorID=' + imageInfo[i].generatorID
           + '&imageID=' + imageInfo[i].imageID
-          + topText !== '' ? '&text0=' + topText : ''
-          + botText !== '' ? '&text1=' + botText : '',
+          + '&text0=' + topText
+          + '&text1=' + botText,
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
+            console.log('hi');
             const currElement = {
               "title": memeResult.displayName,
               "image_url": memeResult.instanceImageUrl,
