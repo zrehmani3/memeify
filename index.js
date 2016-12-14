@@ -150,7 +150,6 @@ expressApp.post('/webhook/', function (req, res) {
       }
     }
     if (event.postback) {
-      console.log(event.postback);
       sendTextMessage(sender, event.postback.payload);
     }
   }
@@ -336,7 +335,7 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
                 {
                   "type":"postback",
                   "title":"Memeify",
-                  "payload":"Type\n\n#search #" + typeText + " #<top_text> #<bot_text>\n\nTo Memeify these images!",
+                  "payload":"Type\n\n#search #" + typeText + " #<top_text> #<bot_text>\n\nTo Memeify these images! Type #help for a specific example. -Memeify",
                 },
               ],
             }
