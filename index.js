@@ -383,8 +383,8 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
           + '&password=' + process.env.PASSWORD
           + '&generatorID=' + imageInfo[i].generatorID
           + '&imageID=' + imageInfo[i].imageID
-          + topText ? '&text0=' + topText : ''
-          + botText ? '&text1=' + botText : '',
+          + (topText !== null ? '&text0=' + topText : '')
+          + (botText !== null ? '&text1=' + botText : ''),
         (function (error, response, body) {
           if (!error && response.statusCode == 200) {
             let memeResult = JSON.parse(body).result;
