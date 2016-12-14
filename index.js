@@ -10,7 +10,8 @@ const gm = require('gm').subClass({
 const http = require('http');
 const imgur = require('imgur');
 const readlineSync = require('readline-sync');
-const request = require('request')
+const request = require('request');
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 const MAX_CARDS_IN_HSCROLL = 10;
 
@@ -181,7 +182,7 @@ expressApp.post('/webhook/', function (req, res) {
 })
 
 function imageExists(image_url){
-  var http = new XMLHttpRequest();
+  const http = new XMLHttpRequest();
   http.open('HEAD', image_url, false);
   http.send();
   return http.status != 404;
