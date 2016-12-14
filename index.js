@@ -152,6 +152,7 @@ expressApp.post('/webhook/', function (req, res) {
           sendTrendingTemplates(sender)
           // Display popular memes
         } else if (text.toLowerCase().indexOf('#help') > -1) {
+          console.log(sender);
           sendHelpMessage(sender);
         } else {
           // Default error message
