@@ -570,10 +570,12 @@ function sendHelpMessage(sender) {
     "(as in attach the image + type the command) and we'll also memeify it for you. If on mobile just upload the image, and we'll explain where to go from there\n\n" +
     "Lastly, you can upload up to two images (on web only as of now), and we'll stack" +
     "them on top of each other and apply the text to the resulting, stacked image. -Memeify";
-  let text3 = "Here's an example! Try copy-pasta'ing the following line (NOTE there are no quotes or <>):\n\n#search #lebron james #i am #the goat\n\n-Memeify";
+  let text3 = "Here's an example! (NOTE there are no quotes or <>):\n\n-Memeify";
+  let text4 = "#search #lebron james #i am #the goat";
   let messageData1 = { text: text1 };
   let messageData2 = { text: text2 };
   let messageData3 = { text: text3 };
+  let messageData4 = { text: text4 };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:process.env.TOKEN},
@@ -615,6 +617,22 @@ function sendHelpMessage(sender) {
               console.log('Error sending messages: ', error)
             } else if (response.body.error) {
               console.log('Error: ', response.body.error)
+            } else {
+              request({
+                url: 'https://graph.facebook.com/v2.6/me/messages',
+                qs: {access_token:process.env.TOKEN},
+                method: 'POST',
+                json: {
+                    recipient: {id:sender},
+                    message: messageData4,
+                }
+              }, function(error, response, body) {
+                if (error) {
+                  console.log('Error sending messages: ', error)
+                } else if (response.body.error) {
+                  console.log('Error: ', response.body.error)
+                }
+              })
             }
           })
         }
