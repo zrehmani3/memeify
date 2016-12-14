@@ -51,15 +51,11 @@ expressApp.post('/webhook/', function (req, res) {
         if (text.toLowerCase().indexOf('#search') > -1) {
           const inputQuery = text.split('#');
           inputQuery.shift();
-          console.log(inputQuery);
           if (inputQuery.length === 4) {
             // Search for meme then apply custom text to it
             let typeText = extractInfoFromInputQuery(inputQuery, 1);
             let topText = extractInfoFromInputQuery(inputQuery, 2);
             let botText = extractInfoFromInputQuery(inputQuery, 3);
-            console.log(typeText);
-            console.log(topText);
-            console.log(botText);
             getGeneratorIDFromQueryType(sender, typeText, topText, botText, false);
           } else if (inputQuery.length === 2) {
             // Search for memes templates related to the query
@@ -375,6 +371,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
   function showImages(images) {
     sendImagesAsMessage(sender, images);
   }
+  console.log(process.env);
   (function getImages(i, iterations, images, imageInfo, callback) {
     if (i < iterations) {
       request(
@@ -448,7 +445,6 @@ function sendTrendingTemplates(sender) {
 }
 
 function sendImagesAsMessage(sender, images) {
-  console.log(images);
   let messageData = {
     "attachment": {
       "type": "template",
