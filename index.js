@@ -47,17 +47,6 @@ expressApp.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text.trim();
-      if (event.message.attachments && text.length === 0) {
-        // We are uploading an image only
-        let download = function(uri, filename, callback) {
-          request.head(uri, function(err, res, body) {
-            request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-          });
-        };
-        download(event.message.attachments[0].payload.url, 'uploaded.png', function() {
-          sendTextMessage(sender, 'Apply top text and bot text through\n\n#uploaded #<top_text> #<bot_text>\n\nFor example, #uploaded #i am #super excited\nKeep in mind that you can ignore top_text or bot_text through by typing #NONE\n-Memeify');
-        })
-      }
       if (text.indexOf('-Memeify') === -1) {
         if (text.toLowerCase().indexOf('#search') > -1) {
           const inputQuery = text.split('#');
@@ -169,8 +158,17 @@ expressApp.post('/webhook/', function (req, res) {
           sendGenericErrorMessage(sender);
         }
       }
-    }
-    if (event.postback) {
+    } else if (event.message.attachments) {
+      // We are uploading an image only
+      let download = function(uri, filename, callback) {
+        request.head(uri, function(err, res, body) {
+          request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+        });
+      };
+      download(event.message.attachments[0].payload.url, 'uploaded.png', function() {
+        sendTextMessage(sender, 'Apply top text and bot text through\n\n#uploaded #<top_text> #<bot_text>\n\nFor example, #uploaded #i am #super excited\nKeep in mind that you can ignore top_text or bot_text through by typing #NONE\n-Memeify');
+      })
+    } else if (event.postback) {
       sendTextMessage(sender, event.postback.payload);
     }
   }
