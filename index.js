@@ -47,101 +47,103 @@ expressApp.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text;
-      if (text.toLowerCase().indexOf('#search') > -1) {
-        const inputQuery = text.split('#').splice(0, 1);
-        console.log(inputQuery);
-        if (inputQuery.length === 4) {
-          // Search for meme then apply custom text to it
-          let typeText = extractInfoFromInputQuery(inputQuery, 1);
+      if (text.indexOf('-Memeify') === -1 ) {
+        if (text.toLowerCase().indexOf('#search') > -1) {
+          const inputQuery = text.split('#').splice(0, 1);
+          console.log(inputQuery);
+          if (inputQuery.length === 4) {
+            // Search for meme then apply custom text to it
+            let typeText = extractInfoFromInputQuery(inputQuery, 1);
+            let topText = extractInfoFromInputQuery(inputQuery, 2);
+            let botText = extractInfoFromInputQuery(inputQuery, 3);
+            getGeneratorIDFromQueryType(sender, typeText, topText, botText, false);
+          } else if (inputQuery.length === 2) {
+            // Search for memes templates related to the query
+            let typeText = extractInfoFromInputQuery(inputQuery, 1);
+            getGeneratorIDFromQueryType(sender, typeText, null, null, false);
+          }
+        } else if (text.toLowerCase().indexOf('#popular') > -1) {
+          const inputQuery = text.split('#').splice(0, 1);
+          if (inputQuery.length === 2) {
+            // We have specified that we're looking for popular memes (instances)
+            // pertaining to a specific type
+            let typeText = extractInfoFromInputQuery(inputQuery, 1);
+            getGeneratorIDFromQueryType(sender, typeText, null, null, true);
+          } else {
+            // We just want popular instances of memes, regardless of the type
+            sendPopularMemesFromSpecificType(sender, null);
+          }
+        } else if (text.toLowerCase().indexOf('#link') > -1) {
+          // Memify using existing link
+          const inputQuery = text.split('#').splice(0, 1);
+          let linkText = extractInfoFromInputQuery(inputQuery, 1);
           let topText = extractInfoFromInputQuery(inputQuery, 2);
           let botText = extractInfoFromInputQuery(inputQuery, 3);
-          getGeneratorIDFromQueryType(sender, typeText, topText, botText, false);
-        } else if (inputQuery.length === 2) {
-          // Search for memes templates related to the query
-          let typeText = extractInfoFromInputQuery(inputQuery, 1);
-          getGeneratorIDFromQueryType(sender, typeText, null, null, false);
-        }
-      } else if (text.toLowerCase().indexOf('#popular') > -1) {
-        const inputQuery = text.split('#').splice(0, 1);
-        if (inputQuery.length === 2) {
-          // We have specified that we're looking for popular memes (instances)
-          // pertaining to a specific type
-          let typeText = extractInfoFromInputQuery(inputQuery, 1);
-          getGeneratorIDFromQueryType(sender, typeText, null, null, true);
-        } else {
-          // We just want popular instances of memes, regardless of the type
-          sendPopularMemesFromSpecificType(sender, null);
-        }
-      } else if (text.toLowerCase().indexOf('#link') > -1) {
-        // Memify using existing link
-        const inputQuery = text.split('#').splice(0, 1);
-        let linkText = extractInfoFromInputQuery(inputQuery, 1);
-        let topText = extractInfoFromInputQuery(inputQuery, 2);
-        let botText = extractInfoFromInputQuery(inputQuery, 3);
-        getCustomMemeFromLink(sender, topText, botText, linkText);
-      } else if (text.toLowerCase().indexOf('#upload') > -1 && event.message.attachments) {
-        // Upload image and memeify. Users can add two images to stack them on
-        // top of each other to memeify.
-        const inputQuery = text.split('#').splice(0, 1);
-        let topText = extractInfoFromInputQuery(inputQuery, 1);
-        let botText = extractInfoFromInputQuery(inputQuery, 2);
-        if (event.message.attachments.length === 1) {
-          const attachedURL = event.message.attachments[0].payload.url;
-          imgur.uploadUrl(attachedURL)
-            .then(function (json) {
-              getCustomMemeFromLink(sender, topText, botText, json.data.link);
-            }
-          )
-        } else if (event.message.attachments.length === 2) {
-          let imageInputLen = 2;
-          const attachedURL1 = event.message.attachments[0].payload.url;
-          const attachedURL2 = event.message.attachments[1].payload.url;
-          let attachedImages = [attachedURL1, attachedURL2];
-          let uploadedImagesLink = [];
-          function postAttachmentsUpload(uploadedImagesLink) {
-            var download = function(uri, filename, callback) {
-              request.head(uri, function(err, res, body) {
-                request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-              });
-            };
-            download(uploadedImagesLink[0], '1.png', function() {
-              download(uploadedImagesLink[1], '2.png', function() {
-                gm("1.png").append("2.png")
-                  .write('3.png', function (err) {
-                    if (!err) {
-                      imgur.uploadFile('3.png')
-                        .then(function (json) {
-                          getCustomMemeFromLink(sender, topText, botText, json.data.link);
-                        }
-                      )
+          getCustomMemeFromLink(sender, topText, botText, linkText);
+        } else if (text.toLowerCase().indexOf('#upload') > -1 && event.message.attachments) {
+          // Upload image and memeify. Users can add two images to stack them on
+          // top of each other to memeify.
+          const inputQuery = text.split('#').splice(0, 1);
+          let topText = extractInfoFromInputQuery(inputQuery, 1);
+          let botText = extractInfoFromInputQuery(inputQuery, 2);
+          if (event.message.attachments.length === 1) {
+            const attachedURL = event.message.attachments[0].payload.url;
+            imgur.uploadUrl(attachedURL)
+              .then(function (json) {
+                getCustomMemeFromLink(sender, topText, botText, json.data.link);
+              }
+            )
+          } else if (event.message.attachments.length === 2) {
+            let imageInputLen = 2;
+            const attachedURL1 = event.message.attachments[0].payload.url;
+            const attachedURL2 = event.message.attachments[1].payload.url;
+            let attachedImages = [attachedURL1, attachedURL2];
+            let uploadedImagesLink = [];
+            function postAttachmentsUpload(uploadedImagesLink) {
+              var download = function(uri, filename, callback) {
+                request.head(uri, function(err, res, body) {
+                  request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+                });
+              };
+              download(uploadedImagesLink[0], '1.png', function() {
+                download(uploadedImagesLink[1], '2.png', function() {
+                  gm("1.png").append("2.png")
+                    .write('3.png', function (err) {
+                      if (!err) {
+                        imgur.uploadFile('3.png')
+                          .then(function (json) {
+                            getCustomMemeFromLink(sender, topText, botText, json.data.link);
+                          }
+                        )
+                      }
                     }
-                  }
-                );
+                  );
+                });
               });
-            });
-          }
-          (function uploadImages(i, imageInputLen, attachedImages, uploadedImagesLink, callback) {
-            if (i < imageInputLen) {
-              const currAttachedURL = attachedImages[i];
-              imgur.uploadUrl(currAttachedURL)
-                .then(function (json) {
-                  uploadedImagesLink.push(json.data.link);
-                  uploadImages(i + 1, imageInputLen, attachedImages, uploadedImagesLink, callback)
-                }
-              )
-            } else {
-              callback(uploadedImagesLink);
             }
-          })(0, imageInputLen, attachedImages, uploadedImagesLink, postAttachmentsUpload)
+            (function uploadImages(i, imageInputLen, attachedImages, uploadedImagesLink, callback) {
+              if (i < imageInputLen) {
+                const currAttachedURL = attachedImages[i];
+                imgur.uploadUrl(currAttachedURL)
+                  .then(function (json) {
+                    uploadedImagesLink.push(json.data.link);
+                    uploadImages(i + 1, imageInputLen, attachedImages, uploadedImagesLink, callback)
+                  }
+                )
+              } else {
+                callback(uploadedImagesLink);
+              }
+            })(0, imageInputLen, attachedImages, uploadedImagesLink, postAttachmentsUpload)
+          }
+        } else if (text.toLowerCase().indexOf('#discover') > -1) {
+          sendTrendingTemplates(sender)
+          // Display popular memes
+        } else if (text.toLowerCase().indexOf('#help') > -1) {
+          sendHelpMessage(sender);
+        } else {
+          // Default error message
+          sendGenericErrorMessage(sender);
         }
-      } else if (text.toLowerCase().indexOf('#discover') > -1) {
-        sendTrendingTemplates(sender)
-        // Display popular memes
-      } else if (text.toLowerCase().indexOf('#help') > -1) {
-        helpFunction(sender);
-      } else {
-        // Default error message
-        sendGenericErrorMessage(sender);
       }
     }
   }
@@ -486,7 +488,7 @@ function sendTextMessage(sender, text) {
 
 // #search + allow bot text to be null
 
-function helpFunction(sender) {
+function sendHelpMessage(sender) {
   let text1 =
     "Welcome to the help menu!\n\n" +
     "To search for memes, type '#search #<meme_name>' (without quotes around the command)\n\n" +
@@ -495,14 +497,14 @@ function helpFunction(sender) {
     "You can type '#popular' to see what are the current trending memes" +
     "(that include text) that are circulating around the internet, and if you just want" +
     "the popular memes that include text for a specific type, simply try '#popular #<meme_type>'.\n\n" +
-    "To discover current trending templates (without text), simply try '#discover'.";
+    "To discover current trending templates (without text), simply try '#discover'. -Memeify";
   let text2 =
-    "You can even use your own pics and memeify those! You can provide a link through" +
+    "#memeify: You can even use your own pics and memeify those! You can provide a link through" +
     "'#link #<url> #<top_text> #<bot_text>' and we'll take care of mememifying it for you.\n\n" +
     "You can also upload your own image through messenger and type '#upload #<top_text> #<bot_text>'" +
     "and we'll also memeify it for you.\n\nLastly, you can upload up to two images, and we'll stack" +
-    "them on top of each other and apply the text to the resulting, stacked image.";
-  let text3 = "Here's an example! Try copy-pasta'ing #search #lebron james #i am #the goat";
+    "them on top of each other and apply the text to the resulting, stacked image. -Memeify";
+  let text3 = "#memeify: Here's an example! Try copy-pasta'ing the following line:\n\n #search #lebron james #i am #the goat \n\n-Memeify";
   let messageData1 = { text: text1 };
   let messageData2 = { text: text2 };
   let messageData3 = { text: text3 };
