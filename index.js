@@ -46,8 +46,6 @@ expressApp.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text.trim();
-      text = text.replace('<', '|');
-      text = text.replace('>', '|');
       if (text.indexOf('-Memeify') === -1) {
         if (text.toLowerCase().indexOf('#search') > -1) {
           const inputQuery = text.split('#');
@@ -558,7 +556,7 @@ function sendPayloadMessage(sender, link) {
 function sendHelpMessage(sender) {
   let text1 =
     "Welcome to the help menu!\n\n" +
-    "To search for memes, type '#search #<meme_name>' (without quotes around the command)\n\n" +
+    "To search for memes, type '#search #<meme_name>' (without quotes around the command AND without the '<' and '>')\n\n" +
     "You can apply custom text to the memes you search for." +
     "For example, you can try '#search #<meme_name> #<top_text> #<bot_text>' (put NONE as <top_text> or <bot_text> to ignore).\n\n" +
     "You can type '#popular' to see what are the current trending memes" +
@@ -572,7 +570,7 @@ function sendHelpMessage(sender) {
     "(as in attach the image + type the command) and we'll also memeify it for you. If on mobile just upload the image, and we'll explain where to go from there\n\n" +
     "Lastly, you can upload up to two images (on web only as of now), and we'll stack" +
     "them on top of each other and apply the text to the resulting, stacked image. -Memeify";
-  let text3 = "Here's an example! Try copy-pasta'ing the following line:\n\n#search #lebron james #i am #the goat\n\n-Memeify";
+  let text3 = "Here's an example! Try copy-pasta'ing the following line (NOTE there are no quotes or <>):\n\n#search #lebron james #i am #the goat\n\n-Memeify";
   let messageData1 = { text: text1 };
   let messageData2 = { text: text2 };
   let messageData3 = { text: text3 };
