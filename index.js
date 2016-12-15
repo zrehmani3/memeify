@@ -258,7 +258,8 @@ function getCustomMemeFromLink(sender, topText, botText, link) {
       + (topText !== null ? topText + '/' : '')
       + (botText !== null ? botText + '/' : '')
       + '.jpg?'
-      + 'alt=' + link;
+      + 'font=impact'
+      + '&alt=' + link;
   sendMemeifiedImage(sender, customLinkImgUrl)
 }
 
