@@ -170,6 +170,7 @@ expressApp.post('/webhook/', function (req, res) {
             const element = [{
               "title": "Your Image",
               "image_url": link,
+              "item_url": link,
               "buttons": [
                 {
                   "type": "web_url",
