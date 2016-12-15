@@ -232,6 +232,7 @@ function sendPopularMemesFromSpecificType(sender, memes) {
           const currElement = {
             "title": result[i].displayName,
             "image_url": result[i].instanceImageUrl,
+            "item_url": result[i].instanceImageUrl,
             "buttons": [
               {
                 "type": "web_url",
@@ -312,6 +313,7 @@ function sendMemeifiedImage(sender, imageURL) {
         "elements": [{
           "title": "Your customized meme",
           "image_url": imageURL,
+          "item_url": imageURL,
           "buttons": [
             {
               "type": "web_url",
@@ -370,6 +372,7 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
             const currElement = {
               "title": memeResult.displayName,
               "image_url": memeResult.imageUrl,
+              "item_url": memeResult.imageUrl,
               "buttons": [
                 {
                   "type": "web_url",
@@ -434,6 +437,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
             const currElement = {
               "title": memeResult.displayName,
               "image_url": memeResult.instanceImageUrl,
+              "item_url": memeResult.instanceImageUrl,
               "buttons": [
                 {
                   "type": "web_url",
@@ -471,6 +475,7 @@ function sendTrendingTemplates(sender) {
           const currElement = {
             "title": result[i].displayName,
             "image_url": result[i].imageUrl,
+            "item_url": result[i].imageUrl,
             "buttons": [
               {
                 "type": "web_url",
