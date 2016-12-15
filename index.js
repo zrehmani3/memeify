@@ -172,11 +172,11 @@ expressApp.post('/webhook/', function (req, res) {
               "image_url": link,
               "item_url": link,
               "buttons": [
-                {
-                  "type": "web_url",
-                  "url": link,
-                  "title": "Open Image"
-                },
+                // {
+                //   "type": "web_url",
+                //   "url": link,
+                //   "title": "Open Image"
+                // },
                 {
                   "type": "element_share",
                 },
@@ -234,11 +234,11 @@ function sendPopularMemesFromSpecificType(sender, memes) {
             "image_url": result[i].instanceImageUrl,
             "item_url": result[i].instanceImageUrl,
             "buttons": [
-              {
-                "type": "web_url",
-                "url": result[i].instanceImageUrl,
-                "title": "Open Meme"
-              },
+              // {
+              //   "type": "web_url",
+              //   "url": result[i].instanceImageUrl,
+              //   "title": "Open Meme"
+              // },
               {
                 "type": "element_share",
               },
@@ -315,11 +315,11 @@ function sendMemeifiedImage(sender, imageURL) {
           "image_url": imageURL,
           "item_url": imageURL,
           "buttons": [
-            {
-              "type": "web_url",
-              "url": imageURL,
-              "title": "Open Meme"
-            },
+            // {
+            //   "type": "web_url",
+            //   "url": imageURL,
+            //   "title": "Open Meme"
+            // },
             {
               "type": "element_share",
             },
@@ -374,11 +374,11 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
               "image_url": memeResult.imageUrl,
               "item_url": memeResult.imageUrl,
               "buttons": [
-                {
-                  "type": "web_url",
-                  "url": memeResult.imageUrl,
-                  "title": "Open Meme"
-                },
+                // {
+                //   "type": "web_url",
+                //   "url": memeResult.imageUrl,
+                //   "title": "Open Meme"
+                // },
                 {
                   "type": "element_share",
                 },
@@ -439,11 +439,11 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
               "image_url": memeResult.instanceImageUrl,
               "item_url": memeResult.instanceImageUrl,
               "buttons": [
-                {
-                  "type": "web_url",
-                  "url": memeResult.instanceImageUrl,
-                  "title": "Open Meme"
-                },
+                // {
+                //   "type": "web_url",
+                //   "url": memeResult.instanceImageUrl,
+                //   "title": "Open Meme"
+                // },
                 {
                   "type": "element_share",
                 },
@@ -477,11 +477,11 @@ function sendTrendingTemplates(sender) {
             "image_url": result[i].imageUrl,
             "item_url": result[i].imageUrl,
             "buttons": [
-              {
-                "type": "web_url",
-                "url": result[i].imageUrl,
-                "title": "Open Meme"
-              },
+              // {
+              //   "type": "web_url",
+              //   "url": result[i].imageUrl,
+              //   "title": "Open Meme"
+              // },
               {
                 "type": "element_share",
               },
