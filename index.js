@@ -145,6 +145,8 @@ expressApp.post('/webhook/', function (req, res) {
           // Display popular memes
         } else if (text.toLowerCase().indexOf('#help') > -1) {
           sendHelpMessage(sender);
+        } else if (text.toLowerCase().indexOf('#advanced') > -1) {
+          sendAdvancedMessage(sender);
         } else {
           // Default error message
           sendGenericErrorMessage(sender);
@@ -172,11 +174,6 @@ expressApp.post('/webhook/', function (req, res) {
               "image_url": link,
               "item_url": link,
               "buttons": [
-                // {
-                //   "type": "web_url",
-                //   "url": link,
-                //   "title": "Open Image"
-                // },
                 {
                   "type": "element_share",
                 },
@@ -234,11 +231,6 @@ function sendPopularMemesFromSpecificType(sender, memes) {
             "image_url": result[i].instanceImageUrl,
             "item_url": result[i].instanceImageUrl,
             "buttons": [
-              // {
-              //   "type": "web_url",
-              //   "url": result[i].instanceImageUrl,
-              //   "title": "Open Meme"
-              // },
               {
                 "type": "element_share",
               },
@@ -316,11 +308,6 @@ function sendMemeifiedImage(sender, imageURL) {
           "image_url": imageURL,
           "item_url": imageURL,
           "buttons": [
-            // {
-            //   "type": "web_url",
-            //   "url": imageURL,
-            //   "title": "Open Meme"
-            // },
             {
               "type": "element_share",
             },
@@ -375,11 +362,6 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
               "image_url": memeResult.imageUrl,
               "item_url": memeResult.imageUrl,
               "buttons": [
-                // {
-                //   "type": "web_url",
-                //   "url": memeResult.imageUrl,
-                //   "title": "Open Meme"
-                // },
                 {
                   "type": "element_share",
                 },
@@ -440,11 +422,6 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
               "image_url": memeResult.instanceImageUrl,
               "item_url": memeResult.instanceImageUrl,
               "buttons": [
-                // {
-                //   "type": "web_url",
-                //   "url": memeResult.instanceImageUrl,
-                //   "title": "Open Meme"
-                // },
                 {
                   "type": "element_share",
                 },
@@ -478,11 +455,6 @@ function sendTrendingTemplates(sender) {
             "image_url": result[i].imageUrl,
             "item_url": result[i].imageUrl,
             "buttons": [
-              // {
-              //   "type": "web_url",
-              //   "url": result[i].imageUrl,
-              //   "title": "Open Meme"
-              // },
               {
                 "type": "element_share",
               },
@@ -560,16 +532,60 @@ function sendPayloadMessage(sender, link) {
   })
 }
 
+function sendAdvancedMessage(sender) {
+  let text1 =
+    "So we have a few more options for your meme dreams. "
+    "For starters, you can type '#popular' to see what are the current trending memes" +
+    "(that include text) within the last 30 days, and if you just want" +
+    "the popular memes that include text for a specific type, simply try '#popular #<meme_type>'.\n" +
+    "If you're not into text, you can discover current trending templates through '#discover'. -Memeify\n\n";
+  let text2 =
+    "If you're trying to memeify through a link, you can use '#link #<url> #<top_text> #<bot_text>', and we'll memeify it for you. " +
+    "Also, if you're on web, you can attach an image, and before sending it you can add '#upload #<top_text> #<bot_text>', " +
+    "and we'll memeify it for you in one step instead of the usual two step process. " +
+    "You can also upload two pictures at the same time (on web) using the same '#upload #<top_text> #<bot_text>' command, and we'll " +
+    "stack the two images on top of each other and apply the text to the stacked image. -Memeify";
+    let messageData1 = { text: text1 };
+    let messageData2 = { text: text2 };
+    request({
+      url: 'https://graph.facebook.com/v2.6/me/messages',
+      qs: {access_token:process.env.TOKEN},
+      method: 'POST',
+      json: {
+          recipient: {id:sender},
+          message: messageData1,
+      }
+    }, function(error, response, body) {
+      if (error) {
+        console.log('Error sending messages: ', error)
+      } else if (response.body.error) {
+        console.log('Error: ', response.body.error)
+      } else {
+        request({
+          url: 'https://graph.facebook.com/v2.6/me/messages',
+          qs: {access_token:process.env.TOKEN},
+          method: 'POST',
+          json: {
+              recipient: {id:sender},
+              message: messageData2,
+          }
+        }, function(error, response, body) {
+          if (error) {
+            console.log('Error sending messages: ', error)
+          } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+          }
+        })
+      }
+    })
+}
+
 function sendHelpMessage(sender) {
   let text1 =
     "Welcome! " +
     "To search for memes, type '#search #<meme_name>' (without quotes and <>)\n\n" +
     "You can also apply custom text to the memes you search for " +
     "by typing '#search #<meme_name> #<top_text> #<bot_text>' (put NONE as <top_text> or <bot_text> to ignore).\n\n";
-    // "You can type '#popular' to see what are the current trending memes" +
-    // "(that include text) that are around the internet, and if you just want" +
-    // "the popular memes that include text for a specific type, simply try '#popular #<meme_type>'.\n\n" +
-    // "To discover current trending templates (no text), simply try '#discover'. -Memeify";
   let text2 =
     // "You can even use your own pics and memeify those! You can provide a link through" +
     // "'#link #<url> #<top_text> #<bot_text>' and we'll memeify it for you.\n\n" +
