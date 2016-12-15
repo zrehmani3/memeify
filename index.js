@@ -182,7 +182,7 @@ expressApp.post('/webhook/', function (req, res) {
                 },
                 {
                   "type":"postback",
-                  "title":"Memeify",
+                  "title":"Add Text",
                   "payload":"#link #" + link + " #<top_text> #<bot_text>-Memeify",
                 },
               ],
@@ -385,7 +385,7 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
                 },
                 {
                   "type":"postback",
-                  "title":"Memeify",
+                  "title":"Add Text",
                   "payload":"#search #" + typeText + " #<top_text> #<bot_text>-Memeify",
                 },
               ],
