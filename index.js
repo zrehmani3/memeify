@@ -571,7 +571,7 @@ function sendHelpMessage(sender) {
     // "Lastly, you can upload up to two images (on web), and we'll stack" +
     // "them on top of each other + apply the text to the stacked image. -Memeify";
     "You can even upload your own image, and we'll walk you through the process of memeifying it! If you've got the hang of it, type #advanced for more commands.-Memeify";
-  let text3 = "Now here's an example! (NOTE there are no quotes or <>):\n\n-Memeify";
+  let text3 = "Now here's an example! (NOTE there are no quotes or <>) -Memeify";
   let text4 = "#search #lebron james #i am #the goat";
   let messageData1 = { text: text1 };
   let messageData2 = { text: text2 };
