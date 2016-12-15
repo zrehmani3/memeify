@@ -564,8 +564,8 @@ function sendHelpMessage(sender) {
   let text1 =
     "Welcome! " +
     "To search for memes, type '#search #<meme_name>' (without quotes and <>)\n\n" +
-    "You can also apply custom text to the memes you search for." +
-    "For example, you can try '#search #<meme_name> #<top_text> #<bot_text>' (put NONE as <top_text> or <bot_text> to ignore).\n\n";
+    "You can also apply custom text to the memes you search for " +
+    "by typing '#search #<meme_name> #<top_text> #<bot_text>' (put NONE as <top_text> or <bot_text> to ignore).\n\n";
     // "You can type '#popular' to see what are the current trending memes" +
     // "(that include text) that are around the internet, and if you just want" +
     // "the popular memes that include text for a specific type, simply try '#popular #<meme_type>'.\n\n" +
