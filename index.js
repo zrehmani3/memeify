@@ -534,7 +534,7 @@ function sendPayloadMessage(sender, link) {
 
 function sendAdvancedMessage(sender) {
   let text1 =
-    "So we have a few more options for your meme dreams. " +
+    "So we have a few more options for your meme dreams.\n\n" +
     "For starters, you can type '#popular' to see what are the current trending memes" +
     "(that include text) within the last 30 days, and if you just want" +
     "the popular memes that include text for a specific type, simply try '#popular #[meme_type]'.\n" +
