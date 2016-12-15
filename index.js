@@ -524,7 +524,7 @@ function sendImagesAsMessage(sender, images) {
 }
 
 function sendPayloadMessage(sender, link) {
-  let helperText = 'Type the following to memeify the image! Type #help for a specific example\n\n';
+  let helperText = 'Copy/paste following to memeify the image, replacing <top_text> and <bot_text> with anything you want! Type #help for a specific example\n\n';
   let messageData1 = { text: helperText };
   let messageData2 = { text: link };
   request({
