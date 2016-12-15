@@ -540,7 +540,7 @@ function sendAdvancedMessage(sender) {
     "the popular memes that include text for a specific type, simply try '#popular #[meme_type]'.\n" +
     "If you're not into text, you can discover current trending templates through '#discover'. -Memeify\n\n";
   let text2 =
-    "If you're trying to memeify through a link, you can use '#link #[url] #[top_text] #[bot_text]', and we'll memeify it for you. " +
+    "If you're trying to memeify through a link, you can use '#link #[url] #[top_text] #[bot_text]', and we'll memeify it for you.\n\n" +
     "Also, if you're on web, you can attach an image, and before sending it you can add '#upload #[top_text] #[bot_text]', " +
     "and we'll memeify it for you in one step instead of the usual two step process. " +
     "You can also upload two pictures at the same time (on web) using the same '#upload #[top_text] #[bot_text]' command, and we'll " +
