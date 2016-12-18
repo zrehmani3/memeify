@@ -194,7 +194,6 @@ expressApp.post('/webhook/', function (req, res) {
         let payloadLink = event.postback.payload.replace('-Memeify', '');
         sendPayloadMessage(sender, payloadLink);
       } else {
-        sendShareMemeSuggestion(sender);
         sendImageAttachment(sender, event.postback.payload);
       }
     }
@@ -569,27 +568,6 @@ function sendImageAttachment(sender, url) {
   })
 }
 
-function sendShareMemeSuggestion(sender) {
-  let text1 =
-    "Here's your meme - open it and forward it to your friends!";
-  let messageData1 = { text: text1 };
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-        recipient: {id:sender},
-        message: messageData1,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
-}
-
 function sendAdvancedMessage(sender) {
   let text1 =
     "So we have a few more options for your meme dreams.\n\n" +
@@ -646,7 +624,7 @@ function sendHelpMessage(sender) {
     "by typing '#search #[meme_name] #[top_text] #[bot_text]' (put NONE as [top_text] or [bot_text] to ignore).\n\n";
   let text2 =
     "You can even upload your own image, and we'll walk you through the process of memeifying it! If you've got the hang of it, type #advanced for more commands.-Memeify";
-  let text3 = "Now here's an example! (NOTE there are no quotes or [ ]) -Memeify";
+  let text3 = "Now here's an example! (NOTE there are no quotes or [ ]). Also, don't forget to get the image and share it with your friends! -Memeify";
   let text4 = "#search #lebron james #i am #the goat";
   let messageData1 = { text: text1 };
   let messageData2 = { text: text2 };
