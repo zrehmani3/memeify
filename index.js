@@ -561,13 +561,14 @@ function sendPayloadMessage(sender, link) {
 }
 
 function sendImageAttachment(sender, url) {
-  const messageData =
+  const messageData = {
     attachment: {
       type: "image",
       payload: {
         url: url,
       }
-    };
+    }
+  };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:process.env.TOKEN},
