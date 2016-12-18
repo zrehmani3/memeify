@@ -36,6 +36,7 @@ expressApp.get('/webhook/', function (req, res) {
 
 // Spin up the server
 expressApp.listen(expressApp.get('port'), function() {
+  imgur.setCredentials(process.env.USERNAME, process.env.PASSWORD, process.env.CLIENTID);
   console.log('running on port', expressApp.get('port'));
 })
 
@@ -316,7 +317,7 @@ function sendMemeifiedImage(sender, imageURL) {
             {
               "type":"postback",
               "title":"Get Image",
-              "payload": "" + imageUrl,
+              "payload": "" + imageURL,
             },
           ],
         }]
