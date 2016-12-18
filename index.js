@@ -174,9 +174,6 @@ expressApp.post('/webhook/', function (req, res) {
               "image_url": link,
               "buttons": [
                 {
-                  "type": "element_share",
-                },
-                {
                   "type":"postback",
                   "title":"Add Text",
                   "payload":"#link #" + link + " #[top_text] #[bot_text]-Memeify",
@@ -238,9 +235,6 @@ function sendPopularMemesFromSpecificType(sender, memes) {
             "title": result[i].displayName,
             "image_url": result[i].instanceImageUrl,
             "buttons": [
-              {
-                "type": "element_share",
-              },
               {
                 "type":"postback",
                 "title":"Get Image",
@@ -320,9 +314,6 @@ function sendMemeifiedImage(sender, imageURL) {
           "image_url": imageURL,
           "buttons": [
             {
-              "type": "element_share",
-            },
-            {
               "type":"postback",
               "title":"Get Image",
               "payload": "" + imageUrl,
@@ -377,9 +368,6 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
               "title": memeResult.displayName,
               "image_url": memeResult.imageUrl,
               "buttons": [
-                {
-                  "type": "element_share",
-                },
                 {
                   "type":"postback",
                   "title":"Add Text",
@@ -442,9 +430,6 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
               "image_url": memeResult.instanceImageUrl,
               "buttons": [
                 {
-                  "type": "element_share",
-                },
-                {
                   "type":"postback",
                   "title":"Get Image",
                   "payload": "" + memeResult.instanceImageUrl,
@@ -478,9 +463,6 @@ function sendTrendingTemplates(sender) {
             "title": result[i].displayName,
             "image_url": result[i].imageUrl,
             "buttons": [
-              {
-                "type": "element_share",
-              },
               {
                 "type":"postback",
                 "title":"Get Image",
