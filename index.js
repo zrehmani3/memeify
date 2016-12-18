@@ -562,10 +562,10 @@ function sendPayloadMessage(sender, link) {
 
 function sendImageAttachment(sender, url) {
   const messageData =
-    "attachment":{
-      "type":"image",
-      "payload":{
-        "url":url,
+    attachment: {
+      type: "image",
+      payload: {
+        url: url,
       }
     };
   request({
