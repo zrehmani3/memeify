@@ -150,7 +150,6 @@ expressApp.post('/webhook/', function (req, res) {
           sendAdvancedMessage(sender);
         } else {
           // Default error message
-          addPersistentMenu();
           sendGenericErrorMessage(sender);
         }
       }
@@ -195,10 +194,6 @@ expressApp.post('/webhook/', function (req, res) {
       if (event.postback.payload.indexOf('-Memeify') > -1) {
         let payloadLink = event.postback.payload.replace('-Memeify', '');
         sendPayloadMessage(sender, payloadLink);
-      } else if (event.postback.payload.indexOf('#help') > -1) {
-        sendHelpMessage(sender);
-      } else if (event.postback.payload.indexOf('#advanced') > -1) {
-        sendAdvancedMessage(sender);
       } else {
         sendImageAttachment(sender, event.postback.payload);
       }
