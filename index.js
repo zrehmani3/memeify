@@ -37,7 +37,6 @@ expressApp.get('/webhook/', function (req, res) {
 // Spin up the server
 expressApp.listen(expressApp.get('port'), function() {
   imgur.setCredentials(process.env.USERNAME, process.env.PASSWORD, process.env.CLIENTID);
-  addPersistentMenu();
   console.log('running on port', expressApp.get('port'));
 })
 
@@ -151,6 +150,7 @@ expressApp.post('/webhook/', function (req, res) {
           sendAdvancedMessage(sender);
         } else {
           // Default error message
+          addPersistentMenu();
           sendGenericErrorMessage(sender);
         }
       }
