@@ -194,6 +194,7 @@ expressApp.post('/webhook/', function (req, res) {
         let payloadLink = event.postback.payload.replace('-Memeify', '');
         sendPayloadMessage(sender, payloadLink);
       } else {
+        sendShareMemeSuggestion(sender);
         sendImageAttachment(sender, event.postback.payload);
       }
     }
@@ -558,6 +559,27 @@ function sendImageAttachment(sender, url) {
     json: {
       recipient: {id:sender},
       message: messageData,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+}
+
+function sendShareMemeSuggestion(sender) {
+  let text1 =
+    "Here's your meme - open it and forward it to your friends!";
+  let messageData1 = { text: text1 };
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:process.env.TOKEN},
+    method: 'POST',
+    json: {
+        recipient: {id:sender},
+        message: messageData1,
     }
   }, function(error, response, body) {
     if (error) {
