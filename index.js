@@ -37,6 +37,7 @@ expressApp.get('/webhook/', function (req, res) {
 // Spin up the server
 expressApp.listen(expressApp.get('port'), function() {
   imgur.setCredentials(process.env.USERNAME, process.env.PASSWORD, process.env.CLIENTID);
+  addPersistentMenu();
   console.log('running on port', expressApp.get('port'));
 })
 
@@ -194,6 +195,10 @@ expressApp.post('/webhook/', function (req, res) {
       if (event.postback.payload.indexOf('-Memeify') > -1) {
         let payloadLink = event.postback.payload.replace('-Memeify', '');
         sendPayloadMessage(sender, payloadLink);
+      } else if (event.postback.payload.indexOf('#help') > -1) {
+        sendHelpMessage(sender);
+      } else if (event.postback.payload.indexOf('#advanced') > -1) {
+        sendAdvancedMessage(sender);
       } else {
         sendImageAttachment(sender, event.postback.payload);
       }
@@ -294,6 +299,36 @@ function sendGenericErrorMessage(sender) {
     json: {
       recipient: {id:sender},
       message: messageData,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+}
+
+function addPersistentMenu() {
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:process.env.TOKEN},
+    method: 'POST',
+    json: {
+      setting_type : "call_to_actions",
+      thread_state : "existing_thread",
+      call_to_actions: [
+        {
+          type:"postback",
+          title:"#help",
+          payload:"#help"
+        },
+        {
+          type:"postback",
+          title:"#advanced",
+          payload:"#advanced"
+        },
+      ],
     }
   }, function(error, response, body) {
     if (error) {
