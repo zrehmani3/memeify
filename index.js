@@ -169,7 +169,7 @@ expressApp.post('/webhook/', function (req, res) {
       download(event.message.attachments[0].payload.url, uploadedImageName, function() {
         imgur.uploadFile(uploadedImageName)
           .then(function (json) {
-            const link = json.data.link;
+            const imgID = json.data.link.substring(json.data.link.lastIndexOf('/') + 1);
             const element = [{
               "title": "Your Image",
               "image_url": link,
@@ -177,7 +177,7 @@ expressApp.post('/webhook/', function (req, res) {
                 {
                   "type":"postback",
                   "title":"Add Text",
-                  "payload":"#link #" + link + " #[top_text] #[bot_text]-Memeify",
+                  "payload": "-MEMEIFY" + imgID,
                 },
                 {
                   "type":"postback",
@@ -193,6 +193,10 @@ expressApp.post('/webhook/', function (req, res) {
     } else if (event.postback) {
       if (event.postback.payload.indexOf('-Memeify') > -1) {
         let payloadLink = event.postback.payload.replace('-Memeify', '');
+        sendPayloadMessage(sender, payloadLink);
+      } else if (event.postback.payload.indexOf('-MEMEIFY') > -1) {
+        let payloadID = event.postback.payload.replace('-MEMEIFY', '');
+        let payloadLink = "#link #http://i.imgur.com/" + imgID + " #[top_text] #[bot_text]";
         sendPayloadMessage(sender, payloadLink);
       } else {
         sendImageAttachment(sender, event.postback.payload);
@@ -573,7 +577,7 @@ function sendAdvancedMessage(sender) {
   let text1 =
     "So we have a few more options for your meme dreams.\n\n" +
     "For starters, you can type '#popular' to see what are the current trending memes" +
-    "(that include text) within the last 30 days, and if you just want" +
+    " (that include text) within the last 30 days, and if you just want " +
     "the popular memes that include text for a specific type, simply try '#popular #[meme_type]'.\n" +
     "If you're not into text, you can discover current trending templates through '#discover'. -Memeify\n\n";
   let text2 =
