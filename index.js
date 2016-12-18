@@ -169,7 +169,7 @@ expressApp.post('/webhook/', function (req, res) {
       download(event.message.attachments[0].payload.url, uploadedImageName, function() {
         imgur.uploadFile(uploadedImageName)
           .then(function (json) {
-            const imgID = json.data.link.substring(json.data.link.lastIndexOf('/') + 1);
+            const link = json.data.link;
             const element = [{
               "title": "Your Image",
               "image_url": link,
@@ -177,7 +177,7 @@ expressApp.post('/webhook/', function (req, res) {
                 {
                   "type":"postback",
                   "title":"Add Text",
-                  "payload": "-MEMEIFY" + imgID,
+                  "payload":"#link #" + link + " #[top_text] #[bot_text]-Memeify",
                 },
                 {
                   "type":"postback",
@@ -193,10 +193,6 @@ expressApp.post('/webhook/', function (req, res) {
     } else if (event.postback) {
       if (event.postback.payload.indexOf('-Memeify') > -1) {
         let payloadLink = event.postback.payload.replace('-Memeify', '');
-        sendPayloadMessage(sender, payloadLink);
-      } else if (event.postback.payload.indexOf('-MEMEIFY') > -1) {
-        let payloadID = event.postback.payload.replace('-MEMEIFY', '');
-        let payloadLink = "#link #http://i.imgur.com/" + imgID + " #[top_text] #[bot_text]";
         sendPayloadMessage(sender, payloadLink);
       } else {
         sendImageAttachment(sender, event.postback.payload);
