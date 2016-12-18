@@ -172,7 +172,6 @@ expressApp.post('/webhook/', function (req, res) {
             const element = [{
               "title": "Your Image",
               "image_url": link,
-              "item_url": link,
               "buttons": [
                 {
                   "type": "element_share",
@@ -182,6 +181,11 @@ expressApp.post('/webhook/', function (req, res) {
                   "title":"Add Text",
                   "payload":"#link #" + link + " #[top_text] #[bot_text]-Memeify",
                 },
+                {
+                  "type":"postback",
+                  "title":"Get Image",
+                  "payload": "" + link,
+                },
               ],
             }];
             sendImagesAsMessage(sender, element);
@@ -189,8 +193,12 @@ expressApp.post('/webhook/', function (req, res) {
         );
       });
     } else if (event.postback) {
-      let payloadLink = event.postback.payload.replace('-Memeify', '');
-      sendPayloadMessage(sender, payloadLink);
+      if (event.postback.payload.indexOf('-Memeify') > -1) {
+        let payloadLink = event.postback.payload.replace('-Memeify', '');
+        sendPayloadMessage(sender, payloadLink);
+      } else {
+        sendImageAttachment(sender, event.postback.payload);
+      }
     }
   }
   res.sendStatus(200)
@@ -229,10 +237,14 @@ function sendPopularMemesFromSpecificType(sender, memes) {
           const currElement = {
             "title": result[i].displayName,
             "image_url": result[i].instanceImageUrl,
-            "item_url": result[i].instanceImageUrl,
             "buttons": [
               {
                 "type": "element_share",
+              },
+              {
+                "type":"postback",
+                "title":"Get Image",
+                "payload": "" + result[i].instanceImageUrl,
               },
             ],
           }
@@ -306,10 +318,14 @@ function sendMemeifiedImage(sender, imageURL) {
         "elements": [{
           "title": "Your customized meme",
           "image_url": imageURL,
-          "item_url": imageURL,
           "buttons": [
             {
               "type": "element_share",
+            },
+            {
+              "type":"postback",
+              "title":"Get Image",
+              "payload": "" + imageUrl,
             },
           ],
         }]
@@ -360,7 +376,6 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
             const currElement = {
               "title": memeResult.displayName,
               "image_url": memeResult.imageUrl,
-              "item_url": memeResult.imageUrl,
               "buttons": [
                 {
                   "type": "element_share",
@@ -369,6 +384,11 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
                   "type":"postback",
                   "title":"Add Text",
                   "payload":"#search #" + typeText + " #[top_text] #[bot_text]-Memeify",
+                },
+                {
+                  "type":"postback",
+                  "title":"Get Image",
+                  "payload": "" + memeResult.imageUrl,
                 },
               ],
             }
@@ -420,10 +440,14 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
             const currElement = {
               "title": memeResult.displayName,
               "image_url": memeResult.instanceImageUrl,
-              "item_url": memeResult.instanceImageUrl,
               "buttons": [
                 {
                   "type": "element_share",
+                },
+                {
+                  "type":"postback",
+                  "title":"Get Image",
+                  "payload": "" + memeResult.instanceImageUrl,
                 },
               ],
             }
@@ -453,10 +477,14 @@ function sendTrendingTemplates(sender) {
           const currElement = {
             "title": result[i].displayName,
             "image_url": result[i].imageUrl,
-            "item_url": result[i].imageUrl,
             "buttons": [
               {
                 "type": "element_share",
+              },
+              {
+                "type":"postback",
+                "title":"Get Image",
+                "payload": "" + result[i].imageUrl,
               },
             ],
           }
@@ -528,6 +556,31 @@ function sendPayloadMessage(sender, link) {
           console.log('Error: ', response.body.error)
         }
       })
+    }
+  })
+}
+
+function sendImageAttachment(sender, url) {
+  const messageData =
+    "attachment":{
+      "type":"image",
+      "payload":{
+        "url":url,
+      }
+    };
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:process.env.TOKEN},
+    method: 'POST',
+    json: {
+      recipient: {id:sender},
+      message: messageData,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
     }
   })
 }
