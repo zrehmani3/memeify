@@ -202,6 +202,8 @@ expressApp.post('/webhook/', function (req, res) {
         sendSearchMessage(sender);
       } else if (event.postback.payload.indexOf('UPLOAD') > -1) {
         sendUploadMessage(sender);
+      } else if (event.postback.payload.indexOf('GET_STARTED') > -1) {
+        sendGetStartedMessage(sender);
       } else {
         sendImageAttachment(sender, event.postback.payload);
       }
@@ -658,6 +660,26 @@ function sendAdvancedMessage(sender) {
 function sendSearchMessage(sender) {
   let helperText = 'To search for memes, you can use #search #meme_type\n\nIf you want to search for memes and apply text, ' +
     'you can use #search #meme_type #top_text #bot_text, replacing top_text and bot_text with whatever you please!\n\nExample: #search #harambe #i am #always watching';
+  let messageData1 = { text: helperText };
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:process.env.TOKEN},
+    method: 'POST',
+    json: {
+        recipient: {id:sender},
+        message: messageData1,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+}
+
+function sendGetStartedMessage(sender) {
+  let helperText = "Welcome to memeify. Use the menu on the left hand side to get started, or just upload an image you're ready to memeify!";
   let messageData1 = { text: helperText };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
