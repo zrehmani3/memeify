@@ -199,9 +199,9 @@ expressApp.post('/webhook/', function (req, res) {
       } else if (event.postback.payload.indexOf('ADVANCED') > -1) {
         sendAdvancedMessage(sender);
       } else if (event.postback.payload.indexOf('SEARCH') > -1) {
-        sendAdvancedMessage(sender);
+        sendSearchMessage(sender);
       } else if (event.postback.payload.indexOf('UPLOAD') > -1) {
-        sendAdvancedMessage(sender);
+        sendUploadMessage(sender);
       } else {
         sendImageAttachment(sender, event.postback.payload);
       }
