@@ -657,7 +657,7 @@ function sendAdvancedMessage(sender) {
 
 function sendSearchMessage(sender) {
   let helperText = 'To search for memes, you can use #search #meme_type\n\nIf you want to search for memes and apply text, ' +
-    'you can use #search #meme_type #top_text #bot_text, replacing top_text and bot_text with what ever you please!\n\nExample: #search #harambe #i am #always watching';
+    'you can use #search #meme_type #top_text #bot_text, replacing top_text and bot_text with whatever you please!\n\nExample: #search #harambe #i am #always watching';
   let messageData1 = { text: helperText };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
