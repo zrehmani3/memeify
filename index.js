@@ -177,7 +177,7 @@ expressApp.post('/webhook/', function (req, res) {
                 {
                   "type":"postback",
                   "title":"Add Text",
-                  "payload":"#link #" + link + " #[top_text] #[bot_text]-Memeify",
+                  "payload":"#link #" + link + " #top_text #bot_text-Memeify",
                 },
                 {
                   "type":"postback",
@@ -197,6 +197,10 @@ expressApp.post('/webhook/', function (req, res) {
       } else if (event.postback.payload.indexOf('HELP') > -1) {
         sendHelpMessage(sender);
       } else if (event.postback.payload.indexOf('ADVANCED') > -1) {
+        sendAdvancedMessage(sender);
+      } else if (event.postback.payload.indexOf('SEARCH') > -1) {
+        sendAdvancedMessage(sender);
+      } else if (event.postback.payload.indexOf('UPLOAD') > -1) {
         sendAdvancedMessage(sender);
       } else {
         sendImageAttachment(sender, event.postback.payload);
@@ -406,7 +410,7 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
                 {
                   "type":"postback",
                   "title":"Add Text",
-                  "payload":"#search #" + typeText + " #[top_text] #[bot_text]-Memeify",
+                  "payload":"#search #" + typeText + " #top_text #bot_text-Memeify",
                 },
                 {
                   "type":"postback",
@@ -541,7 +545,7 @@ function sendImagesAsMessage(sender, images) {
 }
 
 function sendPayloadMessage(sender, link) {
-  let helperText = 'Copy/paste following to memeify the image, replacing [top_text] and [bot_text] with anything you want! Type #help for a specific example\n\n';
+  let helperText = 'Copy/paste following to memeify the image, replacing top_text and bot_text with anything you want! Type #help for a specific example\n\n';
   let messageData1 = { text: helperText };
   let messageData2 = { text: link };
   request({
@@ -608,13 +612,13 @@ function sendAdvancedMessage(sender) {
     "So we have a few more options for your meme dreams.\n\n" +
     "For starters, you can type '#popular' to see what are the current trending memes" +
     " (that include text) within the last 30 days, and if you just want " +
-    "the popular memes that include text for a specific type, simply try '#popular #[meme_type]'.\n" +
+    "the popular memes that include text for a specific type, simply try '#popular #meme_type'.\n" +
     "If you're not into text, you can discover current trending templates through '#discover'. -Memeify\n\n";
   let text2 =
-    "If you're trying to memeify through a link, you can use '#link #[url] #[top_text] #[bot_text]', and we'll memeify it for you.\n\n" +
-    "Also, if you're on web, you can attach an image, and before sending it you can add '#upload #[top_text] #[bot_text]', " +
+    "If you're trying to memeify through a link, you can use '#link #<url> #top_text #bot_text' (note: #link is the command, replace <url> with your meme's url), and we'll memeify it for you.\n\n" +
+    "Also, if you're on web, you can attach an image, and before sending it you can add '#upload #top_text #bot_text', " +
     "and we'll memeify it for you in one step instead of the usual two step process. " +
-    "You can also upload two pictures at the same time (on web) using the same '#upload #[top_text] #[bot_text]' command, and we'll " +
+    "You can also upload two pictures at the same time (on web) using the same '#upload #top_text #bot_text' command, and we'll " +
     "stack the two images on top of each other and apply the text to the stacked image. -Memeify";
   let messageData1 = { text: text1 };
   let messageData2 = { text: text2 };
@@ -651,15 +655,57 @@ function sendAdvancedMessage(sender) {
   })
 }
 
+function sendSearchMessage(sender) {
+  let helperText = 'To search for memes, you can use #search #meme_type\n\nIf you want to search for memes and apply text, ' +
+    'you can use #search #meme_type #top_text #bot_text, replacing top_text and bot_text with what ever you please!\n\nExample: #search #harambe #i am #always watching';
+  let messageData1 = { text: helperText };
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:process.env.TOKEN},
+    method: 'POST',
+    json: {
+        recipient: {id:sender},
+        message: messageData1,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+}
+
+function sendUploadMessage(sender) {
+  let helperText = "To use your own custom image, simply send the image to us as a message, and we'll help you memeify it.\n\nIf you're on web, you can attach the image " +
+    "and type #upload #top_text #bot_text before sending, and we'll mememify it for you in one step. See #advanced to learn how to stack 2 images.";
+  let messageData1 = { text: helperText };
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:process.env.TOKEN},
+    method: 'POST',
+    json: {
+        recipient: {id:sender},
+        message: messageData1,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+}
+
 function sendHelpMessage(sender) {
   let text1 =
     "Welcome! " +
-    "To search for memes, type '#search #[meme_name]' (without quotes and [ ])\n\n" +
+    "To search for memes, type '#search #meme_name' (without quotes)\n\n" +
     "You can also apply custom text to the memes you search for " +
-    "by typing '#search #[meme_name] #[top_text] #[bot_text]' (put NONE as [top_text] or [bot_text] to ignore).\n\n";
+    "by typing '#search #meme_name #top_text #bot_text' (put NONE as top_text or bot_text to ignore).\n\n";
   let text2 =
     "You can even upload your own image, and we'll walk you through the process of memeifying it! If you've got the hang of it, type #advanced for more commands.-Memeify";
-  let text3 = "Now here's an example! (NOTE there are no quotes or [ ]). Also, don't forget to get the image and share it with your friends! -Memeify";
+  let text3 = "Now here's an example! (NOTE there are no quotes). Also, don't forget to get the image and share it with your friends! -Memeify";
   let text4 = "#search #lebron james #i am #the goat";
   let messageData1 = { text: text1 };
   let messageData2 = { text: text2 };
