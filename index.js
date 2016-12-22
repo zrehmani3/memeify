@@ -42,7 +42,6 @@ expressApp.listen(expressApp.get('port'), function() {
 
 expressApp.post('/webhook/', function (req, res) {
   let messaging_events = req.body.entry[0].messaging
-  addPersistentMenu();
   for (let i = 0; i < messaging_events.length; i++) {
     let event = req.body.entry[0].messaging[i]
     let sender = event.sender.id
@@ -195,6 +194,10 @@ expressApp.post('/webhook/', function (req, res) {
       if (event.postback.payload.indexOf('-Memeify') > -1) {
         let payloadLink = event.postback.payload.replace('-Memeify', '');
         sendPayloadMessage(sender, payloadLink);
+      } else if (event.postback.payload.indexOf('HELP') > -1) {
+        sendHelpMessage(sender);
+      } else if (event.postback.payload.indexOf('ADVANCED') > -1) {
+        sendAdvancedMessage(sender);
       } else {
         sendImageAttachment(sender, event.postback.payload);
       }
@@ -202,42 +205,6 @@ expressApp.post('/webhook/', function (req, res) {
   }
   res.sendStatus(200)
 })
-
-function addPersistentMenu() {
-   request({
-    url: 'https://graph.facebook.com/v2.6/me/thread_settings',
-    qs: { access_token: PAGE_ACCESS_TOKEN },
-    method: 'POST',
-    json: {
-      setting_type : "call_to_actions",
-      thread_state : "existing_thread",
-      call_to_actions: [
-        {
-          type:"postback",
-          title:"Home",
-          payload:"home"
-        },
-        {
-          type:"postback",
-          title:"Joke",
-          payload:"joke"
-        },
-        {
-          type:"web_url",
-          title:"DMS Software Website",
-          url:"http://www.dynamic-memory.com/"
-        }
-      ]
-    }
-  }, function(error, response, body) {
-    console.log(response)
-    if (error) {
-        console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-        console.log('Error: ', response.body.error)
-    }
-  })
-}
 
 function extractInfoFromInputQuery(inputQuery, infoIndex) {
   return inputQuery[infoIndex].trim();
