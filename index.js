@@ -570,7 +570,7 @@ function sendImagesAsMessage(sender, images) {
 }
 
 function sendPayloadMessage(sender, link) {
-  let helperText = 'Copy/paste following to memeify the image, replacing top_text and bot_text with anything you want! Type #help for a specific example\n\n';
+  let helperText = 'Copy/paste following to memeify the image, replacing top_text and bot_text with anything you want (or set top_text or bot_text to NONE if you want to ignore one of them)! Type #help for a specific example\n\n';
   let messageData1 = { text: helperText };
   let messageData2 = { text: link };
   request({
@@ -682,7 +682,7 @@ function sendAdvancedMessage(sender) {
 
 function sendSearchMessage(sender) {
   let helperText = 'To search for memes, you can use #search #meme_type\n\nIf you want to search for memes and apply text, ' +
-    'you can use #search #meme_type #top_text #bot_text, replacing top_text and bot_text with whatever you please!\n\nExample: #search #harambe #i am #always watching';
+    'you can use #search #meme_type #top_text #bot_text, replacing top_text and bot_text with whatever you please! (or set top_text or bot_text to NONE if you want to ignore one of them)\n\nExample: #search #harambe #i am #always watching';
   let messageData1 = { text: helperText };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -723,7 +723,7 @@ function sendGetStartedMessage(sender) {
 
 function sendUploadMessage(sender) {
   let helperText = "To use your own custom image, simply send the image to us as a message, and we'll help you memeify it.\n\nIf you're on web, you can attach the image " +
-    "and type #upload #top_text #bot_text before sending, and we'll mememify it for you in one step. See #advanced to learn how to stack 2 images.";
+    "and type #upload #top_text #bot_text before sending, and we'll mememify it for you in one step  (set top_text or bot_text to NONE if you want to ignore one of them). See #advanced to learn how to stack 2 images.";
   let messageData1 = { text: helperText };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
