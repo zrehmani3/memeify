@@ -46,6 +46,7 @@ expressApp.post('/webhook/', function (req, res) {
     let event = req.body.entry[0].messaging[i]
     let sender = event.sender.id
     if (event.message && event.message.text) {
+      sendPlsWaitMessage(sender);
       let text = event.message.text.trim();
       if (text.indexOf('-Memeify') === -1) {
         if (text.toLowerCase().indexOf('#search') > -1) {
@@ -299,6 +300,26 @@ function sendGenericErrorMessage(sender) {
   const genericErrorMessageText = 'Sorry, I couldnt understand your request. ' +
     'Type #help for information on how to use the bot.';
   let messageData = { text: genericErrorMessageText };
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:process.env.TOKEN},
+    method: 'POST',
+    json: {
+      recipient: {id:sender},
+      message: messageData,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending messages: ', error)
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error)
+    }
+  })
+}
+
+function sendPlsWaitMessage(sender) {
+  const plsWaitMessageText = 'Request received! Processing...';
+  let messageData = { text: plsWaitMessageText };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:process.env.TOKEN},
