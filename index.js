@@ -214,8 +214,8 @@ function uploadStackedImages(sender, attachedURL1, attachedURL2, topText, botTex
 }
 
 /*
- * Since FB's CDN can't be used with the API I'm using (since it's not a publically)
- * distributable image, I need to upload it to imgur to get a permanent link, and
+ * Since FB's CDN can't be used with the API I'm using (since it's not a publically
+ * distributable image), I need to upload it to imgur to get a permanent link, and
  * then we can use the provided open source meme generator API from that link
  */
 function uploadRawImage(sender, imageUrl) {
