@@ -358,21 +358,7 @@ function sendMemeifiedImage(sender, imageURL) {
       }
     }
   };
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
+  request(getRequestParams(messageData));
 }
 
 function sendMemeFromPopularQuery(sender, result, typeText) {
@@ -519,25 +505,11 @@ function sendImagesAsMessage(sender, images) {
       "type": "template",
       "payload": {
         "template_type": "generic",
-        "elements": images
+        "elements": images,
       }
     }
   }
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
+  request(getRequestParams(messageData));
 }
 
 function sendImageAttachment(sender, url) {
@@ -549,57 +521,64 @@ function sendImageAttachment(sender, url) {
       }
     }
   };
-  request({
+  request(getRequestParams(messageData));
+}
+
+function sendTextMessage(sender, text) {
+  let messageData = { text: text };
+  request(getRequestParams(messageData));
+}
+
+function sendPayloadMessage(sender, link) {
+  const messageData1 = { text: PAYLOAD_MESSAGE };
+  const messageData2 = { text: link };
+  request(getRequestParams(messageData1),
+    function(error, response, body) {
+      request(getRequestParams(messageData2))
+    }
+  );
+}
+
+function sendHelpMessage(sender) {
+  const messageData1 = { text: HELP_MESSAGE_1 };
+  const messageData2 = { text: HELP_MESSAGE_2 };
+  const messageData3 = { text: HELP_MESSAGE_3 };
+  const messageData4 = { text: HELP_MESSAGE_4 };
+  request(getRequestParams(messageData1),
+    function(error, response, body) {
+      request(getRequestParams(messageData2),
+        function(error, response, body) {
+          request(getRequestParams(messageData3),
+            function(error, response, body) {
+              request(getRequestParams(messageData4))
+            }
+          )
+        }
+      )
+    }
+  );
+}
+
+function sendAdvancedMessage(sender) {
+  const messageData1 = { text: ADVANCED_MESSAGE_1 };
+  const messageData2 = { text: ADVANCED_MESSAGE_2 };
+  request(getRequestParams(messageData1),
+    function(error, response, body) {
+      request(getRequestParams(messageData2))
+    }
+  );
+}
+
+function getRequestParams(messageData) {
+  return {
     url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
+    qs: { access_token:process.env.TOKEN },
     method: 'POST',
     json: {
       recipient: {id:sender},
       message: messageData,
     }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
-}
-
-function sendTextMessage(sender, text) {
-  let messageData = { text: text };
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-        recipient: {id:sender},
-        message: messageData,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
-}
-
-function sendPayloadMessage(sender, link) {
-  sendTextMessage(sender, PAYLOAD_MESSAGE);
-  sendTextMessage(sender, link);
-}
-
-function sendHelpMessage(sender) {
-  sendTextMessage(sender, HELP_MESSAGE_1);
-  sendTextMessage(sender, HELP_MESSAGE_2);
-  sendTextMessage(sender, HELP_MESSAGE_3);
-  sendTextMessage(sender, HELP_MESSAGE_4);
-}
-
-function sendAdvancedMessage(sender) {
-  sendTextMessage(sender, ADVANCED_MESSAGE_1);
-  sendTextMessage(sender, ADVANCED_MESSAGE_2);
+  };
 }
 
 /**
