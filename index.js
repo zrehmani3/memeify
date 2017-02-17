@@ -235,7 +235,7 @@ function uploadRawImage(sender, imageUrl) {
           "buttons": [
             getPayloadButton(
               "Add Text",
-              "#link #" + link + " #top_text #bot_text-Memeify",
+              "#link #" + link + " #top_text #bot_text-Memeify"
             ),
             getPayloadButton("Get Image", "" + link),
           ],
@@ -372,7 +372,7 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
               "buttons": [
                 getPayloadButton(
                   "Add Text",
-                  "#search #" + typeText + " #top_text #bot_text-Memeify",
+                  "#search #" + typeText + " #top_text #bot_text-Memeify"
                 ),
                 getPayloadButton("Get Image", memeResult.imageUrl),
               ],
