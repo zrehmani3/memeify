@@ -233,16 +233,11 @@ function uploadRawImage(sender, imageUrl) {
           "title": "Your Image",
           "image_url": link,
           "buttons": [
-            {
-              "type":"postback",
-              "title":"Add Text",
-              "payload":"#link #" + link + " #top_text #bot_text-Memeify",
-            },
-            {
-              "type":"postback",
-              "title":"Get Image",
-              "payload": "" + link,
-            },
+            getPayloadButton(
+              "Add Text",
+              "#link #" + link + " #top_text #bot_text-Memeify",
+            ),
+            getPayloadButton("Get Image", "" + link),
           ],
         }];
         sendImagesAsMessage(sender, element);
@@ -285,11 +280,7 @@ function sendPopularMemesFromSpecificType(sender, memes) {
             "title": result[i].displayName,
             "image_url": result[i].instanceImageUrl,
             "buttons": [
-              {
-                "type":"postback",
-                "title":"Get Image",
-                "payload": "" + result[i].instanceImageUrl,
-              },
+              getPayloadButton("Get Image", result[i].instanceImageUrl),
             ],
           }
           images.push(currElement);
@@ -342,11 +333,7 @@ function sendMemeifiedImage(sender, imageURL) {
           "title": "Your customized meme",
           "image_url": imageURL,
           "buttons": [
-            {
-              "type":"postback",
-              "title":"Get Image",
-              "payload": "" + imageURL,
-            },
+            getPayloadButton("Get Image", imageURL),
           ],
         }]
       }
@@ -383,16 +370,11 @@ function sendMemeFromPopularQuery(sender, result, typeText) {
               "title": memeResult.displayName,
               "image_url": memeResult.imageUrl,
               "buttons": [
-                {
-                  "type":"postback",
-                  "title":"Add Text",
-                  "payload":"#search #" + typeText + " #top_text #bot_text-Memeify",
-                },
-                {
-                  "type":"postback",
-                  "title":"Get Image",
-                  "payload": "" + memeResult.imageUrl,
-                },
+                getPayloadButton(
+                  "Add Text",
+                  "#search #" + typeText + " #top_text #bot_text-Memeify",
+                ),
+                getPayloadButton("Get Image", memeResult.imageUrl),
               ],
             }
             images.push(currElement);
@@ -444,11 +426,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
               "title": memeResult.displayName,
               "image_url": memeResult.instanceImageUrl,
               "buttons": [
-                {
-                  "type":"postback",
-                  "title":"Get Image",
-                  "payload": "" + memeResult.instanceImageUrl,
-                },
+                getPayloadButton("Get Image", "" + memeResult.instanceImageUrl),
               ],
             }
             images.push(currElement);
@@ -478,11 +456,7 @@ function sendTrendingTemplates(sender) {
             "title": result[i].displayName,
             "image_url": result[i].imageUrl,
             "buttons": [
-              {
-                "type":"postback",
-                "title":"Get Image",
-                "payload": "" + result[i].imageUrl,
-              },
+              getPayloadButton("Get Image", "" + result[i].imageUrl),
             ],
           }
           images.push(currElement);
@@ -561,6 +535,14 @@ function sendAdvancedMessage(sender) {
       request(getRequestParams(sender, messageData2))
     }
   );
+}
+
+function getPayloadButton(title, payload) {
+  return {
+    "type":"postback",
+    "title": title,
+    "payload": payload,
+  };
 }
 
 function getRequestParams(sender, messageData) {
