@@ -81,9 +81,9 @@ expressApp.post('/webhook/', function (req, res) {
       sendTextMessage(sender, PROCESSING_REQUEST_MESSAGE);
       let text = event.message.text.trim();
       if (text.indexOf('-Memeify') === -1) {
+        const inputQuery = text.split('#');
+        inputQuery.shift();
         if (text.toLowerCase().indexOf('#search') > -1) {
-          const inputQuery = text.split('#');
-          inputQuery.shift();
           if (inputQuery.length === 4) {
             // Search for meme then apply custom text to it
             let typeText = extractInfoFromInputQuery(inputQuery, 1);
@@ -96,8 +96,6 @@ expressApp.post('/webhook/', function (req, res) {
             getGeneratorIDFromQueryType(sender, typeText, null, null, false);
           }
         } else if (text.toLowerCase().indexOf('#popular') > -1) {
-          const inputQuery = text.split('#');
-          inputQuery.shift();
           if (inputQuery.length === 2) {
             // We have specified that we're looking for popular memes (instances)
             // pertaining to a specific type
@@ -108,15 +106,11 @@ expressApp.post('/webhook/', function (req, res) {
             sendPopularMemesFromSpecificType(sender, null);
           }
         } else if (text.toLowerCase().indexOf('#link') > -1) {
-          const inputQuery = text.split('#');
-          inputQuery.shift();
           let linkText = extractInfoFromInputQuery(inputQuery, 1);
           let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
           let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 3));
           getCustomMemeFromLink(sender, topText, botText, linkText);
         } else if (text.toLowerCase().indexOf('#upload') > -1 && event.message.attachments) {
-          const inputQuery = text.split('#');
-          inputQuery.shift();
           let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 1));
           let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
           if (event.message.attachments.length === 1) {
@@ -580,44 +574,3 @@ function getRequestParams(sender, messageData) {
     }
   };
 }
-
-/**
-  Persistent menu CTA Script:
-  curl -X POST -H "Content-Type: application/json" -d '{
-    "setting_type" : "call_to_actions",
-    "thread_state" : "existing_thread",
-    "call_to_actions":[
-      {
-        "type":"postback",
-        "title":"#help",
-        "payload":"HELP"
-      },
-      {
-        "type":"postback",
-        "title":"#advanced",
-        "payload":"ADVANCED"
-      },
-      {
-        "type":"postback",
-        "title":"#search for memes",
-        "payload":"SEARCH"
-      },
-      {
-        "type":"postback",
-        "title":"#upload your own image",
-        "payload":"UPLOAD"
-      },
-    ]
-  }' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=process.env.TOKEN"
-
-  Get started CTA Script:
-  curl -X POST -H "Content-Type: application/json" -d '{
-    "setting_type":"call_to_actions",
-    "thread_state":"new_thread",
-    "call_to_actions":[
-      {
-        "payload":"GET_STARTED"
-      }
-    ]
-  }' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=process.env.TOKEN"
-*/
