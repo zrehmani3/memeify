@@ -723,7 +723,7 @@ function sendGetStartedMessage(sender) {
 
 function sendUploadMessage(sender) {
   let helperText = "To use your own custom image, simply send the image to us as a message, and we'll help you memeify it.\n\nIf you're on web, you can attach the image " +
-    "and type #upload #top_text #bot_text before sending, and we'll mememify it for you in one step  (set top_text or bot_text to NONE if you want to ignore one of them). See #advanced to learn how to stack 2 images.";
+    "and type #upload #top_text #bot_text before sending, and we'll mememify it for you in one step (set top_text or bot_text to NONE if you want to ignore one of them). See #advanced to learn how to stack 2 images.";
   let messageData1 = { text: helperText };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
