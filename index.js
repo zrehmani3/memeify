@@ -358,7 +358,7 @@ function sendMemeifiedImage(sender, imageURL) {
       }
     }
   };
-  request(getRequestParams(messageData));
+  request(getRequestParams(sender, messageData));
 }
 
 function sendMemeFromPopularQuery(sender, result, typeText) {
@@ -509,7 +509,7 @@ function sendImagesAsMessage(sender, images) {
       }
     }
   }
-  request(getRequestParams(messageData));
+  request(getRequestParams(sender, messageData));
 }
 
 function sendImageAttachment(sender, url) {
@@ -521,20 +521,20 @@ function sendImageAttachment(sender, url) {
       }
     }
   };
-  request(getRequestParams(messageData));
+  request(getRequestParams(sender, messageData));
 }
 
 function sendTextMessage(sender, text) {
   let messageData = { text: text };
-  request(getRequestParams(messageData));
+  request(getRequestParams(sender, messageData));
 }
 
 function sendPayloadMessage(sender, link) {
   const messageData1 = { text: PAYLOAD_MESSAGE };
   const messageData2 = { text: link };
-  request(getRequestParams(messageData1),
+  request(getRequestParams(sender, messageData1),
     function(error, response, body) {
-      request(getRequestParams(messageData2))
+      request(getRequestParams(sender, messageData2))
     }
   );
 }
@@ -544,13 +544,13 @@ function sendHelpMessage(sender) {
   const messageData2 = { text: HELP_MESSAGE_2 };
   const messageData3 = { text: HELP_MESSAGE_3 };
   const messageData4 = { text: HELP_MESSAGE_4 };
-  request(getRequestParams(messageData1),
+  request(getRequestParams(sender, messageData1),
     function(error, response, body) {
-      request(getRequestParams(messageData2),
+      request(getRequestParams(sender, messageData2),
         function(error, response, body) {
-          request(getRequestParams(messageData3),
+          request(getRequestParams(sender, messageData3),
             function(error, response, body) {
-              request(getRequestParams(messageData4))
+              request(getRequestParams(sender, messageData4))
             }
           )
         }
@@ -562,20 +562,20 @@ function sendHelpMessage(sender) {
 function sendAdvancedMessage(sender) {
   const messageData1 = { text: ADVANCED_MESSAGE_1 };
   const messageData2 = { text: ADVANCED_MESSAGE_2 };
-  request(getRequestParams(messageData1),
+  request(getRequestParams(sender, messageData1),
     function(error, response, body) {
-      request(getRequestParams(messageData2))
+      request(getRequestParams(sender, messageData2))
     }
   );
 }
 
-function getRequestParams(messageData) {
+function getRequestParams(sender, messageData) {
   return {
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token:process.env.TOKEN },
     method: 'POST',
     json: {
-      recipient: {id:sender},
+      recipient: { id: sender },
       message: messageData,
     }
   };
