@@ -13,6 +13,38 @@ const request = require('request');
 
 const MAX_CARDS_IN_HSCROLL = 10;
 
+// Strings
+const SEARCH_MEMES_MESSAGE = 'To search for memes, you can use #search #meme_type\n\nIf you want to search for memes and apply text, ' +
+  'you can use #search #meme_type #top_text #bot_text, replacing top_text and bot_text with whatever you please! (or set top_text or bot_text to NONE if you want to ignore one of them)\n\nExample: #search #harambe #i am #always watching';
+const GET_STARTED_MESSAGE = "Welcome to memeify. Use the menu on the left hand side to get started, or just upload an image you're ready to memeify!";
+const UPLOAD_IMAGE_MESSAGE = "To use your own custom image, simply send the image to us as a message, and we'll help you memeify it.\n\nIf you're on web, you can attach the image " +
+  "and type #upload #top_text #bot_text before sending, and we'll mememify it for you in one step (set top_text or bot_text to NONE if you want to ignore one of them). See #advanced to learn how to stack 2 images.";
+const HELP_MESSAGE_1 =
+  "Welcome! " +
+  "To search for memes, type '#search #meme_name' (without quotes)\n\n" +
+  "You can also apply custom text to the memes you search for " +
+  "by typing '#search #meme_name #top_text #bot_text' (put NONE as top_text or bot_text to ignore).\n\n";
+const HELP_MESSAGE_2 =
+  "You can even upload your own image, and we'll walk you through the process of memeifying it! If you've got the hang of it, type #advanced for more commands.-Memeify";
+const HELP_MESSAGE_3 = "Now here's an example! (NOTE there are no quotes). Also, don't forget to get the image and share it with your friends! -Memeify";
+const HELP_MESSAGE_4 = "#search #lebron james #i am #the goat";
+const ADVANCED_MESSAGE_1 =
+  "So we have a few more options for your meme dreams.\n\n" +
+  "For starters, you can type '#popular' to see what are the current trending memes" +
+  " (that include text) within the last 30 days, and if you just want " +
+  "the popular memes that include text for a specific type, simply try '#popular #meme_type'.\n" +
+  "If you're not into text, you can discover current trending templates through '#discover'. -Memeify\n\n";
+const ADVANCED_MESSAGE_2 =
+  "If you're trying to memeify through a link, you can use '#link #<url> #top_text #bot_text' (note: #link is the command, replace <url> with your meme's url), and we'll memeify it for you.\n\n" +
+  "Also, if you're on web, you can attach an image, and before sending it you can add '#upload #top_text #bot_text', " +
+  "and we'll memeify it for you in one step instead of the usual two step process. " +
+  "You can also upload two pictures at the same time (on web) using the same '#upload #top_text #bot_text' command, and we'll " +
+  "stack the two images on top of each other and apply the text to the stacked image. -Memeify";
+const PAYLOAD_MESSAGE = 'Copy/paste following to memeify the image, replacing top_text and bot_text with anything you want (or set top_text or bot_text to NONE if you want to ignore one of them)! Type #help for a specific example\n\n';
+const GENERIC_ERROR_MESSAGE = 'Sorry, I couldnt understand your request. ' +
+  'Type #help for information on how to use the bot.';
+const PROCESSING_REQUEST_MESSAGE = 'Request received! Processing...';
+
 expressApp.set('port', (process.env.PORT || 5000))
 
 // Process application/x-www-form-urlencoded
@@ -46,7 +78,7 @@ expressApp.post('/webhook/', function (req, res) {
     let event = req.body.entry[0].messaging[i]
     let sender = event.sender.id
     if (event.message && event.message.text) {
-      sendPlsWaitMessage(sender);
+      sendTextMessage(sender, PROCESSING_REQUEST_MESSAGE);
       let text = event.message.text.trim();
       if (text.indexOf('-Memeify') === -1) {
         if (text.toLowerCase().indexOf('#search') > -1) {
@@ -76,7 +108,6 @@ expressApp.post('/webhook/', function (req, res) {
             sendPopularMemesFromSpecificType(sender, null);
           }
         } else if (text.toLowerCase().indexOf('#link') > -1) {
-          // Memify using existing link
           const inputQuery = text.split('#');
           inputQuery.shift();
           let linkText = extractInfoFromInputQuery(inputQuery, 1);
@@ -84,76 +115,26 @@ expressApp.post('/webhook/', function (req, res) {
           let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 3));
           getCustomMemeFromLink(sender, topText, botText, linkText);
         } else if (text.toLowerCase().indexOf('#upload') > -1 && event.message.attachments) {
-          // Upload image and memeify. Users can add two images to stack them on
-          // top of each other to memeify.
           const inputQuery = text.split('#');
           inputQuery.shift();
           let topText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 1));
           let botText = sanitizeMemeText(extractInfoFromInputQuery(inputQuery, 2));
           if (event.message.attachments.length === 1) {
             const attachedURL = event.message.attachments[0].payload.url;
-            imgur.uploadUrl(attachedURL)
-              .then(function (json) {
-                getCustomMemeFromLink(sender, topText, botText, json.data.link);
-              }
-            )
+            uploadImage(sender, attachedURL1, topText, botText);
           } else if (event.message.attachments.length === 2) {
-            let imageInputLen = 2;
             const attachedURL1 = event.message.attachments[0].payload.url;
             const attachedURL2 = event.message.attachments[1].payload.url;
-            let attachedImages = [attachedURL1, attachedURL2];
-            let uploadedImagesLink = [];
-            function postAttachmentsUpload(uploadedImagesLink) {
-              let download = function(uri, filename, callback) {
-                request.head(uri, function(err, res, body) {
-                  request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-                });
-              };
-              const firstImageName = '' + sender + '1.png';
-              const secondImageName = '' + sender + '2.png';
-              const thirdImageName = '' + sender + '3.png'
-              download(uploadedImagesLink[0], firstImageName, function() {
-                download(uploadedImagesLink[1], secondImageName, function() {
-                  gm(firstImageName).append(secondImageName)
-                    .write(thirdImageName, function (err) {
-                      if (!err) {
-                        imgur.uploadFile(thirdImageName)
-                          .then(function (json) {
-                            getCustomMemeFromLink(sender, topText, botText, json.data.link);
-                          }
-                        )
-                      }
-                    }
-                  );
-                });
-              });
-            }
-            (function uploadImages(i, imageInputLen, attachedImages, uploadedImagesLink, callback) {
-              if (i < imageInputLen) {
-                const currAttachedURL = attachedImages[i];
-                imgur.uploadUrl(currAttachedURL)
-                  .then(function (json) {
-                    uploadedImagesLink.push(json.data.link);
-                    uploadImages(i + 1, imageInputLen, attachedImages, uploadedImagesLink, callback)
-                  }
-                )
-              } else {
-                callback(uploadedImagesLink);
-              }
-            })(0, imageInputLen, attachedImages, uploadedImagesLink, postAttachmentsUpload)
+            uploadStackedImages(sender, attachedURL1, attachedURL2, topText, botText);
           }
         } else if (text.toLowerCase().indexOf('#discover') > -1) {
           sendTrendingTemplates(sender)
-          // Display popular memes
         } else if (text.toLowerCase().indexOf('#help') > -1) {
-          // Send help message
           sendHelpMessage(sender);
         } else if (text.toLowerCase().indexOf('#advanced') > -1) {
-          // Send advanced help message
           sendAdvancedMessage(sender);
         } else {
-          // Default error message
-          sendGenericErrorMessage(sender);
+          sendTextMessage(sender, GENERIC_ERROR_MESSAGE);
         }
       }
     } else if (event.message && event.message.attachments
@@ -163,36 +144,7 @@ expressApp.post('/webhook/', function (req, res) {
       && event.message.attachments[0].payload.url !== null
     ) {
       // We are uploading an image only
-      const uploadedImageName = '' + sender + '.png';
-      let download = function(uri, filename, callback) {
-        request.head(uri, function(err, res, body) {
-          request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-        });
-      };
-      download(event.message.attachments[0].payload.url, uploadedImageName, function() {
-        imgur.uploadFile(uploadedImageName)
-          .then(function (json) {
-            const link = json.data.link;
-            const element = [{
-              "title": "Your Image",
-              "image_url": link,
-              "buttons": [
-                {
-                  "type":"postback",
-                  "title":"Add Text",
-                  "payload":"#link #" + link + " #top_text #bot_text-Memeify",
-                },
-                {
-                  "type":"postback",
-                  "title":"Get Image",
-                  "payload": "" + link,
-                },
-              ],
-            }];
-            sendImagesAsMessage(sender, element);
-          }
-        );
-      });
+      uploadRawImage(sender, event.message.attachments[0].payload.url);
     } else if (event.postback) {
       if (event.postback.payload.indexOf('-Memeify') > -1) {
         let payloadLink = event.postback.payload.replace('-Memeify', '');
@@ -202,11 +154,11 @@ expressApp.post('/webhook/', function (req, res) {
       } else if (event.postback.payload.indexOf('ADVANCED') > -1) {
         sendAdvancedMessage(sender);
       } else if (event.postback.payload.indexOf('SEARCH') > -1) {
-        sendSearchMessage(sender);
+        sendTextMessage(sender, SEARCH_MEMES_MESSAGE);
       } else if (event.postback.payload.indexOf('UPLOAD') > -1) {
-        sendUploadMessage(sender);
+        sendTextMessage(sender, UPLOAD_IMAGE_MESSAGE);
       } else if (event.postback.payload.indexOf('GET_STARTED') > -1) {
-        sendGetStartedMessage(sender);
+        sendTextMessage(sender, GET_STARTED_MESSAGE);
       } else {
         sendImageAttachment(sender, event.postback.payload);
       }
@@ -214,6 +166,96 @@ expressApp.post('/webhook/', function (req, res) {
   }
   res.sendStatus(200)
 })
+
+function uploadImage(sender, attachedURL, topText, botText) {
+  imgur.uploadUrl(attachedURL)
+    .then(function (json) {
+      getCustomMemeFromLink(sender, topText, botText, json.data.link);
+    }
+  )
+}
+
+function uploadStackedImages(sender, attachedURL1, attachedURL2, topText, botText) {
+  let imageInputLen = 2;
+  let attachedImages = [attachedURL1, attachedURL2];
+  let uploadedImagesLink = [];
+  function postAttachmentsUpload(uploadedImagesLink) {
+    let download = function(uri, filename, callback) {
+      request.head(uri, function(err, res, body) {
+        request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+      });
+    };
+    const firstImageName = '' + sender + '1.png';
+    const secondImageName = '' + sender + '2.png';
+    const thirdImageName = '' + sender + '3.png'
+    download(uploadedImagesLink[0], firstImageName, function() {
+      download(uploadedImagesLink[1], secondImageName, function() {
+        gm(firstImageName).append(secondImageName)
+          .write(thirdImageName, function (err) {
+            if (!err) {
+              imgur.uploadFile(thirdImageName)
+                .then(function (json) {
+                  getCustomMemeFromLink(sender, topText, botText, json.data.link);
+                }
+              )
+            }
+          }
+        );
+      });
+    });
+  }
+  (function uploadImages(i, imageInputLen, attachedImages, uploadedImagesLink, callback) {
+    if (i < imageInputLen) {
+      const currAttachedURL = attachedImages[i];
+      imgur.uploadUrl(currAttachedURL)
+        .then(function (json) {
+          uploadedImagesLink.push(json.data.link);
+          uploadImages(i + 1, imageInputLen, attachedImages, uploadedImagesLink, callback)
+        }
+      )
+    } else {
+      callback(uploadedImagesLink);
+    }
+  })(0, imageInputLen, attachedImages, uploadedImagesLink, postAttachmentsUpload)
+}
+
+/*
+ * Since FB's CDN can't be used with the API I'm using (since it's not a publically)
+ * distributable image, I need to upload it to imgur to get a permanent link, and
+ * then we can use the provided open source meme generator API from that link
+ */
+function uploadRawImage(sender, imageUrl) {
+  const uploadedImageName = '' + sender + '.png';
+  let download = function(uri, filename, callback) {
+    request.head(uri, function(err, res, body) {
+      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    });
+  };
+  download(imageUrl, uploadedImageName, function() {
+    imgur.uploadFile(uploadedImageName)
+      .then(function (json) {
+        const link = json.data.link;
+        const element = [{
+          "title": "Your Image",
+          "image_url": link,
+          "buttons": [
+            {
+              "type":"postback",
+              "title":"Add Text",
+              "payload":"#link #" + link + " #top_text #bot_text-Memeify",
+            },
+            {
+              "type":"postback",
+              "title":"Get Image",
+              "payload": "" + link,
+            },
+          ],
+        }];
+        sendImagesAsMessage(sender, element);
+      }
+    );
+  });
+}
 
 function extractInfoFromInputQuery(inputQuery, infoIndex) {
   return inputQuery[infoIndex].trim();
@@ -294,77 +336,6 @@ function getGeneratorIDFromQueryType(sender, typeText, topText, botText, showIns
       }
     })
   )
-}
-
-function sendGenericErrorMessage(sender) {
-  const genericErrorMessageText = 'Sorry, I couldnt understand your request. ' +
-    'Type #help for information on how to use the bot.';
-  let messageData = { text: genericErrorMessageText };
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
-}
-
-function sendPlsWaitMessage(sender) {
-  const plsWaitMessageText = 'Request received! Processing...';
-  let messageData = { text: plsWaitMessageText };
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
-}
-
-function addPersistentMenu() {
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-      setting_type : "call_to_actions",
-      thread_state : "existing_thread",
-      call_to_actions: [
-        {
-          type:"postback",
-          title:"#help",
-          payload:"#help"
-        },
-        {
-          type:"postback",
-          title:"#advanced",
-          payload:"#advanced"
-        },
-      ],
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
 }
 
 function sendMemeifiedImage(sender, imageURL) {
@@ -514,7 +485,7 @@ function sendCustomMemeFromPopular(sender, result, topText, botText) {
 function sendTrendingTemplates(sender) {
   request(
     'http://version1.api.memegenerator.net/Generators_Select_ByPopular?',
-    + 'days=' + 30, // Keep it at 30 or all-time? Or let the user decide?
+    + 'days=' + 30, // Keep it at 30 or all-time?
     (function (error, response, body) {
       let images = [];
       if (!error && response.statusCode == 200) {
@@ -569,43 +540,6 @@ function sendImagesAsMessage(sender, images) {
   })
 }
 
-function sendPayloadMessage(sender, link) {
-  let helperText = 'Copy/paste following to memeify the image, replacing top_text and bot_text with anything you want (or set top_text or bot_text to NONE if you want to ignore one of them)! Type #help for a specific example\n\n';
-  let messageData1 = { text: helperText };
-  let messageData2 = { text: link };
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-        recipient: {id:sender},
-        message: messageData1,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    } else {
-      request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:process.env.TOKEN},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData2,
-        }
-      }, function(error, response, body) {
-        if (error) {
-          console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-          console.log('Error: ', response.body.error)
-        }
-      })
-    }
-  })
-}
-
 function sendImageAttachment(sender, url) {
   const messageData = {
     attachment: {
@@ -632,65 +566,15 @@ function sendImageAttachment(sender, url) {
   })
 }
 
-function sendAdvancedMessage(sender) {
-  let text1 =
-    "So we have a few more options for your meme dreams.\n\n" +
-    "For starters, you can type '#popular' to see what are the current trending memes" +
-    " (that include text) within the last 30 days, and if you just want " +
-    "the popular memes that include text for a specific type, simply try '#popular #meme_type'.\n" +
-    "If you're not into text, you can discover current trending templates through '#discover'. -Memeify\n\n";
-  let text2 =
-    "If you're trying to memeify through a link, you can use '#link #<url> #top_text #bot_text' (note: #link is the command, replace <url> with your meme's url), and we'll memeify it for you.\n\n" +
-    "Also, if you're on web, you can attach an image, and before sending it you can add '#upload #top_text #bot_text', " +
-    "and we'll memeify it for you in one step instead of the usual two step process. " +
-    "You can also upload two pictures at the same time (on web) using the same '#upload #top_text #bot_text' command, and we'll " +
-    "stack the two images on top of each other and apply the text to the stacked image. -Memeify";
-  let messageData1 = { text: text1 };
-  let messageData2 = { text: text2 };
+function sendTextMessage(sender, text) {
+  let messageData = { text: text };
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:process.env.TOKEN},
     method: 'POST',
     json: {
         recipient: {id:sender},
-        message: messageData1,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    } else {
-      request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:process.env.TOKEN},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData2,
-        }
-      }, function(error, response, body) {
-        if (error) {
-          console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-          console.log('Error: ', response.body.error)
-        }
-      })
-    }
-  })
-}
-
-function sendSearchMessage(sender) {
-  let helperText = 'To search for memes, you can use #search #meme_type\n\nIf you want to search for memes and apply text, ' +
-    'you can use #search #meme_type #top_text #bot_text, replacing top_text and bot_text with whatever you please! (or set top_text or bot_text to NONE if you want to ignore one of them)\n\nExample: #search #harambe #i am #always watching';
-  let messageData1 = { text: helperText };
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-        recipient: {id:sender},
-        message: messageData1,
+        message: messageData,
     }
   }, function(error, response, body) {
     if (error) {
@@ -701,124 +585,21 @@ function sendSearchMessage(sender) {
   })
 }
 
-function sendGetStartedMessage(sender) {
-  let helperText = "Welcome to memeify. Use the menu on the left hand side to get started, or just upload an image you're ready to memeify!";
-  let messageData1 = { text: helperText };
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-        recipient: {id:sender},
-        message: messageData1,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
-}
-
-function sendUploadMessage(sender) {
-  let helperText = "To use your own custom image, simply send the image to us as a message, and we'll help you memeify it.\n\nIf you're on web, you can attach the image " +
-    "and type #upload #top_text #bot_text before sending, and we'll mememify it for you in one step (set top_text or bot_text to NONE if you want to ignore one of them). See #advanced to learn how to stack 2 images.";
-  let messageData1 = { text: helperText };
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-        recipient: {id:sender},
-        message: messageData1,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    }
-  })
+function sendPayloadMessage(sender, link) {
+  sendTextMessage(sender, PAYLOAD_MESSAGE);
+  sendTextMessage(sender, link);
 }
 
 function sendHelpMessage(sender) {
-  let text1 =
-    "Welcome! " +
-    "To search for memes, type '#search #meme_name' (without quotes)\n\n" +
-    "You can also apply custom text to the memes you search for " +
-    "by typing '#search #meme_name #top_text #bot_text' (put NONE as top_text or bot_text to ignore).\n\n";
-  let text2 =
-    "You can even upload your own image, and we'll walk you through the process of memeifying it! If you've got the hang of it, type #advanced for more commands.-Memeify";
-  let text3 = "Now here's an example! (NOTE there are no quotes). Also, don't forget to get the image and share it with your friends! -Memeify";
-  let text4 = "#search #lebron james #i am #the goat";
-  let messageData1 = { text: text1 };
-  let messageData2 = { text: text2 };
-  let messageData3 = { text: text3 };
-  let messageData4 = { text: text4 };
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:process.env.TOKEN},
-    method: 'POST',
-    json: {
-        recipient: {id:sender},
-        message: messageData1,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending messages: ', error)
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error)
-    } else {
-      request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:process.env.TOKEN},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData2,
-        }
-      }, function(error, response, body) {
-        if (error) {
-          console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-          console.log('Error: ', response.body.error)
-        } else {
-          request({
-            url: 'https://graph.facebook.com/v2.6/me/messages',
-            qs: {access_token:process.env.TOKEN},
-            method: 'POST',
-            json: {
-                recipient: {id:sender},
-                message: messageData3,
-            }
-          }, function(error, response, body) {
-            if (error) {
-              console.log('Error sending messages: ', error)
-            } else if (response.body.error) {
-              console.log('Error: ', response.body.error)
-            } else {
-              request({
-                url: 'https://graph.facebook.com/v2.6/me/messages',
-                qs: {access_token:process.env.TOKEN},
-                method: 'POST',
-                json: {
-                    recipient: {id:sender},
-                    message: messageData4,
-                }
-              }, function(error, response, body) {
-                if (error) {
-                  console.log('Error sending messages: ', error)
-                } else if (response.body.error) {
-                  console.log('Error: ', response.body.error)
-                }
-              })
-            }
-          })
-        }
-      })
-    }
-  })
+  sendTextMessage(sender, HELP_MESSAGE_1);
+  sendTextMessage(sender, HELP_MESSAGE_2);
+  sendTextMessage(sender, HELP_MESSAGE_3);
+  sendTextMessage(sender, HELP_MESSAGE_4);
+}
+
+function sendAdvancedMessage(sender) {
+  sendTextMessage(sender, ADVANCED_MESSAGE_1);
+  sendTextMessage(sender, ADVANCED_MESSAGE_2);
 }
 
 /**
